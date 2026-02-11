@@ -76,7 +76,6 @@ async function loadDetails() {
         });
         const data = await res.json();
 
-        // Удаляем старые маркеры
         markers.forEach(m => map.removeLayer(m.marker));
         markers = [];
 
@@ -221,7 +220,6 @@ function locateMe() {
             const { latitude, longitude } = pos.coords;
             map.setView([latitude, longitude], 16);
 
-            // Пульсирующий маркер
             const pulseIcon = L.divIcon({
                 html: '<div class="pulse-marker"></div>',
                 iconSize: [16, 16],
