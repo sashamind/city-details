@@ -629,14 +629,25 @@
       .stat-item { padding: 8px 12px; }
       .stat-label { font-size: 9px; }
       .stat-value { font-size: 18px; }
-      .filters-bar { top: 88px; }
-      .filter-btn { padding: 7px 14px; font-size: 10px; }
+      .filters-bar {
+        top: auto;
+        bottom: 16px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        border: 1px solid #000;
+        border-bottom: 1px solid #000;
+        max-width: 94vw;
+        overflow-x: auto;
+        z-index: 900;
+      }
+      .filter-btn:last-child { border-right: none; }
       .panel-content { flex-direction: column; }
       #detail-photo { width: 100%; height: 220px; border-right: none; border-bottom: 1px solid #000; }
       .detail-info { padding: 16px; }
       .detail-info h2 { font-size: 20px; }
-      .add-button { bottom: 16px; right: 16px; width: 44px; height: 44px; }
-      .geo-button { bottom: 68px; right: 16px; width: 44px; height: 44px; }
+      .add-button { bottom: 64px; right: 16px; width: 44px; height: 44px; }
+      .geo-button { bottom: 116px; right: 16px; width: 44px; height: 44px; }
       .add-panel {
         width: 100%; height: auto; max-height: 120px;
         top: auto; bottom: 0; right: 0;
