@@ -175,15 +175,18 @@
 
     /* ===== МАРКЕРЫ ===== */
     .detail-marker {
-      width: 32px; height: 32px;
-      border: 2px solid #000;
-      cursor: pointer;
-      background-size: cover;
-      background-position: center;
-      background-color: #e0e0e0;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 2px 2px 0 #000;
-    }
+    width: 32px; height: 32px;
+    border: 2px solid #000;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    background-color: #e0e0e0;
+    transition: transform 0.2s;
+}
+.detail-marker:hover {
+    transform: scale(1.15);
+}
+
     .detail-marker:hover {
       transform: translate(-2px, -2px);
       box-shadow: 4px 4px 0 #000;
@@ -900,7 +903,11 @@
       }).forEach(function(detail) {
         var cls = (detail.status === 'pending') ? ' pending' : '';
         var h = '<div class="detail-marker' + cls + '" data-category="' + detail.category + '"';
-        if (detail.photo) h += ' style="background-image:url(' + detail.photo + ')"';
+        if (detail.photo) {
+    var thumb = detail.photo + '?width=64&height=64&resize=cover';
+    h += ' style="background-image:url(' + thumb + ')"';
+}
+
         h += '></div>';
         var marker = L.marker([detail.lat, detail.lng], {
           icon: L.divIcon({ html: h, className: '', iconSize: [32,32], iconAnchor: [16,16] })
