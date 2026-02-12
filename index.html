@@ -11,7 +11,10 @@
   <meta name="apple-mobile-web-app-title" content="Детали города">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
@@ -24,7 +27,6 @@
       overflow: hidden;
     }
 
-    /* ===== КАРТА ===== */
     #map {
       position: fixed;
       top: 0; left: 0;
@@ -58,7 +60,6 @@
     }
     .leaflet-control-zoom-in { border-bottom: none !important; }
 
-    /* ===== ШАПКА ===== */
     .site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -101,7 +102,6 @@
     .header-btn:hover { border-bottom-color: #000; }
     .header-btn.active { border-bottom-color: #000; }
 
-    /* ===== СТАТИСТИКА ===== */
     .stats-bar {
       position: fixed;
       top: 45px; left: 0; right: 0;
@@ -132,7 +132,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* ===== ФИЛЬТРЫ ===== */
     .filters-bar {
       position: fixed;
       top: 108px; left: 0; right: 0;
@@ -164,7 +163,6 @@
     .filter-btn:hover { color: #000; }
     .filter-btn.active { background: #000; color: #fff; }
 
-    /* ===== МАРКЕРЫ — ТОЧКА + НАЗВАНИЕ ===== */
     .dot-marker {
       display: flex;
       align-items: center;
@@ -193,27 +191,48 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .dot-marker:hover .dot {
-      transform: scale(1.8);
-    }
-    .dot-marker:hover .label {
-      opacity: 1;
-    }
-    .dot-marker.pending {
-      opacity: 0.35;
-    }
+    .dot-marker:hover .dot { transform: scale(1.8); }
+    .dot-marker:hover .label { opacity: 1; }
+    .dot-marker.pending { opacity: 0.35; }
     .dot-marker.pending .dot {
       border: 1.5px dashed #000;
       background: transparent;
     }
 
-    /* proximity scaling — задаётся через JS */
     .dot-marker.prox-1 { transform: scale(1.4); }
     .dot-marker.prox-1 .label { opacity: 1; font-size: 12px; }
     .dot-marker.prox-2 { transform: scale(1.2); }
     .dot-marker.prox-2 .label { opacity: 0.9; }
     .dot-marker.prox-3 { transform: scale(1.05); }
     .dot-marker.prox-3 .label { opacity: 0.8; }
+
+    /* ===== КЛАСТЕРЫ ===== */
+    .marker-cluster-small,
+    .marker-cluster-medium,
+    .marker-cluster-large {
+      background: rgba(0,0,0,0.08) !important;
+    }
+    .marker-cluster-small div,
+    .marker-cluster-medium div,
+    .marker-cluster-large div {
+      background: #000 !important;
+      color: #fff !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      width: 32px !important;
+      height: 32px !important;
+      margin-left: 4px !important;
+      margin-top: 4px !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .marker-cluster {
+      background: rgba(0,0,0,0.06) !important;
+      border-radius: 50% !important;
+    }
 
     .temp-marker {
       width: 16px; height: 16px;
@@ -235,7 +254,6 @@
       box-shadow: 0 0 0 1px #000;
     }
 
-    /* ===== ПАНЕЛЬ ДЕТАЛИ ===== */
     .panel {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -340,7 +358,6 @@
     .admin-only { display: none; }
     body.admin-mode .admin-only { display: flex; }
 
-    /* ===== КНОПКА ДОБАВИТЬ ===== */
     .add-button {
       position: fixed;
       bottom: 20px; right: 20px;
@@ -364,7 +381,6 @@
     }
     .add-button.hidden { display: none; }
 
-    /* ===== КНОПКА GEO ===== */
     .geo-button {
       position: fixed;
       bottom: 76px; right: 20px;
@@ -384,7 +400,6 @@
     .geo-button.locating { animation: geoBlink 0.6s ease infinite; }
     @keyframes geoBlink { 0%,100% { background: #fff; } 50% { background: #000; color: #fff; } }
 
-    /* ===== ПОДСКАЗКА ===== */
     .map-hint {
       position: fixed;
       bottom: 76px; left: 50%;
@@ -400,7 +415,6 @@
     }
     .map-hint.visible { display: block; }
 
-    /* ===== ПАНЕЛЬ ДОБАВЛЕНИЯ ===== */
     .add-panel {
       position: fixed;
       top: 0; right: 0;
@@ -474,7 +488,6 @@
     }
     .btn-secondary:hover { background: #f0f0f0; }
 
-    /* ===== МОДЕРАЦИЯ ===== */
     .mod-panel {
       position: fixed;
       top: 0; right: 0;
@@ -506,7 +519,6 @@
     .mod-empty { text-align: center; padding: 40px 20px; color: #999; font-family: 'IBM Plex Mono', monospace; }
     .mod-empty-icon { font-size: 32px; margin-bottom: 12px; }
 
-    /* ===== BADGE ===== */
     .badge {
       position: absolute; top: -6px; right: -6px; background: #000; color: #fff;
       font-size: 9px; font-weight: 500; min-width: 16px; height: 16px;
@@ -515,7 +527,6 @@
     }
     .badge.hidden { display: none; }
 
-    /* ===== LOADING ===== */
     .loading-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -523,7 +534,6 @@
     }
     .loading-overlay.hidden { display: none; }
 
-    /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
     @media (max-width: 768px) {
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
@@ -563,8 +573,7 @@
       .dot-marker .label { max-width: 80px; font-size: 9px; }
     }
   </style>
-</head>
-<body>
+</head><body>
   <div id="loading" class="loading-overlay">Загрузка...</div>
   <div id="map"></div>
 
@@ -670,6 +679,7 @@
     var userMarker = null;
     var mouseLatLng = null;
     var proximityRAF = null;
+    var clusterGroup = null;
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -772,16 +782,12 @@
         attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
       }).addTo(map);
 
-      // Трекинг мыши для proximity эффекта
       map.on('mousemove', function(e) {
         mouseLatLng = e.latlng;
         if (!proximityRAF) {
           proximityRAF = requestAnimationFrame(updateProximity);
         }
       });
-
-      // Перерисовка при движении/зуме — только видимые
-      map.on('moveend', function() { renderMarkers(); });
 
       map.on('click', function(e) {
         if (!isAddingMode) return;
@@ -797,7 +803,6 @@
       });
     }
 
-    // === PROXIMITY ЭФФЕКТ ===
     function updateProximity() {
       proximityRAF = null;
       if (!mouseLatLng) return;
@@ -820,19 +825,31 @@
         else if (dist < 200) div.classList.add('prox-3');
       });
     }
-
-    // === РЕНДЕР МАРКЕРОВ — только видимые, точка + название ===
     function renderMarkers() {
-      markerObjects.forEach(function(item) { map.removeLayer(item.marker); });
-      markerObjects = [];
+      if (clusterGroup) {
+        map.removeLayer(clusterGroup);
+      }
 
-      var bounds = map.getBounds();
+      clusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        iconCreateFunction: function(cluster) {
+          var count = cluster.getChildCount();
+          return L.divIcon({
+            html: '<div class="marker-cluster-inner">' + count + '</div>',
+            className: 'marker-cluster marker-cluster-' + (count < 5 ? 'small' : count < 15 ? 'medium' : 'large'),
+            iconSize: [40, 40]
+          });
+        }
+      });
+
+      markerObjects = [];
 
       details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
         if (activeFilter !== 'all' && d.category !== activeFilter) return false;
-        // только видимые на экране
-        if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
       }).forEach(function(detail) {
         var cls = (detail.status === 'pending') ? ' pending' : '';
@@ -851,7 +868,7 @@
             iconSize: [150, 20],
             iconAnchor: [4, 10]
           })
-        }).addTo(map);
+        });
 
         marker.on('click', function() {
           if (isAddingMode) return;
@@ -859,8 +876,11 @@
           map.flyTo([detail.lat, detail.lng], 17, { duration: 0.8 });
         });
 
+        clusterGroup.addLayer(marker);
         markerObjects.push({ marker: marker, detail: detail });
       });
+
+      map.addLayer(clusterGroup);
     }
 
     function openDetail(d) {
