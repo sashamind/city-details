@@ -11,154 +11,679 @@
   <meta name="apple-mobile-web-app-title" content="Детали города">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'IBM Plex Sans', sans-serif; background: #ffffff; color: #1a1a1a; overflow: hidden; }
-    #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
-    .leaflet-tile { filter: grayscale(1) brightness(1.1) contrast(0.85); }
-    .leaflet-control-attribution { font-size: 9px !important; opacity: 0.4; background: rgba(255,255,255,0.7) !important; }
-    .leaflet-control-zoom { border: none !important; }
-    .leaflet-control-zoom a { background: #ffffff !important; color: #999 !important; border: 1px solid #e0e0e0 !important; width: 32px !important; height: 32px !important; line-height: 32px !important; font-size: 16px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
-    .leaflet-control-zoom a:hover { background: #f5f5f5 !important; color: #333 !important; }
 
-    .site-header { position: fixed; top: 20px; left: 20px; z-index: 900; pointer-events: none; }
-    .site-header h1 { font-family: 'IBM Plex Mono', monospace; font-weight: 400; font-size: 14px; letter-spacing: 0.15em; color: #999; line-height: 1.3; }
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: #fff;
+      color: #000;
+      overflow: hidden;
+    }
 
-    .admin-button { position: fixed; top: 20px; right: 20px; z-index: 900; width: 40px; height: 40px; border-radius: 50%; background: #ffffff; color: #999; border: 1px solid #e0e0e0; font-size: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; }
-    .admin-button:hover { color: #333; border-color: #999; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-    .admin-button.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-    .badge { position: absolute; top: -4px; right: -4px; background: #cd5c5c; color: #fff; font-size: 10px; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; }
-    .badge.hidden { display: none; }
+    /* ===== КАРТА ===== */
+    #map {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+    }
+    .leaflet-tile {
+      filter: grayscale(1) contrast(1.1) brightness(1.05);
+    }
+    .leaflet-control-attribution {
+      font-family: 'IBM Plex Mono', monospace !important;
+      font-size: 9px !important;
+      opacity: 0.3;
+      background: rgba(255,255,255,0.8) !important;
+    }
+    .leaflet-control-zoom { border: none !important; box-shadow: none !important; }
+    .leaflet-control-zoom a {
+      background: #fff !important;
+      color: #000 !important;
+      border: 1px solid #000 !important;
+      border-radius: 0 !important;
+      width: 28px !important;
+      height: 28px !important;
+      line-height: 28px !important;
+      font-size: 14px !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: #000 !important;
+      color: #fff !important;
+    }
+    .leaflet-control-zoom-in { border-bottom: none !important; }
 
-    .geo-button { position: fixed; top: 70px; right: 20px; z-index: 900; width: 40px; height: 40px; border-radius: 50%; background: #ffffff; color: #999; border: 1px solid #e0e0e0; font-size: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; }
-    .geo-button:hover { color: #333; border-color: #999; }
-    .geo-button.locating { animation: geoPulse 1s ease infinite; }
-    @keyframes geoPulse { 0%,100% { background: #fff; } 50% { background: #e3f2fd; } }
+    /* ===== ШАПКА ===== */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      background: #fff;
+      border-bottom: 1px solid #000;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .site-header h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: #000;
+    }
+    .site-header h1 span {
+      font-weight: 400;
+      font-style: italic;
+      color: #666;
+    }
+    .header-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .header-btn {
+      background: none;
+      border: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #000;
+      cursor: pointer;
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .header-btn:hover {
+      border-bottom-color: #000;
+    }
+    .header-btn.active {
+      border-bottom-color: #000;
+    }
 
-    .detail-marker { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #1a1a1a; cursor: pointer; background-size: cover; background-position: center; background-color: #f0f0f0; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
-    .detail-marker:hover { transform: scale(1.4); box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
-    .detail-marker[data-category="texture"] { border-color: #b8860b; }
-    .detail-marker[data-category="sign"] { border-color: #2e8b57; }
-    .detail-marker[data-category="art"] { border-color: #e91e63; }
-    .detail-marker[data-category="detail"] { border-color: #4169e1; }
-    .detail-marker[data-category="other"] { border-color: #999; }
-    .detail-marker.pending { opacity: 0.5; border-style: dashed; }
+    /* ===== СТАТИСТИКА ===== */
+    .stats-bar {
+      position: fixed;
+      top: 45px; left: 0; right: 0;
+      z-index: 890;
+      background: #fff;
+      border-bottom: 1px solid #000;
+      display: flex;
+    }
+    .stat-item {
+      flex: 1;
+      padding: 10px 20px;
+      border-right: 1px solid #000;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #666;
+      margin-bottom: 2px;
+    }
+    .stat-value {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: -0.02em;
+    }
 
-    .temp-marker { width: 22px; height: 22px; border-radius: 50%; background: #1a1a1a; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #1a1a1a, 0 4px 16px rgba(0,0,0,0.3); animation: pulse 1.5s ease infinite; }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 2px #1a1a1a, 0 4px 8px rgba(0,0,0,0.2); } 50% { box-shadow: 0 0 0 2px #1a1a1a, 0 4px 24px rgba(0,0,0,0.4); } }
+    /* ===== ФИЛЬТРЫ ===== */
+    .filters-bar {
+      position: fixed;
+      top: 100px; left: 0; right: 0;
+      z-index: 880;
+      background: #fff;
+      border-bottom: 1px solid #000;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filters-bar::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      padding: 8px 20px;
+      border: none;
+      border-right: 1px solid #000;
+      background: #fff;
+      color: #666;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .filter-btn:last-child { border-right: none; }
+    .filter-btn:hover { color: #000; }
+    .filter-btn.active {
+      background: #000;
+      color: #fff;
+    }
 
-    .user-marker { width: 16px; height: 16px; border-radius: 50%; background: #4285f4; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #4285f4, 0 2px 8px rgba(66,133,244,0.4); }
+    /* ===== МАРКЕРЫ ===== */
+    .detail-marker {
+      width: 32px; height: 32px;
+      border: 2px solid #000;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      background-color: #e0e0e0;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .detail-marker:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 #000;
+    }
+    .detail-marker.pending {
+      opacity: 0.4;
+      border-style: dashed;
+    }
 
-    .filters-bar { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; background: #ffffff; border: 1px solid #e8e8e8; border-radius: 24px; padding: 4px; z-index: 890; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .filter-btn { padding: 7px 14px; border: none; background: none; color: #999; font-size: 12px; font-family: 'IBM Plex Mono', monospace; border-radius: 20px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-    .filter-btn:hover { color: #333; }
-    .filter-btn.active { background: #1a1a1a; color: #ffffff; }
+    .temp-marker {
+      width: 16px; height: 16px;
+      background: #000;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #000;
+      animation: blink 1s ease infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
 
-    .panel { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e8e8e8; z-index: 950; max-height: 70vh; overflow-y: auto; transform: translateY(0); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -4px 24px rgba(0,0,0,0.08); }
-    .panel.hidden { transform: translateY(100%); pointer-events: none; }
-    .close-btn { position: absolute; top: 12px; right: 16px; background: none; border: none; color: #999; font-size: 28px; cursor: pointer; z-index: 10; }
-    .close-btn:hover { color: #333; }
-    .panel-content { display: flex; gap: 24px; padding: 24px; max-width: 900px; margin: 0 auto; }
-    #detail-photo { width: 300px; height: 300px; object-fit: cover; border-radius: 6px; flex-shrink: 0; background: #f5f5f5; }
-    .detail-info { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
-    .detail-info h2 { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 20px; color: #1a1a1a; }
-    .detail-info p { color: #666; line-height: 1.7; font-size: 14px; }
-    .detail-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .detail-sub { font-size: 12px; color: #aaa; font-family: 'IBM Plex Mono', monospace; }
+    .user-marker {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #000;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px #000;
+    }
+
+    /* ===== ПАНЕЛЬ ДЕТАЛИ ===== */
+    .panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid #000;
+      z-index: 950;
+      max-height: 65vh;
+      overflow-y: auto;
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .panel.hidden {
+      transform: translateY(100%);
+      pointer-events: none;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px; right: 16px;
+      background: none;
+      border: none;
+      color: #000;
+      font-size: 24px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      z-index: 10;
+    }
+    .close-btn:hover { opacity: 0.5; }
+    .panel-content {
+      display: flex;
+      gap: 0;
+    }
+    #detail-photo {
+      width: 320px;
+      height: 320px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #f0f0f0;
+      border-right: 1px solid #000;
+    }
+    .detail-info {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .detail-info h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: #000;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .detail-info p {
+      font-family: 'Source Serif 4', Georgia, serif;
+      color: #333;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .detail-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .category-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid #000;
+      color: #000;
+    }
+    .status-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .status-tag.approved { background: #000; color: #fff; }
+    .status-tag.pending { background: #fff; color: #000; border: 1px dashed #000; }
+    .detail-sub {
+      font-size: 11px;
+      color: #999;
+      font-family: 'IBM Plex Mono', monospace;
+    }
     .detail-actions { display: flex; gap: 8px; margin-top: 8px; }
-    .category-tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid #1a1a1a; color: #1a1a1a; }
-    .status-tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; }
-    .status-tag.approved { background: #e8f5e9; color: #2e7d32; }
-    .status-tag.pending { background: #fff3e0; color: #e65100; }
-    .btn-approve { padding: 8px 16px; background: none; border: 1px solid #e0e0e0; color: #2e8b57; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s; }
-    .btn-approve:hover { background: #2e8b57; color: #fff; border-color: #2e8b57; }
-    .btn-delete { padding: 8px 16px; background: none; border: 1px solid #e0e0e0; color: #cd5c5c; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s; }
-    .btn-delete:hover { background: #cd5c5c; color: #fff; border-color: #cd5c5c; }
+    .btn-approve, .btn-delete {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-approve {
+      background: #000; color: #fff; border: 1px solid #000;
+    }
+    .btn-approve:hover { background: #333; }
+    .btn-delete {
+      background: #fff; color: #000; border: 1px solid #000;
+    }
+    .btn-delete:hover { background: #000; color: #fff; }
     .admin-only { display: none; }
     body.admin-mode .admin-only { display: flex; }
 
-    .add-button { position: fixed; bottom: 24px; right: 24px; z-index: 960; width: 52px; height: 52px; border-radius: 50%; background: #1a1a1a; border: none; color: #ffffff; font-size: 28px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; }
-    .add-button:hover { background: #333; transform: scale(1.1); }
+    /* ===== КНОПКА ДОБАВИТЬ ===== */
+    .add-button {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      z-index: 960;
+      width: 48px; height: 48px;
+      background: #000;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      font-family: 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    }
+    .add-button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    }
     .add-button.hidden { display: none; }
 
-    .add-panel { position: fixed; top: 0; right: 0; width: 380px; height: 100vh; background: #ffffff; border-left: 1px solid #e8e8e8; z-index: 950; overflow-y: auto; padding: 28px; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -4px 0 24px rgba(0,0,0,0.06); }
-    .add-panel.open { transform: translateX(0); }
-    .add-panel h2 { font-family: 'IBM Plex Mono', monospace; font-weight: 500; margin-bottom: 16px; font-size: 18px; }
-    .status-box { font-size: 13px; padding: 10px 14px; border-radius: 6px; margin-bottom: 20px; border-left: 3px solid; }
-    .status-waiting { color: #b8860b; background: rgba(184,134,11,0.06); border-left-color: #b8860b; }
-    .status-ready { color: #2e8b57; background: rgba(46,139,87,0.06); border-left-color: #2e8b57; }
-    .form-field { margin-bottom: 16px; }
-    .form-field label { display: block; font-size: 11px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 6px; }
-    .form-field input[type="text"], .form-field textarea, .form-field select { width: 100%; padding: 10px 12px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 6px; color: #1a1a1a; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; outline: none; }
-    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: #1a1a1a; }
-    .form-field textarea { height: 80px; resize: vertical; }
-    .form-field input[type="file"] { font-size: 13px; color: #999; }
-    .photo-preview { margin-top: 8px; }
-    .photo-preview img { max-width: 100%; max-height: 120px; border-radius: 6px; }
-    .form-actions { display: flex; gap: 12px; margin-top: 24px; }
-    .btn-primary { flex: 1; padding: 12px; background: #1a1a1a; color: #ffffff; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
-    .btn-primary:hover { background: #333; }
-    .btn-secondary { flex: 1; padding: 12px; background: none; border: 1px solid #e0e0e0; color: #999; border-radius: 6px; font-size: 14px; cursor: pointer; }
-    .btn-secondary:hover { border-color: #999; color: #666; }
-    .map-hint { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #ffffff; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-family: 'IBM Plex Mono', monospace; z-index: 960; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    /* ===== КНОПКА GEO ===== */
+    .geo-button {
+      position: fixed;
+      bottom: 76px; right: 20px;
+      z-index: 960;
+      width: 48px; height: 48px;
+      background: #fff;
+      border: 1px solid #000;
+      color: #000;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .geo-button:hover {
+      background: #000;
+      color: #fff;
+    }
+    .geo-button.locating { animation: geoBlink 0.6s ease infinite; }
+    @keyframes geoBlink { 0%,100% { background: #fff; } 50% { background: #000; color: #fff; } }
+
+    /* ===== ПОДСКАЗКА ===== */
+    .map-hint {
+      position: fixed;
+      bottom: 76px; left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #fff;
+      padding: 8px 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      z-index: 960;
+      display: none;
+      border: none;
+    }
     .map-hint.visible { display: block; }
 
-    .mod-panel { position: fixed; top: 0; right: 0; width: 420px; height: 100vh; background: #ffffff; border-left: 1px solid #e8e8e8; z-index: 970; overflow-y: auto; padding: 28px; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: -4px 0 24px rgba(0,0,0,0.06); }
-    .mod-panel.open { transform: translateX(0); }
-    .mod-panel h2 { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 18px; margin-bottom: 8px; }
-    .mod-subtitle { color: #999; font-size: 13px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e8e8e8; }
-    .mod-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #999; font-size: 24px; cursor: pointer; }
-    .mod-close:hover { color: #333; }
-    .mod-card { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-    .mod-card-photo { width: 100%; height: 160px; object-fit: cover; border-radius: 4px; margin-bottom: 12px; }
-    .mod-card h3 { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 15px; margin-bottom: 4px; }
-    .mod-card p { color: #666; font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
-    .mod-card-cat { font-size: 11px; color: #999; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; margin-bottom: 12px; }
-    .mod-card-actions { display: flex; gap: 8px; }
-    .mod-card-actions button { flex: 1; padding: 8px; border-radius: 4px; font-size: 13px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; }
-    .mod-btn-approve { background: #2e8b57; color: #fff; border: none; }
-    .mod-btn-approve:hover { background: #236b43; }
-    .mod-btn-reject { background: none; color: #cd5c5c; border: 1px solid #cd5c5c; }
-    .mod-btn-reject:hover { background: #cd5c5c; color: #fff; }
-    .mod-empty { text-align: center; padding: 40px 20px; color: #ccc; }
-    .mod-empty-icon { font-size: 48px; margin-bottom: 12px; }
+    /* ===== ПАНЕЛЬ ДОБАВЛЕНИЯ ===== */
+    .add-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 380px; height: 100vh;
+      background: #fff;
+      border-left: 1px solid #000;
+      z-index: 950;
+      overflow-y: auto;
+      padding: 24px;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .add-panel.open { transform: translateX(0); }
+    .add-panel h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .status-box {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      border: 1px solid #000;
+    }
+    .status-waiting { color: #666; border-style: dashed; }
+    .status-ready { color: #000; background: #f0f0f0; }
+    .form-field { margin-bottom: 16px; }
+    .form-field label {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .form-field input[type="text"],
+    .form-field textarea,
+    .form-field select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid #000;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 14px;
+      color: #000;
+      outline: none;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .form-field select:focus {
+      box-shadow: 3px 3px 0 #000;
+    }
+    .form-field textarea { height: 80px; resize: vertical; }
+    .form-field select {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+    }
+    .form-field input[type="file"] {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #666;
+    }
+    .photo-preview { margin-top: 8px; }
+    .photo-preview img {
+      max-width: 100%;
+      max-height: 120px;
+      border: 1px solid #000;
+    }
+    .form-actions { display: flex; gap: 0; margin-top: 24px; }
+    .btn-primary {
+      flex: 1;
+      padding: 12px;
+      background: #000;
+      color: #fff;
+      border: 1px solid #000;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: #333; }
+    .btn-secondary {
+      flex: 1;
+      padding: 12px;
+      background: #fff;
+      color: #000;
+      border: 1px solid #000;
+      border-left: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: #f0f0f0; }
 
-    .loading-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; color: #999; font-size: 14px; }
+    /* ===== МОДЕРАЦИЯ ===== */
+    .mod-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 420px; height: 100vh;
+      background: #fff;
+      border-left: 1px solid #000;
+      z-index: 970;
+      overflow-y: auto;
+      padding: 24px;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mod-panel.open { transform: translateX(0); }
+    .mod-panel h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .mod-subtitle {
+      color: #666;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #000;
+    }
+    .mod-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      color: #000;
+      font-size: 24px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .mod-close:hover { opacity: 0.5; }
+    .mod-card {
+      border: 1px solid #000;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .mod-card-photo {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 1px solid #000;
+    }
+    .mod-card h3 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .mod-card p {
+      color: #333;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .mod-card-cat {
+      font-size: 10px;
+      color: #666;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .mod-card-actions { display: flex; gap: 0; }
+    .mod-card-actions button {
+      flex: 1;
+      padding: 8px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .mod-btn-approve {
+      background: #000; color: #fff; border: 1px solid #000;
+    }
+    .mod-btn-approve:hover { background: #333; }
+    .mod-btn-reject {
+      background: #fff; color: #000; border: 1px solid #000; border-left: none;
+    }
+    .mod-btn-reject:hover { background: #f0f0f0; }
+    .mod-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .mod-empty-icon { font-size: 32px; margin-bottom: 12px; }
+
+    /* ===== BADGE ===== */
+    .badge {
+      position: absolute;
+      top: -6px; right: -6px;
+      background: #000;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 500;
+      min-width: 16px; height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      border: 1px solid #fff;
+    }
+    .badge.hidden { display: none; }
+
+    /* ===== LOADING ===== */
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      color: #000;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
     .loading-overlay.hidden { display: none; }
 
+    /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
     @media (max-width: 768px) {
-      .panel-content { flex-direction: column; padding: 20px; }
-      #detail-photo { width: 100%; height: 220px; }
-      .filters-bar { top: auto; bottom: 16px; overflow-x: auto; max-width: 92vw; left: 50%; transform: translateX(-50%); }
-      .admin-button { top: 16px; right: 16px; width: 36px; height: 36px; font-size: 16px; }
-      .geo-button { top: 60px; right: 16px; width: 36px; height: 36px; font-size: 16px; }
-      .add-button { bottom: 72px; right: 24px; }
+      .site-header { padding: 10px 16px; }
+      .site-header h1 { font-size: 14px; }
+      .stats-bar { top: 41px; }
+      .stat-item { padding: 8px 12px; }
+      .stat-label { font-size: 9px; }
+      .stat-value { font-size: 18px; }
+      .filters-bar { top: 88px; }
+      .filter-btn { padding: 7px 14px; font-size: 10px; }
+      .panel-content { flex-direction: column; }
+      #detail-photo { width: 100%; height: 220px; border-right: none; border-bottom: 1px solid #000; }
+      .detail-info { padding: 16px; }
+      .detail-info h2 { font-size: 20px; }
+      .add-button { bottom: 16px; right: 16px; width: 44px; height: 44px; }
+      .geo-button { bottom: 68px; right: 16px; width: 44px; height: 44px; }
       .add-panel {
-        width: 100%; height: auto; max-height: 120px; top: auto; bottom: 0; right: 0;
-        border-left: none; border-top: 1px solid #e8e8e8; border-radius: 16px 16px 0 0;
-        transform: translateY(100%); padding: 16px 20px; overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        width: 100%; height: auto; max-height: 120px;
+        top: auto; bottom: 0; right: 0;
+        border-left: none; border-top: 1px solid #000;
+        transform: translateY(100%);
+        padding: 16px 20px;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s;
       }
       .add-panel.open { transform: translateY(0); max-height: 120px; }
       .add-panel.open.expanded { max-height: 80vh; overflow-y: auto; }
-      .add-panel h2 { font-size: 16px; margin-bottom: 8px; }
       .add-panel .form-field, .add-panel .form-actions { display: none; }
       .add-panel.expanded .form-field, .add-panel.expanded .form-actions { display: block; }
-      .mod-panel { width: 100%; height: 70vh; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid #e8e8e8; border-radius: 16px 16px 0 0; transform: translateY(100%); }
+      .mod-panel {
+        width: 100%; height: 70vh;
+        top: auto; bottom: 0; right: 0;
+        border-left: none; border-top: 1px solid #000;
+        transform: translateY(100%);
+      }
       .mod-panel.open { transform: translateY(0); }
-      .map-hint { bottom: 140px; font-size: 12px; padding: 8px 16px; }
+      .map-hint { bottom: 130px; font-size: 11px; }
     }
   </style>
 </head>
 <body>
-  <div id="loading" class="loading-overlay">Загрузка данных...</div>
+  <div id="loading" class="loading-overlay">Загрузка...</div>
   <div id="map"></div>
-  <div class="site-header"><h1>ДЕТАЛИ<br>ГОРОДА</h1></div>
 
-  <button id="admin-btn" class="admin-button">⚙<span id="pending-badge" class="badge hidden">0</span></button>
-  <button id="geo-btn" class="geo-button">📍</button>
+  <div class="site-header">
+    <h1>Детали города <span>— Тула</span></h1>
+    <div class="header-right">
+      <button id="geo-btn" class="header-btn">◎ Локация</button>
+      <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-label">Деталей</div>
+      <div id="stat-total" class="stat-value">—</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Категорий</div>
+      <div id="stat-cats" class="stat-value">5</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">На модерации</div>
+      <div id="stat-pending" class="stat-value">—</div>
+    </div>
+  </div>
 
   <div class="filters-bar">
     <button class="filter-btn active" data-filter="all">Все</button>
@@ -170,7 +695,7 @@
   </div>
 
   <div id="detail-panel" class="panel hidden">
-    <button id="close-panel" class="close-btn">&times;</button>
+    <button id="close-panel" class="close-btn">×</button>
     <div class="panel-content">
       <img id="detail-photo" src="" alt="">
       <div class="detail-info">
@@ -190,7 +715,8 @@
   </div>
 
   <button id="add-btn" class="add-button">+</button>
-  <div id="map-hint" class="map-hint">← кликните на карту чтобы поставить точку</div>
+  <button id="geo-float" class="geo-button">◎</button>
+  <div id="map-hint" class="map-hint">← кликните на карту</div>
 
   <div id="add-panel" class="add-panel">
     <h2>Новая деталь</h2>
@@ -205,7 +731,7 @@
         <option value="sign">Знак</option>
         <option value="art">Арт</option>
         <option value="detail">Деталь</option>
-        <option value="other">Другое</option>
+                <option value="other">Другое</option>
       </select>
     </div>
     <div class="form-actions">
@@ -215,22 +741,23 @@
   </div>
 
   <div id="mod-panel" class="mod-panel">
-    <button id="mod-close" class="mod-close">&times;</button>
+    <button id="mod-close" class="mod-close">×</button>
     <h2>Модерация</h2>
     <p class="mod-subtitle">Новые заявки от пользователей</p>
     <div id="mod-list"></div>
   </div>
+
   <script>
     var SUPABASE_URL = 'https://yzvigrtnwmkwkpmqmdzh.supabase.co';
     var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6dmlncnRud21rd2twbXFtZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MjQ0MTEsImV4cCI6MjA4NjQwMDQxMX0.Ky1RV2Lqd5TF4LzpQXJPuk2_HGLrXaKe6bBRm-niJ3c';
     var ADMIN_CODE = 'tula2024';
     var isAdmin = false;
     var CATEGORIES = {
-      texture: { label: 'Текстура', color: '#b8860b' },
-      sign: { label: 'Знак', color: '#2e8b57' },
-      art: { label: 'Арт', color: '#e91e63' },
-      detail: { label: 'Деталь', color: '#4169e1' },
-      other: { label: 'Другое', color: '#999999' }
+      texture: { label: 'Текстура', color: '#000' },
+      sign: { label: 'Знак', color: '#000' },
+      art: { label: 'Арт', color: '#000' },
+      detail: { label: 'Деталь', color: '#000' },
+      other: { label: 'Другое', color: '#000' }
     };
     var details = [], markerObjects = [], activeFilter = 'all';
     var isAddingMode = false, pendingCoords = null, tempMarker = null, currentDetailId = null, map;
@@ -259,6 +786,7 @@
             return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
           });
         }
+        updateStats();
       }).catch(function(e) { console.error('Load error:', e); });
     }
 
@@ -269,6 +797,7 @@
             return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
           });
         }
+        updateStats();
       }).catch(function(e) { console.error('Load error:', e); });
     }
 
@@ -291,11 +820,19 @@
     function formatDate(dateStr) {
       if (!dateStr) return '';
       var d = new Date(dateStr);
-      var months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
       return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     }
 
     function getPendingCount() { return details.filter(function(d) { return d.status === 'pending'; }).length; }
+
+    function updateStats() {
+      var approved = details.filter(function(d) { return d.status === 'approved'; });
+      document.getElementById('stat-total').textContent = approved.length;
+      document.getElementById('stat-pending').textContent = getPendingCount();
+      updateBadge();
+    }
+
     function updateBadge() {
       var c = getPendingCount(), b = document.getElementById('pending-badge');
       if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
@@ -303,14 +840,14 @@
 
     function geoLocate() {
       if (!navigator.geolocation) { alert('Геолокация не поддерживается'); return; }
-      var btn = document.getElementById('geo-btn');
+      var btn = document.getElementById('geo-float');
       btn.classList.add('locating');
       navigator.geolocation.getCurrentPosition(function(pos) {
         var lat = pos.coords.latitude, lng = pos.coords.longitude;
         map.flyTo([lat, lng], 17, { duration: 1.2 });
         if (userMarker) map.removeLayer(userMarker);
         userMarker = L.marker([lat, lng], {
-          icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] })
+          icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14,14], iconAnchor: [7,7] })
         }).addTo(map);
         btn.classList.remove('locating');
       }, function(err) {
@@ -323,15 +860,19 @@
     function initMap() {
       map = L.map('map', { center: [54.1935, 37.6180], zoom: 15, zoomControl: false });
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap © CARTO', maxZoom: 19 }).addTo(map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+      }).addTo(map);
       map.on('click', function(e) {
         if (!isAddingMode) return;
         pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
         if (tempMarker) map.removeLayer(tempMarker);
-        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [22,22], iconAnchor: [11,11] }) }).addTo(map);
+        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], {
+          icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] })
+        }).addTo(map);
         var box = document.getElementById('status-box');
         box.className = 'status-box status-ready';
-        box.textContent = '✓ Место выбрано: ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
+        box.textContent = '✓ ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
         document.getElementById('add-panel').classList.add('expanded');
       });
     }
@@ -347,7 +888,9 @@
         var h = '<div class="detail-marker' + cls + '" data-category="' + detail.category + '"';
         if (detail.photo) h += ' style="background-image:url(' + detail.photo + ')"';
         h += '></div>';
-        var marker = L.marker([detail.lat, detail.lng], { icon: L.divIcon({ html: h, className: '', iconSize: [38,38], iconAnchor: [19,19] }) }).addTo(map);
+        var marker = L.marker([detail.lat, detail.lng], {
+          icon: L.divIcon({ html: h, className: '', iconSize: [32,32], iconAnchor: [16,16] })
+        }).addTo(map);
         marker.on('click', function() { if (isAddingMode) return; openDetail(detail); map.flyTo([detail.lat, detail.lng], 17, { duration: 0.8 }); });
         markerObjects.push(marker);
       });
@@ -361,7 +904,7 @@
       document.getElementById('detail-description').textContent = d.description;
       var cat = CATEGORIES[d.category] || CATEGORIES.other;
       var tag = document.getElementById('detail-category');
-      tag.textContent = cat.label; tag.style.borderColor = cat.color; tag.style.color = cat.color;
+      tag.textContent = cat.label;
       var st = document.getElementById('detail-status');
       if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
       else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
@@ -377,25 +920,25 @@
     function closeDetail() { document.getElementById('detail-panel').classList.add('hidden'); currentDetailId = null; }
 
     function deleteDetail() {
-      if (!currentDetailId || !confirm('Удалить эту деталь?')) return;
+      if (!currentDetailId || !confirm('Удалить?')) return;
       supaFetch('details?id=eq.' + currentDetailId, { method: 'DELETE', prefer: 'return=minimal' }).then(function() {
         details = details.filter(function(d) { return d.id !== currentDetailId; });
-        renderMarkers(); closeDetail(); updateBadge(); renderModList();
+        renderMarkers(); closeDetail(); updateStats(); renderModList();
       });
     }
 
     function approveDetail(id) {
       supaFetch('details?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(function() {
         var d = details.find(function(x) { return x.id === id; });
-        if (d) { d.status = 'approved'; renderMarkers(); updateBadge(); renderModList(); if (currentDetailId === id) openDetail(d); }
+        if (d) { d.status = 'approved'; renderMarkers(); updateStats(); renderModList(); if (currentDetailId === id) openDetail(d); }
       });
     }
 
     function rejectDetail(id) {
-      if (!confirm('Удалить эту заявку?')) return;
+      if (!confirm('Удалить заявку?')) return;
       supaFetch('details?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(function() {
         details = details.filter(function(d) { return d.id !== id; });
-        renderMarkers(); updateBadge(); renderModList();
+        renderMarkers(); updateStats(); renderModList();
         if (currentDetailId === id) closeDetail();
       });
     }
@@ -435,7 +978,7 @@
       var cat = document.getElementById('input-category').value;
       var fileInput = document.getElementById('input-photo');
       if (!title) { alert('Укажите название'); return; }
-      if (!pendingCoords) { alert('Кликните на карту чтобы выбрать место'); return; }
+      if (!pendingCoords) { alert('Кликните на карту'); return; }
       var btn = document.getElementById('submit-detail');
       btn.disabled = true; btn.textContent = 'Отправка...';
 
@@ -446,10 +989,10 @@
             var d = data[0];
             details.push({ id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' });
           }
-          renderMarkers(); closeAddForm(); updateBadge();
+          renderMarkers(); closeAddForm(); updateStats();
           btn.disabled = false; btn.textContent = 'Отправить';
-          if (!isAdmin) alert('Спасибо! Ваша деталь отправлена на модерацию.');
-        }).catch(function(e) { alert('Ошибка сохранения'); btn.disabled = false; btn.textContent = 'Отправить'; });
+          if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
+        }).catch(function(e) { alert('Ошибка'); btn.disabled = false; btn.textContent = 'Отправить'; });
       }
 
       if (fileInput.files && fileInput.files[0]) {
@@ -464,11 +1007,11 @@
     }
 
     function toggleAdmin() {
-      if (isAdmin) { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('admin-btn').classList.remove('active'); closeModPanel(); loadDetails().then(function() { renderMarkers(); updateBadge(); }); return; }
-      var code = prompt('Введите код администратора:');
+      if (isAdmin) { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('admin-btn').classList.remove('active'); closeModPanel(); loadDetails().then(function() { renderMarkers(); }); return; }
+      var code = prompt('Код администратора:');
       if (code === ADMIN_CODE) {
         isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('admin-btn').classList.add('active');
-        loadAllForAdmin().then(function() { renderMarkers(); updateBadge(); if (getPendingCount() > 0) openModPanel(); });
+        loadAllForAdmin().then(function() { renderMarkers(); if (getPendingCount() > 0) openModPanel(); });
       } else if (code !== null) alert('Неверный код');
     }
 
@@ -478,8 +1021,8 @@
     function renderModList() {
       var list = document.getElementById('mod-list');
       var pending = details.filter(function(d) { return d.status === 'pending'; });
-      var exitBtn = '<button onclick="toggleAdmin()" style="width:100%;margin-top:20px;padding:12px;background:none;border:1px solid #e0e0e0;border-radius:6px;color:#999;font-size:13px;cursor:pointer;font-family:IBM Plex Mono,monospace;">Выйти из админки</button>';
-      if (pending.length === 0) { list.innerHTML = '<div class="mod-empty"><div class="mod-empty-icon">✓</div><p>Нет заявок на модерации</p></div>' + exitBtn; return; }
+      var exitBtn = '<button onclick="toggleAdmin()" style="width:100%;margin-top:20px;padding:12px;background:none;border:1px solid #000;font-size:11px;cursor:pointer;font-family:IBM Plex Mono,monospace;text-transform:uppercase;letter-spacing:0.05em;">Выйти из админки</button>';
+      if (pending.length === 0) { list.innerHTML = '<div class="mod-empty"><div class="mod-empty-icon">✓</div><p>Нет заявок</p></div>' + exitBtn; return; }
       var html = '';
       pending.forEach(function(d) {
         var cat = CATEGORIES[d.category] || CATEGORIES.other;
@@ -501,6 +1044,7 @@
       document.getElementById('btn-delete-detail').addEventListener('click', deleteDetail);
       document.getElementById('btn-approve-detail').addEventListener('click', function() { if (currentDetailId) approveDetail(currentDetailId); });
       document.getElementById('geo-btn').addEventListener('click', geoLocate);
+      document.getElementById('geo-float').addEventListener('click', geoLocate);
       document.getElementById('admin-btn').addEventListener('click', function() {
         if (isAdmin) { var p = document.getElementById('mod-panel'); if (p.classList.contains('open')) closeModPanel(); else openModPanel(); }
         else toggleAdmin();
@@ -513,7 +1057,6 @@
       document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); } });
     }
 
-    // PWA — регистрация Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW skip:', e); });
     }
@@ -522,9 +1065,9 @@
     initEvents();
     loadDetails().then(function() {
       renderMarkers();
-      updateBadge();
       document.getElementById('loading').classList.add('hidden');
     });
   </script>
 </body>
 </html>
+
