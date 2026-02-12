@@ -98,12 +98,8 @@
       border-bottom: 1px solid transparent;
       transition: border-color 0.2s;
     }
-    .header-btn:hover {
-      border-bottom-color: #000;
-    }
-    .header-btn.active {
-      border-bottom-color: #000;
-    }
+    .header-btn:hover { border-bottom-color: #000; }
+    .header-btn.active { border-bottom-color: #000; }
 
     /* ===== СТАТИСТИКА ===== */
     .stats-bar {
@@ -148,53 +144,76 @@
       scrollbar-width: none;
     }
     .filters-bar::-webkit-scrollbar { display: none; }
-  .filter-btn {
-    padding: 11px 20px 9px 20px;
-    border: none;
-    border-right: 1px solid #000;
-    background: #fff;
-    color: #666;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-    line-height: 1;
-}
-
-
+    .filter-btn {
+      padding: 11px 20px 9px 20px;
+      border: none;
+      border-right: 1px solid #000;
+      background: #fff;
+      color: #666;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1;
+    }
     .filter-btn:last-child { border-right: none; }
     .filter-btn:hover { color: #000; }
-    .filter-btn.active {
+    .filter-btn.active { background: #000; color: #fff; }
+
+    /* ===== МАРКЕРЫ — ТОЧКА + НАЗВАНИЕ ===== */
+    .dot-marker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      transform-origin: left center;
+    }
+    .dot-marker .dot {
+      width: 8px;
+      height: 8px;
       background: #000;
-      color: #fff;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+    .dot-marker .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #000;
+      letter-spacing: 0.02em;
+      opacity: 0.7;
+      transition: opacity 0.15s ease, font-size 0.15s ease;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dot-marker:hover .dot {
+      transform: scale(1.8);
+    }
+    .dot-marker:hover .label {
+      opacity: 1;
+    }
+    .dot-marker.pending {
+      opacity: 0.35;
+    }
+    .dot-marker.pending .dot {
+      border: 1.5px dashed #000;
+      background: transparent;
     }
 
-    /* ===== МАРКЕРЫ ===== */
-    .detail-marker {
-    width: 32px; height: 32px;
-    border: 2px solid #000;
-    cursor: pointer;
-    background-size: cover;
-    background-position: center;
-    background-color: #e0e0e0;
-    transition: transform 0.2s;
-}
-.detail-marker:hover {
-    transform: scale(1.15);
-}
-
-    .detail-marker:hover {
-      transform: translate(-2px, -2px);
-      
-    }
-    .detail-marker.pending {
-      opacity: 0.4;
-      border-style: dashed;
-    }
+    /* proximity scaling — задаётся через JS */
+    .dot-marker.prox-1 { transform: scale(1.4); }
+    .dot-marker.prox-1 .label { opacity: 1; font-size: 12px; }
+    .dot-marker.prox-2 { transform: scale(1.2); }
+    .dot-marker.prox-2 .label { opacity: 0.9; }
+    .dot-marker.prox-3 { transform: scale(1.05); }
+    .dot-marker.prox-3 .label { opacity: 0.8; }
 
     .temp-marker {
       width: 16px; height: 16px;
@@ -244,10 +263,7 @@
       z-index: 10;
     }
     .close-btn:hover { opacity: 0.5; }
-    .panel-content {
-      display: flex;
-      gap: 0;
-    }
+    .panel-content { display: flex; gap: 0; }
     #detail-photo {
       width: 320px;
       height: 320px;
@@ -317,13 +333,9 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .btn-approve {
-      background: #000; color: #fff; border: 1px solid #000;
-    }
+    .btn-approve { background: #000; color: #fff; border: 1px solid #000; }
     .btn-approve:hover { background: #333; }
-    .btn-delete {
-      background: #fff; color: #000; border: 1px solid #000;
-    }
+    .btn-delete { background: #fff; color: #000; border: 1px solid #000; }
     .btn-delete:hover { background: #000; color: #fff; }
     .admin-only { display: none; }
     body.admin-mode .admin-only { display: flex; }
@@ -368,10 +380,7 @@
       align-items: center;
       justify-content: center;
     }
-    .geo-button:hover {
-      background: #000;
-      color: #fff;
-    }
+    .geo-button:hover { background: #000; color: #fff; }
     .geo-button.locating { animation: geoBlink 0.6s ease infinite; }
     @keyframes geoBlink { 0%,100% { background: #fff; } 50% { background: #000; color: #fff; } }
 
@@ -443,53 +452,25 @@
       color: #000;
       outline: none;
     }
-        .form-field input:focus,
+    .form-field input:focus,
     .form-field textarea:focus,
     .form-field select:focus {
       box-shadow: 3px 3px 0 #000;
     }
     .form-field textarea { height: 80px; resize: vertical; }
-    .form-field select {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-    }
-    .form-field input[type="file"] {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      color: #666;
-    }
+    .form-field select { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+    .form-field input[type="file"] { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #666; }
     .photo-preview { margin-top: 8px; }
-    .photo-preview img {
-      max-width: 100%;
-      max-height: 120px;
-      border: 1px solid #000;
-    }
+    .photo-preview img { max-width: 100%; max-height: 120px; border: 1px solid #000; }
     .form-actions { display: flex; gap: 0; margin-top: 24px; }
     .btn-primary {
-      flex: 1;
-      padding: 12px;
-      background: #000;
-      color: #fff;
-      border: 1px solid #000;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      cursor: pointer;
+      flex: 1; padding: 12px; background: #000; color: #fff; border: 1px solid #000;
+      font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
     }
     .btn-primary:hover { background: #333; }
     .btn-secondary {
-      flex: 1;
-      padding: 12px;
-      background: #fff;
-      color: #000;
-      border: 1px solid #000;
-      border-left: none;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      cursor: pointer;
+      flex: 1; padding: 12px; background: #fff; color: #000; border: 1px solid #000; border-left: none;
+      font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
     }
     .btn-secondary:hover { background: #f0f0f0; }
 
@@ -507,120 +488,38 @@
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .mod-panel.open { transform: translateX(0); }
-    .mod-panel h2 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 700;
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-    .mod-subtitle {
-      color: #666;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #000;
-    }
-    .mod-close {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: none;
-      border: none;
-      color: #000;
-      font-size: 24px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-    }
+    .mod-panel h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+    .mod-subtitle { color: #666; font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #000; }
+    .mod-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #000; font-size: 24px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; }
     .mod-close:hover { opacity: 0.5; }
-    .mod-card {
-      border: 1px solid #000;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .mod-card-photo {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      margin-bottom: 12px;
-      border: 1px solid #000;
-    }
-    .mod-card h3 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 4px;
-    }
-    .mod-card p {
-      color: #333;
-      font-size: 13px;
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-    .mod-card-cat {
-      font-size: 10px;
-      color: #666;
-      font-family: 'IBM Plex Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-    }
+    .mod-card { border: 1px solid #000; padding: 16px; margin-bottom: 12px; }
+    .mod-card-photo { width: 100%; height: 160px; object-fit: cover; margin-bottom: 12px; border: 1px solid #000; }
+    .mod-card h3 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .mod-card p { color: #333; font-size: 13px; line-height: 1.6; margin-bottom: 8px; }
+    .mod-card-cat { font-size: 10px; color: #666; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
     .mod-card-actions { display: flex; gap: 0; }
-    .mod-card-actions button {
-      flex: 1;
-      padding: 8px;
-      font-size: 11px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .mod-btn-approve {
-      background: #000; color: #fff; border: 1px solid #000;
-    }
+    .mod-card-actions button { flex: 1; padding: 8px; font-size: 11px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; }
+    .mod-btn-approve { background: #000; color: #fff; border: 1px solid #000; }
     .mod-btn-approve:hover { background: #333; }
-    .mod-btn-reject {
-      background: #fff; color: #000; border: 1px solid #000; border-left: none;
-    }
+    .mod-btn-reject { background: #fff; color: #000; border: 1px solid #000; border-left: none; }
     .mod-btn-reject:hover { background: #f0f0f0; }
-    .mod-empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #999;
-      font-family: 'IBM Plex Mono', monospace;
-    }
+    .mod-empty { text-align: center; padding: 40px 20px; color: #999; font-family: 'IBM Plex Mono', monospace; }
     .mod-empty-icon { font-size: 32px; margin-bottom: 12px; }
 
     /* ===== BADGE ===== */
     .badge {
-      position: absolute;
-      top: -6px; right: -6px;
-      background: #000;
-      color: #fff;
-      font-size: 9px;
-      font-weight: 500;
-      min-width: 16px; height: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'IBM Plex Mono', monospace;
-      border: 1px solid #fff;
+      position: absolute; top: -6px; right: -6px; background: #000; color: #fff;
+      font-size: 9px; font-weight: 500; min-width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; border: 1px solid #fff;
     }
     .badge.hidden { display: none; }
 
     /* ===== LOADING ===== */
     .loading-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #fff;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'IBM Plex Mono', monospace;
-      color: #000;
-      font-size: 13px;
-      letter-spacing: 0.05em;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; color: #000; font-size: 13px; letter-spacing: 0.05em;
     }
     .loading-overlay.hidden { display: none; }
 
@@ -633,16 +532,9 @@
       .stat-label { font-size: 9px; }
       .stat-value { font-size: 18px; }
       .filters-bar {
-        top: auto;
-        bottom: 16px;
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        border: 1px solid #000;
-        border-bottom: 1px solid #000;
-        max-width: 94vw;
-        overflow-x: auto;
-        z-index: 900;
+        top: auto; bottom: 16px; left: 50%; right: auto;
+        transform: translateX(-50%); border: 1px solid #000;
+        max-width: 94vw; overflow-x: auto; z-index: 900;
       }
       .filter-btn:last-child { border-right: none; }
       .panel-content { flex-direction: column; }
@@ -655,9 +547,7 @@
         width: 100%; height: auto; max-height: 120px;
         top: auto; bottom: 0; right: 0;
         border-left: none; border-top: 1px solid #000;
-        transform: translateY(100%);
-        padding: 16px 20px;
-        overflow: hidden;
+        transform: translateY(100%); padding: 16px 20px; overflow: hidden;
         transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s;
       }
       .add-panel.open { transform: translateY(0); max-height: 120px; }
@@ -665,13 +555,12 @@
       .add-panel .form-field, .add-panel .form-actions { display: none; }
       .add-panel.expanded .form-field, .add-panel.expanded .form-actions { display: block; }
       .mod-panel {
-        width: 100%; height: 70vh;
-        top: auto; bottom: 0; right: 0;
-        border-left: none; border-top: 1px solid #000;
-        transform: translateY(100%);
+        width: 100%; height: 70vh; top: auto; bottom: 0; right: 0;
+        border-left: none; border-top: 1px solid #000; transform: translateY(100%);
       }
       .mod-panel.open { transform: translateY(0); }
       .map-hint { bottom: 130px; font-size: 11px; }
+      .dot-marker .label { max-width: 80px; font-size: 9px; }
     }
   </style>
 </head>
@@ -748,7 +637,7 @@
         <option value="sign">Знак</option>
         <option value="art">Арт</option>
         <option value="detail">Деталь</option>
-                <option value="other">Другое</option>
+        <option value="other">Другое</option>
       </select>
     </div>
     <div class="form-actions">
@@ -779,6 +668,8 @@
     var details = [], markerObjects = [], activeFilter = 'all';
     var isAddingMode = false, pendingCoords = null, tempMarker = null, currentDetailId = null, map;
     var userMarker = null;
+    var mouseLatLng = null;
+    var proximityRAF = null;
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -880,6 +771,18 @@
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
       }).addTo(map);
+
+      // Трекинг мыши для proximity эффекта
+      map.on('mousemove', function(e) {
+        mouseLatLng = e.latlng;
+        if (!proximityRAF) {
+          proximityRAF = requestAnimationFrame(updateProximity);
+        }
+      });
+
+      // Перерисовка при движении/зуме — только видимые
+      map.on('moveend', function() { renderMarkers(); });
+
       map.on('click', function(e) {
         if (!isAddingMode) return;
         pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
@@ -894,26 +797,69 @@
       });
     }
 
+    // === PROXIMITY ЭФФЕКТ ===
+    function updateProximity() {
+      proximityRAF = null;
+      if (!mouseLatLng) return;
+      var mousePoint = map.latLngToContainerPoint(mouseLatLng);
+
+      markerObjects.forEach(function(item) {
+        var el = item.marker.getElement();
+        if (!el) return;
+        var div = el.querySelector('.dot-marker');
+        if (!div) return;
+
+        var markerPoint = map.latLngToContainerPoint([item.detail.lat, item.detail.lng]);
+        var dx = mousePoint.x - markerPoint.x;
+        var dy = mousePoint.y - markerPoint.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+
+        div.classList.remove('prox-1', 'prox-2', 'prox-3');
+        if (dist < 60) div.classList.add('prox-1');
+        else if (dist < 120) div.classList.add('prox-2');
+        else if (dist < 200) div.classList.add('prox-3');
+      });
+    }
+
+    // === РЕНДЕР МАРКЕРОВ — только видимые, точка + название ===
     function renderMarkers() {
-      markerObjects.forEach(function(m) { map.removeLayer(m); }); markerObjects = [];
+      markerObjects.forEach(function(item) { map.removeLayer(item.marker); });
+      markerObjects = [];
+
+      var bounds = map.getBounds();
+
       details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
         if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        // только видимые на экране
+        if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
       }).forEach(function(detail) {
         var cls = (detail.status === 'pending') ? ' pending' : '';
-        var h = '<div class="detail-marker' + cls + '" data-category="' + detail.category + '"';
-        if (detail.photo) {
-    var thumb = detail.photo + '?width=64&height=64&resize=cover';
-    h += ' style="background-image:url(' + thumb + ')"';
-}
+        var title = detail.title || '';
+        if (title.length > 18) title = title.substring(0, 18) + '…';
 
-        h += '></div>';
+        var h = '<div class="dot-marker' + cls + '">' +
+                  '<div class="dot"></div>' +
+                  '<div class="label">' + title + '</div>' +
+                '</div>';
+
         var marker = L.marker([detail.lat, detail.lng], {
-          icon: L.divIcon({ html: h, className: '', iconSize: [32,32], iconAnchor: [16,16] })
+          icon: L.divIcon({
+            html: h,
+            className: '',
+            iconSize: [150, 20],
+            iconAnchor: [4, 10]
+          })
         }).addTo(map);
-        marker.on('click', function() { if (isAddingMode) return; openDetail(detail); map.flyTo([detail.lat, detail.lng], 17, { duration: 0.8 }); });
-        markerObjects.push(marker);
+
+        marker.on('click', function() {
+          if (isAddingMode) return;
+          openDetail(detail);
+          map.flyTo([detail.lat, detail.lng], 17, { duration: 0.8 });
+        });
+
+        markerObjects.push({ marker: marker, detail: detail });
       });
     }
 
@@ -924,8 +870,7 @@
       document.getElementById('detail-title').textContent = d.title;
       document.getElementById('detail-description').textContent = d.description;
       var cat = CATEGORIES[d.category] || CATEGORIES.other;
-      var tag = document.getElementById('detail-category');
-      tag.textContent = cat.label;
+      document.getElementById('detail-category').textContent = cat.label;
       var st = document.getElementById('detail-status');
       if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
       else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
