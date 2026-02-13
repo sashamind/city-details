@@ -102,39 +102,10 @@
     .header-btn:hover { border-bottom-color: #000; }
     .header-btn.active { border-bottom-color: #000; }
 
-    .stats-bar {
-      position: fixed;
-      top: 45px; left: 0; right: 0;
-      z-index: 890;
-      background: #fff;
-      border-bottom: 1px solid #000;
-      display: flex;
-    }
-    .stat-item {
-      flex: 1;
-      padding: 10px 20px;
-      border-right: 1px solid #000;
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #666;
-      margin-bottom: 2px;
-    }
-    .stat-value {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #000;
-      letter-spacing: -0.02em;
-    }
-
+    /* фильтры сразу под шапкой */
     .filters-bar {
       position: fixed;
-      top: 108px; left: 0; right: 0;
+      top: 45px; left: 0; right: 0;
       z-index: 880;
       background: #fff;
       border-bottom: 1px solid #000;
@@ -206,7 +177,6 @@
     .dot-marker.prox-3 { transform: scale(1.05); }
     .dot-marker.prox-3 .label { opacity: 0.8; }
 
-    /* ===== КЛАСТЕРЫ ===== */
     .marker-cluster-small,
     .marker-cluster-medium,
     .marker-cluster-large {
@@ -254,13 +224,14 @@
       box-shadow: 0 0 0 1px #000;
     }
 
+    /* ===== ПАНЕЛЬ ДЕТАЛИ ===== */
     .panel {
       position: fixed;
       bottom: 0; left: 0; right: 0;
       background: #fff;
       border-top: 1px solid #000;
       z-index: 950;
-      max-height: 65vh;
+      max-height: 70vh;
       overflow-y: auto;
       transform: translateY(0);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -269,25 +240,59 @@
       transform: translateY(100%);
       pointer-events: none;
     }
+
+    /* крестик на подложке */
     .close-btn {
       position: absolute;
       top: 12px; right: 16px;
-      background: none;
-      border: none;
+      width: 32px; height: 32px;
+      background: #fff;
+      border: 1px solid #000;
       color: #000;
-      font-size: 24px;
+      font-size: 18px;
       cursor: pointer;
       font-family: 'IBM Plex Mono', monospace;
       z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
-    .close-btn:hover { opacity: 0.5; }
+    .close-btn:hover { background: #000; color: #fff; }
+
+    /* навигация ← → */
+    .panel-nav {
+      display: flex;
+      gap: 0;
+      position: absolute;
+      top: 12px; right: 56px;
+      z-index: 10;
+    }
+    .nav-btn {
+      width: 32px; height: 32px;
+      background: #fff;
+      border: 1px solid #000;
+      color: #000;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-btn:first-child { border-right: none; }
+    .nav-btn:hover { background: #000; color: #fff; }
+    .nav-btn:disabled { opacity: 0.2; cursor: default; background: #fff; color: #000; }
+
     .panel-content { display: flex; gap: 0; }
+
+    /* фото не обрезается */
     #detail-photo {
       width: 320px;
-      height: 320px;
-      object-fit: cover;
+      max-height: 400px;
+      object-fit: contain;
       flex-shrink: 0;
-      background: #f0f0f0;
+      background: #f5f5f5;
       border-right: 1px solid #000;
     }
     .detail-info {
@@ -537,10 +542,6 @@
     @media (max-width: 768px) {
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
-      .stats-bar { top: 41px; }
-      .stat-item { padding: 8px 12px; }
-      .stat-label { font-size: 9px; }
-      .stat-value { font-size: 18px; }
       .filters-bar {
         top: auto; bottom: 16px; left: 50%; right: auto;
         transform: translateX(-50%); border: 1px solid #000;
@@ -548,7 +549,7 @@
       }
       .filter-btn:last-child { border-right: none; }
       .panel-content { flex-direction: column; }
-      #detail-photo { width: 100%; height: 220px; border-right: none; border-bottom: 1px solid #000; }
+      #detail-photo { width: 100%; max-height: 240px; border-right: none; border-bottom: 1px solid #000; }
       .detail-info { padding: 16px; }
       .detail-info h2 { font-size: 20px; }
       .add-button { bottom: 64px; right: 16px; width: 44px; height: 44px; }
@@ -573,7 +574,8 @@
       .dot-marker .label { max-width: 80px; font-size: 9px; }
     }
   </style>
-</head><body>
+</head>
+<body>
   <div id="loading" class="loading-overlay">Загрузка...</div>
   <div id="map"></div>
 
@@ -582,21 +584,6 @@
     <div class="header-right">
       <button id="geo-btn" class="header-btn">◎ Локация</button>
       <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
-    </div>
-  </div>
-
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-label">Деталей</div>
-      <div id="stat-total" class="stat-value">—</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Категорий</div>
-      <div id="stat-cats" class="stat-value">5</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">На модерации</div>
-      <div id="stat-pending" class="stat-value">—</div>
     </div>
   </div>
 
@@ -610,6 +597,10 @@
   </div>
 
   <div id="detail-panel" class="panel hidden">
+    <div class="panel-nav">
+      <button id="nav-prev" class="nav-btn">←</button>
+      <button id="nav-next" class="nav-btn">→</button>
+    </div>
     <button id="close-panel" class="close-btn">×</button>
     <div class="panel-content">
       <img id="detail-photo" src="" alt="">
@@ -680,6 +671,7 @@
     var mouseLatLng = null;
     var proximityRAF = null;
     var clusterGroup = null;
+    var currentDetailObj = null;
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -745,15 +737,47 @@
     function getPendingCount() { return details.filter(function(d) { return d.status === 'pending'; }).length; }
 
     function updateStats() {
-      var approved = details.filter(function(d) { return d.status === 'approved'; });
-      document.getElementById('stat-total').textContent = approved.length;
-      document.getElementById('stat-pending').textContent = getPendingCount();
       updateBadge();
     }
 
     function updateBadge() {
       var c = getPendingCount(), b = document.getElementById('pending-badge');
       if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
+    }
+
+    // Получить видимые точки отсортированные по расстоянию от текущей
+    function getVisibleSorted(fromDetail) {
+      var visible = details.filter(function(d) {
+        if (!isAdmin && d.status !== 'approved') return false;
+        if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        return true;
+      });
+      if (!fromDetail) return visible;
+      // сортируем по расстоянию от fromDetail
+      return visible.sort(function(a, b) {
+        var da = Math.pow(a.lat - fromDetail.lat, 2) + Math.pow(a.lng - fromDetail.lng, 2);
+        var db = Math.pow(b.lat - fromDetail.lat, 2) + Math.pow(b.lng - fromDetail.lng, 2);
+        return da - db;
+      });
+    }
+
+    function navigateDetail(direction) {
+      if (!currentDetailObj) return;
+      var sorted = getVisibleSorted(currentDetailObj);
+      // sorted[0] — сама текущая точка, sorted[1] — ближайшая и т.д.
+      var currentIdx = -1;
+      for (var i = 0; i < sorted.length; i++) {
+        if (sorted[i].id === currentDetailObj.id) { currentIdx = i; break; }
+      }
+      if (currentIdx === -1) return;
+
+      var newIdx = currentIdx + direction;
+      if (newIdx < 0) newIdx = sorted.length - 1;
+      if (newIdx >= sorted.length) newIdx = 0;
+
+      var next = sorted[newIdx];
+      openDetail(next);
+      map.flyTo([next.lat, next.lng], map.getZoom(), { duration: 0.5 });
     }
 
     function geoLocate() {
@@ -885,6 +909,7 @@
 
     function openDetail(d) {
       currentDetailId = d.id;
+      currentDetailObj = d;
       document.getElementById('detail-photo').src = d.photo || '';
       document.getElementById('detail-photo').style.display = d.photo ? '' : 'none';
       document.getElementById('detail-title').textContent = d.title;
@@ -900,10 +925,21 @@
       if (d.created_at) subParts.push(formatDate(d.created_at));
       document.getElementById('detail-sub').textContent = subParts.join(' · ');
       document.getElementById('btn-approve-detail').style.display = (d.status === 'pending') ? '' : 'none';
+
+      // обновляем состояние кнопок навигации
+      var sorted = getVisibleSorted(d);
+      var hasOthers = sorted.length > 1;
+      document.getElementById('nav-prev').disabled = !hasOthers;
+      document.getElementById('nav-next').disabled = !hasOthers;
+
       document.getElementById('detail-panel').classList.remove('hidden');
     }
 
-    function closeDetail() { document.getElementById('detail-panel').classList.add('hidden'); currentDetailId = null; }
+    function closeDetail() {
+      document.getElementById('detail-panel').classList.add('hidden');
+      currentDetailId = null;
+      currentDetailObj = null;
+    }
 
     function deleteDetail() {
       if (!currentDetailId || !confirm('Удалить?')) return;
@@ -1024,6 +1060,8 @@
 
     function initEvents() {
       document.getElementById('close-panel').addEventListener('click', closeDetail);
+      document.getElementById('nav-prev').addEventListener('click', function() { navigateDetail(-1); });
+      document.getElementById('nav-next').addEventListener('click', function() { navigateDetail(1); });
       document.getElementById('add-btn').addEventListener('click', openAddForm);
       document.getElementById('cancel-form').addEventListener('click', closeAddForm);
       document.getElementById('submit-detail').addEventListener('click', submitDetail);
@@ -1040,7 +1078,11 @@
         var f = this.files[0]; if (f) { var r = new FileReader(); r.onload = function(e) { document.getElementById('photo-preview').innerHTML = '<img src="' + e.target.result + '">'; }; r.readAsDataURL(f); }
       });
       document.querySelectorAll('.filter-btn').forEach(function(b) { b.addEventListener('click', function() { setFilter(b.dataset.filter); }); });
-      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); } });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); }
+        if (e.key === 'ArrowLeft' && currentDetailObj) navigateDetail(-1);
+        if (e.key === 'ArrowRight' && currentDetailObj) navigateDetail(1);
+      });
     }
 
     if ('serviceWorker' in navigator) {
@@ -1056,4 +1098,3 @@
   </script>
 </body>
 </html>
-
