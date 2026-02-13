@@ -102,7 +102,6 @@
     .header-btn:hover { border-bottom-color: #000; }
     .header-btn.active { border-bottom-color: #000; }
 
-    /* фильтры сразу под шапкой */
     .filters-bar {
       position: fixed;
       top: 45px; left: 0; right: 0;
@@ -168,6 +167,15 @@
     .dot-marker.pending .dot {
       border: 1.5px dashed #000;
       background: transparent;
+    }
+    .dot-marker.active-marker .dot {
+      background: #000;
+      transform: scale(2);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
+    }
+    .dot-marker.active-marker .label {
+      opacity: 1;
+      font-weight: 500;
     }
 
     .dot-marker.prox-1 { transform: scale(1.4); }
@@ -241,52 +249,66 @@
       pointer-events: none;
     }
 
-    /* крестик на подложке */
-    .close-btn {
-      position: absolute;
-      top: 12px; right: 16px;
-      width: 32px; height: 32px;
+    /* панель навигации сверху */
+    .panel-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      border-bottom: 1px solid #000;
+      height: 44px;
+    }
+    .panel-toolbar-left {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    .panel-toolbar-right {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    .nav-btn {
+      width: 44px; height: 44px;
       background: #fff;
-      border: 1px solid #000;
+      border: none;
+      border-right: 1px solid #000;
+      color: #000;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: #000; color: #fff; }
+    .nav-btn:disabled { opacity: 0.15; cursor: default; background: #fff; color: #000; }
+    .panel-counter {
+      padding: 0 16px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #666;
+      letter-spacing: 0.05em;
+    }
+    .close-btn {
+      width: 44px; height: 44px;
+      background: #fff;
+      border: none;
+      border-left: 1px solid #000;
       color: #000;
       font-size: 18px;
       cursor: pointer;
       font-family: 'IBM Plex Mono', monospace;
-      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      line-height: 1;
+      transition: all 0.15s;
     }
     .close-btn:hover { background: #000; color: #fff; }
 
-    /* навигация ← → */
-    .panel-nav {
-      display: flex;
-      gap: 0;
-      position: absolute;
-      top: 12px; right: 56px;
-      z-index: 10;
-    }
-    .nav-btn {
-      width: 32px; height: 32px;
-      background: #fff;
-      border: 1px solid #000;
-      color: #000;
-      font-size: 14px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .nav-btn:first-child { border-right: none; }
-    .nav-btn:hover { background: #000; color: #fff; }
-    .nav-btn:disabled { opacity: 0.2; cursor: default; background: #fff; color: #000; }
-
     .panel-content { display: flex; gap: 0; }
 
-    /* фото не обрезается */
     #detail-photo {
       width: 320px;
       max-height: 400px;
@@ -597,11 +619,16 @@
   </div>
 
   <div id="detail-panel" class="panel hidden">
-    <div class="panel-nav">
-      <button id="nav-prev" class="nav-btn">←</button>
-      <button id="nav-next" class="nav-btn">→</button>
+    <div class="panel-toolbar">
+      <div class="panel-toolbar-left">
+        <button id="nav-prev" class="nav-btn">←</button>
+        <button id="nav-next" class="nav-btn">→</button>
+        <span id="panel-counter" class="panel-counter"></span>
+      </div>
+      <div class="panel-toolbar-right">
+        <button id="close-panel" class="close-btn">×</button>
+      </div>
     </div>
-    <button id="close-panel" class="close-btn">×</button>
     <div class="panel-content">
       <img id="detail-photo" src="" alt="">
       <div class="detail-info">
@@ -671,7 +698,10 @@
     var mouseLatLng = null;
     var proximityRAF = null;
     var clusterGroup = null;
-    var currentDetailObj = null;
+
+    // Галерея
+    var gallery = [];       // список точек в текущей галерее
+    var galleryIndex = 0;   // текущий индекс
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -696,7 +726,7 @@
             return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
           });
         }
-        updateStats();
+        updateBadge();
       }).catch(function(e) { console.error('Load error:', e); });
     }
 
@@ -707,7 +737,7 @@
             return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
           });
         }
-        updateStats();
+        updateBadge();
       }).catch(function(e) { console.error('Load error:', e); });
     }
 
@@ -736,48 +766,86 @@
 
     function getPendingCount() { return details.filter(function(d) { return d.status === 'pending'; }).length; }
 
-    function updateStats() {
-      updateBadge();
-    }
-
     function updateBadge() {
       var c = getPendingCount(), b = document.getElementById('pending-badge');
       if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
     }
 
-    // Получить видимые точки отсортированные по расстоянию от текущей
-    function getVisibleSorted(fromDetail) {
+    // Собрать галерею: видимые на экране точки, слева направо, сверху вниз
+    function buildGallery() {
+      var bounds = map.getBounds();
       var visible = details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
         if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
       });
-      if (!fromDetail) return visible;
-      // сортируем по расстоянию от fromDetail
-      return visible.sort(function(a, b) {
-        var da = Math.pow(a.lat - fromDetail.lat, 2) + Math.pow(a.lng - fromDetail.lng, 2);
-        var db = Math.pow(b.lat - fromDetail.lat, 2) + Math.pow(b.lng - fromDetail.lng, 2);
-        return da - db;
+      // сортируем: сверху вниз (lat убыв), потом слева направо (lng возр)
+      visible.sort(function(a, b) {
+        var dy = b.lat - a.lat;
+        if (Math.abs(dy) > 0.0005) return dy;
+        return a.lng - b.lng;
       });
+      return visible;
     }
 
     function navigateDetail(direction) {
-      if (!currentDetailObj) return;
-      var sorted = getVisibleSorted(currentDetailObj);
-      // sorted[0] — сама текущая точка, sorted[1] — ближайшая и т.д.
-      var currentIdx = -1;
-      for (var i = 0; i < sorted.length; i++) {
-        if (sorted[i].id === currentDetailObj.id) { currentIdx = i; break; }
-      }
-      if (currentIdx === -1) return;
+      if (gallery.length <= 1) return;
+      galleryIndex += direction;
+      if (galleryIndex < 0) galleryIndex = gallery.length - 1;
+      if (galleryIndex >= gallery.length) galleryIndex = 0;
+      showGalleryItem(galleryIndex);
+    }
 
-      var newIdx = currentIdx + direction;
-      if (newIdx < 0) newIdx = sorted.length - 1;
-      if (newIdx >= sorted.length) newIdx = 0;
+    function showGalleryItem(idx) {
+      galleryIndex = idx;
+      var d = gallery[idx];
+      currentDetailId = d.id;
 
-      var next = sorted[newIdx];
-      openDetail(next);
-      map.flyTo([next.lat, next.lng], map.getZoom(), { duration: 0.5 });
+      document.getElementById('detail-photo').src = d.photo || '';
+      document.getElementById('detail-photo').style.display = d.photo ? '' : 'none';
+      document.getElementById('detail-title').textContent = d.title;
+      document.getElementById('detail-description').textContent = d.description;
+
+      var cat = CATEGORIES[d.category] || CATEGORIES.other;
+      document.getElementById('detail-category').textContent = cat.label;
+
+      var st = document.getElementById('detail-status');
+      if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
+      else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
+      else { st.style.display = 'none'; }
+
+      var subParts = [];
+      if (d.author) subParts.push(d.author);
+      if (d.created_at) subParts.push(formatDate(d.created_at));
+      document.getElementById('detail-sub').textContent = subParts.join(' · ');
+
+      document.getElementById('btn-approve-detail').style.display = (d.status === 'pending') ? '' : 'none';
+
+      // счётчик
+      document.getElementById('panel-counter').textContent = (idx + 1) + ' из ' + gallery.length;
+
+      // кнопки навигации
+      var hasMany = gallery.length > 1;
+      document.getElementById('nav-prev').disabled = !hasMany;
+      document.getElementById('nav-next').disabled = !hasMany;
+
+      // подсветить активный маркер
+      highlightActiveMarker(d.id);
+    }
+
+    function highlightActiveMarker(activeId) {
+      markerObjects.forEach(function(item) {
+        var el = item.marker.getElement();
+        if (!el) return;
+        var div = el.querySelector('.dot-marker');
+        if (!div) return;
+        if (item.detail.id === activeId) {
+          div.classList.add('active-marker');
+        } else {
+          div.classList.remove('active-marker');
+        }
+      });
     }
 
     function geoLocate() {
@@ -897,7 +965,6 @@
         marker.on('click', function() {
           if (isAddingMode) return;
           openDetail(detail);
-          map.flyTo([detail.lat, detail.lng], 17, { duration: 0.8 });
         });
 
         clusterGroup.addLayer(marker);
@@ -908,51 +975,40 @@
     }
 
     function openDetail(d) {
-      currentDetailId = d.id;
-      currentDetailObj = d;
-      document.getElementById('detail-photo').src = d.photo || '';
-      document.getElementById('detail-photo').style.display = d.photo ? '' : 'none';
-      document.getElementById('detail-title').textContent = d.title;
-      document.getElementById('detail-description').textContent = d.description;
-      var cat = CATEGORIES[d.category] || CATEGORIES.other;
-      document.getElementById('detail-category').textContent = cat.label;
-      var st = document.getElementById('detail-status');
-      if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
-      else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
-      else { st.style.display = 'none'; }
-      var subParts = [];
-      if (d.author) subParts.push(d.author);
-      if (d.created_at) subParts.push(formatDate(d.created_at));
-      document.getElementById('detail-sub').textContent = subParts.join(' · ');
-      document.getElementById('btn-approve-detail').style.display = (d.status === 'pending') ? '' : 'none';
+      // строим галерею из видимых на экране
+      gallery = buildGallery();
 
-      // обновляем состояние кнопок навигации
-      var sorted = getVisibleSorted(d);
-      var hasOthers = sorted.length > 1;
-      document.getElementById('nav-prev').disabled = !hasOthers;
-      document.getElementById('nav-next').disabled = !hasOthers;
+      // находим индекс кликнутой точки
+      galleryIndex = 0;
+      for (var i = 0; i < gallery.length; i++) {
+        if (gallery[i].id === d.id) { galleryIndex = i; break; }
+      }
 
+      showGalleryItem(galleryIndex);
       document.getElementById('detail-panel').classList.remove('hidden');
     }
 
     function closeDetail() {
       document.getElementById('detail-panel').classList.add('hidden');
       currentDetailId = null;
-      currentDetailObj = null;
+      gallery = [];
+      galleryIndex = 0;
+      // убрать подсветку
+      highlightActiveMarker(null);
     }
 
     function deleteDetail() {
       if (!currentDetailId || !confirm('Удалить?')) return;
       supaFetch('details?id=eq.' + currentDetailId, { method: 'DELETE', prefer: 'return=minimal' }).then(function() {
         details = details.filter(function(d) { return d.id !== currentDetailId; });
-        renderMarkers(); closeDetail(); updateStats(); renderModList();
+        renderMarkers(); closeDetail(); updateBadge(); renderModList();
       });
     }
 
     function approveDetail(id) {
       supaFetch('details?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(function() {
         var d = details.find(function(x) { return x.id === id; });
-        if (d) { d.status = 'approved'; renderMarkers(); updateStats(); renderModList(); if (currentDetailId === id) openDetail(d); }
+        if (d) { d.status = 'approved'; renderMarkers(); updateBadge(); renderModList(); if (currentDetailId === id) { gallery = buildGallery(); showGalleryItem(galleryIndex); } }
       });
     }
 
@@ -960,7 +1016,7 @@
       if (!confirm('Удалить заявку?')) return;
       supaFetch('details?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(function() {
         details = details.filter(function(d) { return d.id !== id; });
-        renderMarkers(); updateStats(); renderModList();
+        renderMarkers(); updateBadge(); renderModList();
         if (currentDetailId === id) closeDetail();
       });
     }
@@ -1011,7 +1067,7 @@
             var d = data[0];
             details.push({ id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' });
           }
-          renderMarkers(); closeAddForm(); updateStats();
+          renderMarkers(); closeAddForm(); updateBadge();
           btn.disabled = false; btn.textContent = 'Отправить';
           if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
         }).catch(function(e) { alert('Ошибка'); btn.disabled = false; btn.textContent = 'Отправить'; });
@@ -1080,8 +1136,8 @@
       document.querySelectorAll('.filter-btn').forEach(function(b) { b.addEventListener('click', function() { setFilter(b.dataset.filter); }); });
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); }
-        if (e.key === 'ArrowLeft' && currentDetailObj) navigateDetail(-1);
-        if (e.key === 'ArrowRight' && currentDetailObj) navigateDetail(1);
+        if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
+        if (e.key === 'ArrowRight' && gallery.length > 0) navigateDetail(1);
       });
     }
 
