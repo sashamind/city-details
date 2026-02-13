@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>textula — детали города</title>
+  <title>textula — детали города</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Детали города">
+  <meta name="apple-mobile-web-app-title" content="textula">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
@@ -231,7 +231,6 @@
       border: 3px solid #fff;
       box-shadow: 0 0 0 1px #000;
     }
-
     .panel {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -383,7 +382,7 @@
     .admin-only { display: none; }
     body.admin-mode .admin-only { display: flex; }
 
-        .add-button {
+    .add-button {
       position: fixed;
       bottom: 20px; right: 20px;
       z-index: 960;
@@ -558,7 +557,7 @@
     }
     .loading-overlay.hidden { display: none; }
 
-    /* ===== HOVER ПРЕВЬЮ (только десктоп) ===== */
+    /* ===== HOVER ПРЕВЬЮ ===== */
     .marker-preview {
       position: fixed;
       z-index: 940;
@@ -602,6 +601,94 @@
       font-size: 10px;
     }
 
+    /* ===== ОНБОРДИНГ ===== */
+    .onboarding {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .onboarding.hiding {
+      opacity: 0;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+    .onboarding.hidden {
+      display: none;
+    }
+    .onboarding-content {
+      text-align: center;
+      max-width: 420px;
+      padding: 0 24px;
+    }
+    .onboarding-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 700;
+      font-size: 32px;
+      letter-spacing: -0.03em;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    .onboarding-title span {
+      font-weight: 400;
+      font-style: italic;
+      color: #666;
+    }
+    .onboarding-desc {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin-top: 16px;
+      margin-bottom: 32px;
+    }
+    .onboarding-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .onboarding-dot {
+      width: 6px; height: 6px;
+      background: #000;
+      border-radius: 50%;
+      animation: onbDot 1.4s ease infinite;
+    }
+    .onboarding-dot:nth-child(2) { animation-delay: 0.2s; }
+    .onboarding-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes onbDot {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+    .onboarding-enter {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 14px 40px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .onboarding-enter:hover {
+      background: #333;
+    }
+    .onboarding-hint {
+      margin-top: 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #ccc;
+      letter-spacing: 0.05em;
+    }
+
     @media (max-width: 768px) {
       .marker-preview { display: none !important; }
       .site-header { padding: 10px 16px; }
@@ -636,15 +723,30 @@
       .mod-panel.open { transform: translateY(0); }
       .map-hint { bottom: 130px; font-size: 11px; }
       .dot-marker .label { max-width: 80px; font-size: 9px; }
+      .onboarding-title { font-size: 24px; }
+      .onboarding-desc { font-size: 14px; }
     }
   </style>
 </head>
 <body>
-  <div id="loading" class="loading-overlay">Загрузка...</div>
+  <div id="onboarding" class="onboarding">
+    <div class="onboarding-content">
+      <div class="onboarding-dots">
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <h1 class="onboarding-title">textula <span>— детали города</span></h1>
+      <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — всё то, мимо чего мы проходим каждый день</p>
+      <button id="onboarding-enter" class="onboarding-enter">Исследовать</button>
+      <p class="onboarding-hint">или нажмите любую клавишу</p>
+    </div>
+  </div>
+  <div id="loading" class="loading-overlay hidden">Загрузка...</div>
   <div id="map"></div>
   <div id="marker-preview" class="marker-preview"></div>
 
-    <div class="site-header">
+  <div class="site-header">
     <h1>textula <span>— детали города</span></h1>
     <div class="header-right">
       <button id="geo-btn" class="header-btn">◎ Локация</button>
@@ -1208,7 +1310,7 @@
       document.getElementById('cancel-form').addEventListener('click', closeAddForm);
       document.getElementById('submit-detail').addEventListener('click', submitDetail);
       document.getElementById('btn-delete-detail').addEventListener('click', deleteDetail);
-      document.getElementById('btn-approve-detail').addEventListener('click', function() { if (currentDetailId) approveDetail(currentDetailId); });
+            document.getElementById('btn-approve-detail').addEventListener('click', function() { if (currentDetailId) approveDetail(currentDetailId); });
       document.getElementById('geo-btn').addEventListener('click', geoLocate);
       document.getElementById('geo-float').addEventListener('click', geoLocate);
       document.getElementById('admin-btn').addEventListener('click', function() {
@@ -1219,10 +1321,10 @@
       document.getElementById('input-photo').addEventListener('change', function() {
         var f = this.files[0]; if (f) { var r = new FileReader(); r.onload = function(e) { document.getElementById('photo-preview').innerHTML = '<img src="' + e.target.result + '">'; }; r.readAsDataURL(f); }
       });
-           document.querySelectorAll('.filter-btn').forEach(function(b) {
+      document.querySelectorAll('.filter-btn').forEach(function(b) {
         b.addEventListener('click', function() { setFilter(b.dataset.filter); });
       });
-            document.addEventListener('keydown', function(e) {
+      document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); }
         if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
         if (e.key === 'ArrowRight' && gallery.length > 0) navigateDetail(1);
@@ -1233,11 +1335,36 @@
       navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW skip:', e); });
     }
 
-    initMap();
-    initEvents();
-    loadDetails().then(function() {
-      renderMarkers();
-      document.getElementById('loading').classList.add('hidden');
+    var mapReady = false;
+
+    function dismissOnboarding() {
+      var onb = document.getElementById('onboarding');
+      if (onb.classList.contains('hiding')) return;
+      onb.classList.add('hiding');
+
+      if (!mapReady) {
+        document.getElementById('loading').classList.remove('hidden');
+      }
+
+      setTimeout(function() {
+        onb.classList.add('hidden');
+      }, 600);
+
+      initMap();
+      initEvents();
+      loadDetails().then(function() {
+        renderMarkers();
+        mapReady = true;
+        document.getElementById('loading').classList.add('hidden');
+      });
+    }
+
+    document.getElementById('onboarding-enter').addEventListener('click', dismissOnboarding);
+    document.addEventListener('keydown', function handler(e) {
+      if (!document.getElementById('onboarding').classList.contains('hidden')) {
+        dismissOnboarding();
+        document.removeEventListener('keydown', handler);
+      }
     });
   </script>
 </body>
