@@ -232,7 +232,6 @@
       box-shadow: 0 0 0 1px #000;
     }
 
-    /* ===== ПАНЕЛЬ ДЕТАЛИ ===== */
     .panel {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -249,7 +248,6 @@
       pointer-events: none;
     }
 
-    /* панель навигации сверху */
     .panel-toolbar {
       display: flex;
       align-items: center;
@@ -561,7 +559,52 @@
     }
     .loading-overlay.hidden { display: none; }
 
+    /* ===== HOVER ПРЕВЬЮ (только десктоп) ===== */
+    .marker-preview {
+      position: fixed;
+      z-index: 940;
+      pointer-events: none;
+      background: #fff;
+      border: 1px solid #000;
+      padding: 0;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      max-width: 200px;
+    }
+    .marker-preview.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .marker-preview img {
+      display: block;
+      width: 200px;
+      height: 140px;
+      object-fit: cover;
+    }
+    .marker-preview .preview-title {
+      padding: 6px 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #000;
+      border-top: 1px solid #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .marker-preview .preview-no-photo {
+      width: 200px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ccc;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+    }
+
     @media (max-width: 768px) {
+      .marker-preview { display: none !important; }
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
       .filters-bar {
@@ -600,6 +643,7 @@
 <body>
   <div id="loading" class="loading-overlay">Загрузка...</div>
   <div id="map"></div>
+  <div id="marker-preview" class="marker-preview"></div>
 
   <div class="site-header">
     <h1>Детали города <span>— Тула</span></h1>
@@ -698,10 +742,10 @@
     var mouseLatLng = null;
     var proximityRAF = null;
     var clusterGroup = null;
-
-    // Галерея
-    var gallery = [];       // список точек в текущей галерее
-    var galleryIndex = 0;   // текущий индекс
+    var gallery = [];
+    var galleryIndex = 0;
+    var previewTimeout = null;
+    var isTouchDevice = ('ontouchstart' in window);
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -771,7 +815,6 @@
       if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
     }
 
-    // Собрать галерею: видимые на экране точки, слева направо, сверху вниз
     function buildGallery() {
       var bounds = map.getBounds();
       var visible = details.filter(function(d) {
@@ -780,7 +823,6 @@
         if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
       });
-      // сортируем: сверху вниз (lat убыв), потом слева направо (lng возр)
       visible.sort(function(a, b) {
         var dy = b.lat - a.lat;
         if (Math.abs(dy) > 0.0005) return dy;
@@ -802,8 +844,14 @@
       var d = gallery[idx];
       currentDetailId = d.id;
 
-      document.getElementById('detail-photo').src = d.photo || '';
-      document.getElementById('detail-photo').style.display = d.photo ? '' : 'none';
+      var photo = document.getElementById('detail-photo');
+      photo.src = '';
+      photo.style.display = 'none';
+      if (d.photo) {
+        photo.style.display = '';
+        photo.src = d.photo;
+      }
+
       document.getElementById('detail-title').textContent = d.title;
       document.getElementById('detail-description').textContent = d.description;
 
@@ -822,15 +870,12 @@
 
       document.getElementById('btn-approve-detail').style.display = (d.status === 'pending') ? '' : 'none';
 
-      // счётчик
       document.getElementById('panel-counter').textContent = (idx + 1) + ' из ' + gallery.length;
 
-      // кнопки навигации
       var hasMany = gallery.length > 1;
       document.getElementById('nav-prev').disabled = !hasMany;
       document.getElementById('nav-next').disabled = !hasMany;
 
-      // подсветить активный маркер
       highlightActiveMarker(d.id);
     }
 
@@ -846,6 +891,38 @@
           div.classList.remove('active-marker');
         }
       });
+    }
+
+    function showPreview(detail, markerEl) {
+      if (isTouchDevice) return;
+      var prev = document.getElementById('marker-preview');
+      var rect = markerEl.getBoundingClientRect();
+
+      var html = '';
+      if (detail.photo) {
+        html += '<img src="' + detail.photo + '" alt="">';
+      } else {
+        html += '<div class="preview-no-photo">нет фото</div>';
+      }
+      html += '<div class="preview-title">' + detail.title + '</div>';
+      prev.innerHTML = html;
+
+      var left = rect.left;
+      var top = rect.top - 10;
+      prev.style.left = left + 'px';
+      prev.style.bottom = (window.innerHeight - top) + 'px';
+      prev.style.top = 'auto';
+
+      if (left + 200 > window.innerWidth) {
+        prev.style.left = (window.innerWidth - 210) + 'px';
+      }
+
+      prev.classList.add('visible');
+    }
+
+    function hidePreview() {
+      var el = document.getElementById('marker-preview');
+      if (el) el.classList.remove('visible');
     }
 
     function geoLocate() {
@@ -964,8 +1041,23 @@
 
         marker.on('click', function() {
           if (isAddingMode) return;
+          hidePreview();
           openDetail(detail);
         });
+
+        (function(det) {
+          marker.on('mouseover', function() {
+            if (isAddingMode || isTouchDevice) return;
+            previewTimeout = setTimeout(function() {
+              var el = marker.getElement();
+              if (el) showPreview(det, el);
+            }, 300);
+          });
+          marker.on('mouseout', function() {
+            clearTimeout(previewTimeout);
+            hidePreview();
+          });
+        })(detail);
 
         clusterGroup.addLayer(marker);
         markerObjects.push({ marker: marker, detail: detail });
@@ -975,15 +1067,11 @@
     }
 
     function openDetail(d) {
-      // строим галерею из видимых на экране
       gallery = buildGallery();
-
-      // находим индекс кликнутой точки
       galleryIndex = 0;
       for (var i = 0; i < gallery.length; i++) {
         if (gallery[i].id === d.id) { galleryIndex = i; break; }
       }
-
       showGalleryItem(galleryIndex);
       document.getElementById('detail-panel').classList.remove('hidden');
     }
@@ -993,7 +1081,6 @@
       currentDetailId = null;
       gallery = [];
       galleryIndex = 0;
-      // убрать подсветку
       highlightActiveMarker(null);
     }
 
@@ -1133,8 +1220,10 @@
       document.getElementById('input-photo').addEventListener('change', function() {
         var f = this.files[0]; if (f) { var r = new FileReader(); r.onload = function(e) { document.getElementById('photo-preview').innerHTML = '<img src="' + e.target.result + '">'; }; r.readAsDataURL(f); }
       });
-      document.querySelectorAll('.filter-btn').forEach(function(b) { b.addEventListener('click', function() { setFilter(b.dataset.filter); }); });
-      document.addEventListener('keydown', function(e) {
+           document.querySelectorAll('.filter-btn').forEach(function(b) {
+        b.addEventListener('click', function() { setFilter(b.dataset.filter); });
+      });
+            document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); }
         if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
         if (e.key === 'ArrowRight' && gallery.length > 0) navigateDetail(1);
@@ -1154,3 +1243,4 @@
   </script>
 </body>
 </html>
+
