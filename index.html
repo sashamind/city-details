@@ -17,512 +17,129 @@
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Source Serif 4', Georgia, serif;
-      background: #fff;
-      color: #000;
-      overflow: hidden;
-    }
-
-    #map {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 1;
-    }
-    .leaflet-tile {
-      filter: grayscale(1) contrast(1.1) brightness(1.05);
-    }
-    .leaflet-control-attribution {
-      font-family: 'IBM Plex Mono', monospace !important;
-      font-size: 9px !important;
-      opacity: 0.3;
-      background: rgba(255,255,255,0.8) !important;
-    }
+    body { font-family: 'Source Serif 4', Georgia, serif; background: #fff; color: #000; overflow: hidden; }
+    #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+    .leaflet-tile { filter: grayscale(1) contrast(1.1) brightness(1.05); }
+    .leaflet-control-attribution { font-family: 'IBM Plex Mono', monospace !important; font-size: 9px !important; opacity: 0.3; background: rgba(255,255,255,0.8) !important; }
     .leaflet-control-zoom { border: none !important; box-shadow: none !important; }
-    .leaflet-control-zoom a {
-      background: #fff !important;
-      color: #000 !important;
-      border: 1px solid #000 !important;
-      border-radius: 0 !important;
-      width: 28px !important;
-      height: 28px !important;
-      line-height: 28px !important;
-      font-size: 14px !important;
-      font-family: 'IBM Plex Mono', monospace !important;
-    }
-    .leaflet-control-zoom a:hover {
-      background: #000 !important;
-      color: #fff !important;
-    }
+    .leaflet-control-zoom a { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; border-radius: 0 !important; width: 28px !important; height: 28px !important; line-height: 28px !important; font-size: 14px !important; font-family: 'IBM Plex Mono', monospace !important; }
+    .leaflet-control-zoom a:hover { background: #000 !important; color: #fff !important; }
     .leaflet-control-zoom-in { border-bottom: none !important; }
-
-    .site-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 900;
-      background: #fff;
-      border-bottom: 1px solid #000;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    .site-header h1 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: -0.02em;
-      color: #000;
-    }
-    .site-header h1 span {
-      font-weight: 400;
-      font-style: italic;
-      color: #666;
-    }
-    .header-right {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    .header-btn {
-      background: none;
-      border: none;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      color: #000;
-      cursor: pointer;
-      padding: 4px 0;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s;
-    }
+    .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 900; background: #fff; border-bottom: 1px solid #000; padding: 12px 20px; display: flex; justify-content: space-between; align-items: baseline; }
+    .site-header h1 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: #000; }
+    .site-header h1 span { font-weight: 400; font-style: italic; color: #666; }
+    .header-right { display: flex; gap: 16px; align-items: center; }
+    .header-btn { background: none; border: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #000; cursor: pointer; padding: 4px 0; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
     .header-btn:hover { border-bottom-color: #000; }
     .header-btn.active { border-bottom-color: #000; }
-
-    .filters-bar {
-      position: fixed;
-      top: 45px; left: 0; right: 0;
-      z-index: 880;
-      background: #fff;
-      border-bottom: 1px solid #000;
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
+    .search-bar { position: fixed; top: 45px; left: 0; right: 0; z-index: 890; background: #fff; border-bottom: 1px solid #000; display: flex; align-items: center; padding: 0 16px; height: 40px; }
+    .search-icon { font-size: 16px; color: #999; margin-right: 8px; flex-shrink: 0; }
+    .search-input { flex: 1; border: none; outline: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #000; background: transparent; padding: 8px 0; }
+    .search-input::placeholder { color: #bbb; }
+    .search-clear { background: none; border: none; font-size: 18px; color: #999; cursor: pointer; padding: 0 4px; font-family: 'IBM Plex Mono', monospace; transition: color 0.15s; }
+    .search-clear:hover { color: #000; }
+    .search-clear.hidden { display: none; }
+    .search-results { position: absolute; top: 40px; left: 0; right: 0; background: #fff; border-bottom: 1px solid #000; max-height: 280px; overflow-y: auto; z-index: 891; }
+    .search-results.hidden { display: none; }
+    .search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid #eee; transition: background 0.1s; }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover { background: #f5f5f5; }
+    .search-result-photo { width: 40px; height: 40px; object-fit: cover; border: 1px solid #000; flex-shrink: 0; }
+    .search-result-nophoto { width: 40px; height: 40px; background: #f0f0f0; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #ccc; flex-shrink: 0; }
+    .search-result-info { flex: 1; min-width: 0; }
+    .search-result-title { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .search-result-title mark { background: #000; color: #fff; padding: 0 2px; }
+    .search-result-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #999; margin-top: 2px; }
+    .search-no-results { padding: 20px 16px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #999; }
+    .search-count { padding: 6px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #999; border-bottom: 1px solid #eee; }
+    .filters-bar { position: fixed; top: 85px; left: 0; right: 0; z-index: 880; background: #fff; border-bottom: 1px solid #000; display: flex; overflow-x: auto; scrollbar-width: none; }
     .filters-bar::-webkit-scrollbar { display: none; }
-    .filter-btn {
-      padding: 11px 20px 9px 20px;
-      border: none;
-      border-right: 1px solid #000;
-      background: #fff;
-      color: #666;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-      line-height: 1;
-    }
+    .filter-btn { padding: 11px 20px 9px 20px; border: none; border-right: 1px solid #000; background: #fff; color: #666; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; line-height: 1; }
     .filter-btn:last-child { border-right: none; }
     .filter-btn:hover { color: #000; }
     .filter-btn.active { background: #000; color: #fff; }
-
-    .dot-marker {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-      transform-origin: left center;
-    }
-    .dot-marker .dot {
-      width: 8px;
-      height: 8px;
-      background: #000;
-      border-radius: 50%;
-      flex-shrink: 0;
-      transition: transform 0.15s ease;
-    }
-    .dot-marker .label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: #000;
-      letter-spacing: 0.02em;
-      opacity: 0.7;
-      transition: opacity 0.15s ease, font-size 0.15s ease;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .dot-marker { display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; transition: transform 0.15s ease, opacity 0.15s ease; transform-origin: left center; }
+    .dot-marker .dot { width: 8px; height: 8px; background: #000; border-radius: 50%; flex-shrink: 0; transition: transform 0.15s ease; }
+    .dot-marker .label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #000; letter-spacing: 0.02em; opacity: 0.7; transition: opacity 0.15s ease, font-size 0.15s ease; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     .dot-marker:hover .dot { transform: scale(1.8); }
     .dot-marker:hover .label { opacity: 1; }
     .dot-marker.pending { opacity: 0.35; }
-    .dot-marker.pending .dot {
-      border: 1.5px dashed #000;
-      background: transparent;
-    }
-    .dot-marker.active-marker .dot {
-      background: #000;
-      transform: scale(2);
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
-    }
-    .dot-marker.active-marker .label {
-      opacity: 1;
-      font-weight: 500;
-    }
-
+    .dot-marker.pending .dot { border: 1.5px dashed #000; background: transparent; }
+    .dot-marker.active-marker .dot { background: #000; transform: scale(2); box-shadow: 0 0 0 3px rgba(0,0,0,0.15); }
+    .dot-marker.active-marker .label { opacity: 1; font-weight: 500; }
     .dot-marker.prox-1 { transform: scale(1.4); }
     .dot-marker.prox-1 .label { opacity: 1; font-size: 12px; }
     .dot-marker.prox-2 { transform: scale(1.2); }
     .dot-marker.prox-2 .label { opacity: 0.9; }
     .dot-marker.prox-3 { transform: scale(1.05); }
     .dot-marker.prox-3 .label { opacity: 0.8; }
-
-    .marker-cluster-small,
-    .marker-cluster-medium,
-    .marker-cluster-large {
-      background: rgba(0,0,0,0.08) !important;
-    }
-    .marker-cluster-small div,
-    .marker-cluster-medium div,
-    .marker-cluster-large div {
-      background: #000 !important;
-      color: #fff !important;
-      font-family: 'IBM Plex Mono', monospace !important;
-      font-size: 12px !important;
-      font-weight: 500 !important;
-      width: 32px !important;
-      height: 32px !important;
-      margin-left: 4px !important;
-      margin-top: 4px !important;
-      border-radius: 50% !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-    .marker-cluster {
-      background: rgba(0,0,0,0.06) !important;
-      border-radius: 50% !important;
-    }
-
-    .temp-marker {
-      width: 16px; height: 16px;
-      background: #000;
-      border: 3px solid #fff;
-      box-shadow: 0 0 0 2px #000;
-      animation: blink 1s ease infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .user-marker {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: #000;
-      border: 3px solid #fff;
-      box-shadow: 0 0 0 1px #000;
-    }
-    .panel {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: #fff;
-      border-top: 1px solid #000;
-      z-index: 950;
-      max-height: 70vh;
-      overflow-y: auto;
-      transform: translateY(0);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .panel.hidden {
-      transform: translateY(100%);
-      pointer-events: none;
-    }
-
-    .panel-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0;
-      border-bottom: 1px solid #000;
-      height: 44px;
-    }
-    .panel-toolbar-left {
-      display: flex;
-      align-items: center;
-      height: 100%;
-    }
-    .panel-toolbar-right {
-      display: flex;
-      align-items: center;
-      height: 100%;
-    }
-    .nav-btn {
-      width: 44px; height: 44px;
-      background: #fff;
-      border: none;
-      border-right: 1px solid #000;
-      color: #000;
-      font-size: 16px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
+    .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background: rgba(0,0,0,0.08) !important; }
+    .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div { background: #000 !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 12px !important; font-weight: 500 !important; width: 32px !important; height: 32px !important; margin-left: 4px !important; margin-top: 4px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    .marker-cluster { background: rgba(0,0,0,0.06) !important; border-radius: 50% !important; }
+    .temp-marker { width: 16px; height: 16px; background: #000; border: 3px solid #fff; box-shadow: 0 0 0 2px #000; animation: blink 1s ease infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .user-marker { width: 14px; height: 14px; border-radius: 50%; background: #000; border: 3px solid #fff; box-shadow: 0 0 0 1px #000; }
+    .panel { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #000; z-index: 950; max-height: 70vh; overflow-y: auto; transform: translateY(0); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .panel.hidden { transform: translateY(100%); pointer-events: none; }
+    .panel-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 0; border-bottom: 1px solid #000; height: 44px; }
+    .panel-toolbar-left { display: flex; align-items: center; height: 100%; }
+    .panel-toolbar-right { display: flex; align-items: center; height: 100%; }
+    .nav-btn { width: 44px; height: 44px; background: #fff; border: none; border-right: 1px solid #000; color: #000; font-size: 16px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .nav-btn:hover { background: #000; color: #fff; }
     .nav-btn:disabled { opacity: 0.15; cursor: default; background: #fff; color: #000; }
-    .panel-counter {
-      padding: 0 16px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      color: #666;
-      letter-spacing: 0.05em;
-    }
-    .close-btn {
-      width: 44px; height: 44px;
-      background: #fff;
-      border: none;
-      border-left: 1px solid #000;
-      color: #000;
-      font-size: 18px;
-      cursor: pointer;
-      font-family: 'IBM Plex Mono', monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
+    .panel-counter { padding: 0 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #666; letter-spacing: 0.05em; }
+    .close-btn { width: 44px; height: 44px; background: #fff; border: none; border-left: 1px solid #000; color: #000; font-size: 18px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .close-btn:hover { background: #000; color: #fff; }
-
     .panel-content { display: flex; gap: 0; }
-
-    #detail-photo {
-      width: 320px;
-      max-height: 400px;
-      object-fit: contain;
-      flex-shrink: 0;
-      background: #f5f5f5;
-      border-right: 1px solid #000;
-    }
-    .detail-info {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .detail-info h2 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 700;
-      font-size: 24px;
-      color: #000;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-    .detail-info p {
-      font-family: 'Source Serif 4', Georgia, serif;
-      color: #333;
-      line-height: 1.7;
-      font-size: 15px;
-    }
-    .detail-meta {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .category-tag {
-      display: inline-block;
-      padding: 3px 10px;
-      font-size: 10px;
-      font-family: 'IBM Plex Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border: 1px solid #000;
-      color: #000;
-    }
-    .status-tag {
-      display: inline-block;
-      padding: 3px 10px;
-      font-size: 10px;
-      font-family: 'IBM Plex Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    #detail-photo { width: 320px; max-height: 400px; object-fit: contain; flex-shrink: 0; background: #f5f5f5; border-right: 1px solid #000; }
+    .detail-info { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+    .detail-info h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 24px; color: #000; letter-spacing: -0.02em; line-height: 1.2; }
+    .detail-info p { font-family: 'Source Serif 4', Georgia, serif; color: #333; line-height: 1.7; font-size: 15px; }
+    .detail-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .category-tag { display: inline-block; padding: 3px 10px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; border: 1px solid #000; color: #000; }
+    .status-tag { display: inline-block; padding: 3px 10px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; }
     .status-tag.approved { background: #000; color: #fff; }
     .status-tag.pending { background: #fff; color: #000; border: 1px dashed #000; }
-    .detail-sub {
-      font-size: 11px;
-      color: #999;
-      font-family: 'IBM Plex Mono', monospace;
-    }
+    .detail-sub { font-size: 11px; color: #999; font-family: 'IBM Plex Mono', monospace; }
     .detail-actions { display: flex; gap: 8px; margin-top: 8px; }
-    .btn-approve, .btn-delete {
-      padding: 8px 16px;
-      font-size: 12px;
-      font-family: 'IBM Plex Mono', monospace;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    .btn-approve, .btn-delete { padding: 8px 16px; font-size: 12px; font-family: 'IBM Plex Mono', monospace; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.05em; }
     .btn-approve { background: #000; color: #fff; border: 1px solid #000; }
     .btn-approve:hover { background: #333; }
     .btn-delete { background: #fff; color: #000; border: 1px solid #000; }
     .btn-delete:hover { background: #000; color: #fff; }
     .admin-only { display: none; }
     body.admin-mode .admin-only { display: flex; }
-
-    .add-button {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      z-index: 960;
-      width: 48px; height: 48px;
-      background: #000;
-      border: none;
-      color: #fff;
-      font-size: 28px;
-      font-family: 'IBM Plex Mono', monospace;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .add-button:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-    }
+    .add-button { position: fixed; bottom: 20px; right: 20px; z-index: 960; width: 48px; height: 48px; background: #000; border: none; color: #fff; font-size: 28px; font-family: 'IBM Plex Mono', monospace; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+    .add-button:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 rgba(0,0,0,0.2); }
     .add-button.hidden { display: none; }
-
-    .geo-button {
-      position: fixed;
-      bottom: 76px; right: 20px;
-      z-index: 960;
-      width: 48px; height: 48px;
-      background: #fff;
-      border: 1px solid #000;
-      color: #000;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .geo-button { position: fixed; bottom: 76px; right: 20px; z-index: 960; width: 48px; height: 48px; background: #fff; border: 1px solid #000; color: #000; font-size: 18px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
     .geo-button:hover { background: #000; color: #fff; }
     .geo-button.locating { animation: geoBlink 0.6s ease infinite; }
     @keyframes geoBlink { 0%,100% { background: #fff; } 50% { background: #000; color: #fff; } }
-
-    .map-hint {
-      position: fixed;
-      bottom: 76px; left: 50%;
-      transform: translateX(-50%);
-      background: #000;
-      color: #fff;
-      padding: 8px 20px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      z-index: 960;
-      display: none;
-      border: none;
-    }
+    .map-hint { position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 8px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 960; display: none; border: none; }
     .map-hint.visible { display: block; }
-
-    .add-panel {
-      position: fixed;
-      top: 0; right: 0;
-      width: 380px; height: 100vh;
-      background: #fff;
-      border-left: 1px solid #000;
-      z-index: 950;
-      overflow-y: auto;
-      padding: 24px;
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    .add-panel { position: fixed; top: 0; right: 0; width: 380px; height: 100vh; background: #fff; border-left: 1px solid #000; z-index: 950; overflow-y: auto; padding: 24px; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     .add-panel.open { transform: translateX(0); }
-    .add-panel h2 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 700;
-      font-size: 20px;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-    .status-box {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      padding: 10px 14px;
-      margin-bottom: 20px;
-      border: 1px solid #000;
-    }
+    .add-panel h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .status-box { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 14px; margin-bottom: 20px; border: 1px solid #000; }
     .status-waiting { color: #666; border-style: dashed; }
     .status-ready { color: #000; background: #f0f0f0; }
     .form-field { margin-bottom: 16px; }
-    .form-field label {
-      display: block;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #666;
-      margin-bottom: 6px;
-    }
-    .form-field input[type="text"],
-    .form-field textarea,
-    .form-field select {
-      width: 100%;
-      padding: 10px 12px;
-      background: #fff;
-      border: 1px solid #000;
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 14px;
-      color: #000;
-      outline: none;
-    }
-    .form-field input:focus,
-    .form-field textarea:focus,
-    .form-field select:focus {
-      box-shadow: 3px 3px 0 #000;
-    }
+    .form-field label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 6px; }
+    .form-field input[type="text"], .form-field textarea, .form-field select { width: 100%; padding: 10px 12px; background: #fff; border: 1px solid #000; font-family: 'Source Serif 4', Georgia, serif; font-size: 14px; color: #000; outline: none; }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { box-shadow: 3px 3px 0 #000; }
     .form-field textarea { height: 80px; resize: vertical; }
     .form-field select { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
     .form-field input[type="file"] { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #666; }
     .photo-preview { margin-top: 8px; }
     .photo-preview img { max-width: 100%; max-height: 120px; border: 1px solid #000; }
     .form-actions { display: flex; gap: 0; margin-top: 24px; }
-    .btn-primary {
-      flex: 1; padding: 12px; background: #000; color: #fff; border: 1px solid #000;
-      font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
-    }
+    .btn-primary { flex: 1; padding: 12px; background: #000; color: #fff; border: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; }
     .btn-primary:hover { background: #333; }
-    .btn-secondary {
-      flex: 1; padding: 12px; background: #fff; color: #000; border: 1px solid #000; border-left: none;
-      font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer;
-    }
+    .btn-secondary { flex: 1; padding: 12px; background: #fff; color: #000; border: 1px solid #000; border-left: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; }
     .btn-secondary:hover { background: #f0f0f0; }
-
-    .mod-panel {
-      position: fixed;
-      top: 0; right: 0;
-      width: 420px; height: 100vh;
-      background: #fff;
-      border-left: 1px solid #000;
-      z-index: 970;
-      overflow-y: auto;
-      padding: 24px;
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    .mod-panel { position: fixed; top: 0; right: 0; width: 420px; height: 100vh; background: #fff; border-left: 1px solid #000; z-index: 970; overflow-y: auto; padding: 24px; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     .mod-panel.open { transform: translateX(0); }
     .mod-panel h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
     .mod-subtitle { color: #666; font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #000; }
@@ -541,163 +158,38 @@
     .mod-btn-reject:hover { background: #f0f0f0; }
     .mod-empty { text-align: center; padding: 40px 20px; color: #999; font-family: 'IBM Plex Mono', monospace; }
     .mod-empty-icon { font-size: 32px; margin-bottom: 12px; }
-
-    .badge {
-      position: absolute; top: -6px; right: -6px; background: #000; color: #fff;
-      font-size: 9px; font-weight: 500; min-width: 16px; height: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'IBM Plex Mono', monospace; border: 1px solid #fff;
-    }
+    .badge { position: absolute; top: -6px; right: -6px; background: #000; color: #fff; font-size: 9px; font-weight: 500; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; border: 1px solid #fff; }
     .badge.hidden { display: none; }
-
-    .loading-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center;
-      font-family: 'IBM Plex Mono', monospace; color: #000; font-size: 13px; letter-spacing: 0.05em;
-    }
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; color: #000; font-size: 13px; letter-spacing: 0.05em; }
     .loading-overlay.hidden { display: none; }
-
-    /* ===== HOVER ПРЕВЬЮ ===== */
-    .marker-preview {
-      position: fixed;
-      z-index: 940;
-      pointer-events: none;
-      background: #fff;
-      border: 1px solid #000;
-      padding: 0;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.15s ease, transform 0.15s ease;
-      max-width: 200px;
-    }
-    .marker-preview.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .marker-preview img {
-      display: block;
-      width: 200px;
-      height: 140px;
-      object-fit: cover;
-    }
-    .marker-preview .preview-title {
-      padding: 6px 10px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: #000;
-      border-top: 1px solid #000;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .marker-preview .preview-no-photo {
-      width: 200px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ccc;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-    }
-
-    /* ===== ОНБОРДИНГ ===== */
-    .onboarding {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #fff;
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .onboarding.hiding {
-      opacity: 0;
-      transform: scale(1.02);
-      pointer-events: none;
-    }
-    .onboarding.hidden {
-      display: none;
-    }
-    .onboarding-content {
-      text-align: center;
-      max-width: 420px;
-      padding: 0 24px;
-    }
-    .onboarding-title {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 700;
-      font-size: 32px;
-      letter-spacing: -0.03em;
-      color: #000;
-      margin-bottom: 4px;
-    }
-    .onboarding-title span {
-      font-weight: 400;
-      font-style: italic;
-      color: #666;
-    }
-    .onboarding-desc {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 16px;
-      color: #666;
-      line-height: 1.6;
-      margin-top: 16px;
-      margin-bottom: 32px;
-    }
-    .onboarding-dots {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 32px;
-    }
-    .onboarding-dot {
-      width: 6px; height: 6px;
-      background: #000;
-      border-radius: 50%;
-      animation: onbDot 1.4s ease infinite;
-    }
+    .marker-preview { position: fixed; z-index: 940; pointer-events: none; background: #fff; border: 1px solid #000; padding: 0; opacity: 0; transform: translateY(4px); transition: opacity 0.15s ease, transform 0.15s ease; max-width: 200px; }
+    .marker-preview.visible { opacity: 1; transform: translateY(0); }
+    .marker-preview img { display: block; width: 200px; height: 140px; object-fit: cover; }
+    .marker-preview .preview-title { padding: 6px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #000; border-top: 1px solid #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .marker-preview .preview-no-photo { width: 200px; height: 60px; display: flex; align-items: center; justify-content: center; color: #ccc; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+    .onboarding { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.6s ease, transform 0.6s ease; }
+    .onboarding.hiding { opacity: 0; transform: scale(1.02); pointer-events: none; }
+    .onboarding.hidden { display: none; }
+    .onboarding-content { text-align: center; max-width: 420px; padding: 0 24px; }
+    .onboarding-title { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 32px; letter-spacing: -0.03em; color: #000; margin-bottom: 4px; }
+    .onboarding-title span { font-weight: 400; font-style: italic; color: #666; }
+    .onboarding-desc { font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; color: #666; line-height: 1.6; margin-top: 16px; margin-bottom: 32px; }
+    .onboarding-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; }
+    .onboarding-dot { width: 6px; height: 6px; background: #000; border-radius: 50%; animation: onbDot 1.4s ease infinite; }
     .onboarding-dot:nth-child(2) { animation-delay: 0.2s; }
     .onboarding-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes onbDot {
-      0%, 100% { opacity: 0.15; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.5); }
-    }
-    .onboarding-enter {
-      background: #000;
-      color: #fff;
-      border: none;
-      padding: 14px 40px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .onboarding-enter:hover {
-      background: #333;
-    }
-    .onboarding-hint {
-      margin-top: 24px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: #ccc;
-      letter-spacing: 0.05em;
-    }
-
+    @keyframes onbDot { 0%, 100% { opacity: 0.15; transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+    .onboarding-enter { background: #000; color: #fff; border: none; padding: 14px 40px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; }
+    .onboarding-enter:hover { background: #333; }
+    .onboarding-hint { margin-top: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #ccc; letter-spacing: 0.05em; }
     @media (max-width: 768px) {
       .marker-preview { display: none !important; }
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
-      .filters-bar {
-        top: auto; bottom: 16px; left: 50%; right: auto;
-        transform: translateX(-50%); border: 1px solid #000;
-        max-width: 94vw; overflow-x: auto; z-index: 900;
-      }
+      .search-bar { top: 41px; height: 36px; padding: 0 12px; }
+      .search-input { font-size: 11px; }
+      .search-results { top: 36px; }
+      .filters-bar { top: auto; bottom: 16px; left: 50%; right: auto; transform: translateX(-50%); border: 1px solid #000; max-width: 94vw; overflow-x: auto; z-index: 900; }
       .filter-btn:last-child { border-right: none; }
       .panel-content { flex-direction: column; }
       #detail-photo { width: 100%; max-height: 240px; border-right: none; border-bottom: 1px solid #000; }
@@ -705,21 +197,12 @@
       .detail-info h2 { font-size: 20px; }
       .add-button { bottom: 64px; right: 16px; width: 44px; height: 44px; }
       .geo-button { bottom: 116px; right: 16px; width: 44px; height: 44px; }
-      .add-panel {
-        width: 100%; height: auto; max-height: 120px;
-        top: auto; bottom: 0; right: 0;
-        border-left: none; border-top: 1px solid #000;
-        transform: translateY(100%); padding: 16px 20px; overflow: hidden;
-        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s;
-      }
+            .add-panel { width: 100%; height: auto; max-height: 120px; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid #000; transform: translateY(100%); padding: 16px 20px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s; }
       .add-panel.open { transform: translateY(0); max-height: 120px; }
       .add-panel.open.expanded { max-height: 80vh; overflow-y: auto; }
       .add-panel .form-field, .add-panel .form-actions { display: none; }
       .add-panel.expanded .form-field, .add-panel.expanded .form-actions { display: block; }
-      .mod-panel {
-        width: 100%; height: 70vh; top: auto; bottom: 0; right: 0;
-        border-left: none; border-top: 1px solid #000; transform: translateY(100%);
-      }
+      .mod-panel { width: 100%; height: 70vh; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid #000; transform: translateY(100%); }
       .mod-panel.open { transform: translateY(0); }
       .map-hint { bottom: 130px; font-size: 11px; }
       .dot-marker .label { max-width: 80px; font-size: 9px; }
@@ -745,7 +228,6 @@
   <div id="loading" class="loading-overlay hidden">Загрузка...</div>
   <div id="map"></div>
   <div id="marker-preview" class="marker-preview"></div>
-
   <div class="site-header">
     <h1>textula <span>— детали города</span></h1>
     <div class="header-right">
@@ -753,7 +235,12 @@
       <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
     </div>
   </div>
-
+  <div id="search-bar" class="search-bar">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search-input" class="search-input" placeholder="Найти деталь...">
+    <button id="search-clear" class="search-clear hidden">×</button>
+    <div id="search-results" class="search-results hidden"></div>
+  </div>
   <div class="filters-bar">
     <button class="filter-btn active" data-filter="all">Все</button>
     <button class="filter-btn" data-filter="texture">Текстуры</button>
@@ -762,7 +249,6 @@
     <button class="filter-btn" data-filter="detail">Детали</button>
     <button class="filter-btn" data-filter="other">Другое</button>
   </div>
-
   <div id="detail-panel" class="panel hidden">
     <div class="panel-toolbar">
       <div class="panel-toolbar-left">
@@ -791,11 +277,9 @@
       </div>
     </div>
   </div>
-
   <button id="add-btn" class="add-button">+</button>
   <button id="geo-float" class="geo-button">◎</button>
   <div id="map-hint" class="map-hint">← кликните на карту</div>
-
   <div id="add-panel" class="add-panel">
     <h2>Новая деталь</h2>
     <div id="status-box" class="status-box status-waiting">← Кликните на карту чтобы выбрать место</div>
@@ -817,7 +301,6 @@
       <button id="cancel-form" class="btn-secondary">Отмена</button>
     </div>
   </div>
-
   <div id="mod-panel" class="mod-panel">
     <button id="mod-close" class="mod-close">×</button>
     <h2>Модерация</h2>
@@ -839,37 +322,22 @@
     };
     var details = [], markerObjects = [], activeFilter = 'all';
     var isAddingMode = false, pendingCoords = null, tempMarker = null, currentDetailId = null, map;
-    var userMarker = null;
-    var mouseLatLng = null;
-    var proximityRAF = null;
-    var clusterGroup = null;
-    var gallery = [];
-    var galleryIndex = 0;
-    var previewTimeout = null;
+    var userMarker = null, mouseLatLng = null, proximityRAF = null, clusterGroup = null;
+    var gallery = [], galleryIndex = 0, previewTimeout = null;
     var isTouchDevice = ('ontouchstart' in window);
+    var searchQuery = '';
 
     function supaFetch(path, options) {
       var opts = options || {};
-      var headers = {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': opts.prefer || 'return=representation'
-      };
-      return fetch(SUPABASE_URL + '/rest/v1/' + path, {
-        method: opts.method || 'GET',
-        headers: headers,
-        body: opts.body ? JSON.stringify(opts.body) : undefined
-      }).then(function(r) { return r.json(); });
+      var headers = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': opts.prefer || 'return=representation' };
+      return fetch(SUPABASE_URL + '/rest/v1/' + path, { method: opts.method || 'GET', headers: headers, body: opts.body ? JSON.stringify(opts.body) : undefined }).then(function(r) { return r.json(); });
     }
 
     function loadDetails() {
       var query = isAdmin ? 'details?select=*&order=created_at.desc' : 'details?select=*&status=eq.approved&order=created_at.desc';
       return supaFetch(query).then(function(data) {
         if (Array.isArray(data)) {
-          details = data.map(function(d) {
-            return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
-          });
+          details = data.map(function(d) { return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' }; });
         }
         updateBadge();
       }).catch(function(e) { console.error('Load error:', e); });
@@ -878,9 +346,7 @@
     function loadAllForAdmin() {
       return supaFetch('details?select=*&order=created_at.desc').then(function(data) {
         if (Array.isArray(data)) {
-          details = data.map(function(d) {
-            return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' };
-          });
+          details = data.map(function(d) { return { id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' }; });
         }
         updateBadge();
       }).catch(function(e) { console.error('Load error:', e); });
@@ -888,18 +354,7 @@
 
     function uploadPhoto(file) {
       var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '');
-      return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': file.type
-        },
-        body: file
-      }).then(function(r) {
-        if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + fileName;
-        throw new Error('Upload failed');
-      });
+      return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': file.type }, body: file }).then(function(r) { if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + fileName; throw new Error('Upload failed'); });
     }
 
     function formatDate(dateStr) {
@@ -918,18 +373,16 @@
 
     function buildGallery() {
       var bounds = map.getBounds();
-      var visible = details.filter(function(d) {
+      return details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
         if (activeFilter !== 'all' && d.category !== activeFilter) return false;
         if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
-      });
-      visible.sort(function(a, b) {
+      }).sort(function(a, b) {
         var dy = b.lat - a.lat;
         if (Math.abs(dy) > 0.0005) return dy;
         return a.lng - b.lng;
       });
-      return visible;
     }
 
     function navigateDetail(direction) {
@@ -944,53 +397,35 @@
       galleryIndex = idx;
       var d = gallery[idx];
       currentDetailId = d.id;
-
       var photo = document.getElementById('detail-photo');
-      photo.src = '';
-      photo.style.display = 'none';
-      if (d.photo) {
-        photo.style.display = '';
-        photo.src = d.photo;
-      }
-
+      photo.src = ''; photo.style.display = 'none';
+      if (d.photo) { photo.style.display = ''; photo.src = d.photo; }
       document.getElementById('detail-title').textContent = d.title;
       document.getElementById('detail-description').textContent = d.description;
-
       var cat = CATEGORIES[d.category] || CATEGORIES.other;
       document.getElementById('detail-category').textContent = cat.label;
-
       var st = document.getElementById('detail-status');
       if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
       else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
       else { st.style.display = 'none'; }
-
       var subParts = [];
       if (d.author) subParts.push(d.author);
       if (d.created_at) subParts.push(formatDate(d.created_at));
       document.getElementById('detail-sub').textContent = subParts.join(' · ');
-
       document.getElementById('btn-approve-detail').style.display = (d.status === 'pending') ? '' : 'none';
-
       document.getElementById('panel-counter').textContent = (idx + 1) + ' из ' + gallery.length;
-
       var hasMany = gallery.length > 1;
       document.getElementById('nav-prev').disabled = !hasMany;
       document.getElementById('nav-next').disabled = !hasMany;
-
       highlightActiveMarker(d.id);
     }
 
     function highlightActiveMarker(activeId) {
       markerObjects.forEach(function(item) {
-        var el = item.marker.getElement();
-        if (!el) return;
-        var div = el.querySelector('.dot-marker');
-        if (!div) return;
-        if (item.detail.id === activeId) {
-          div.classList.add('active-marker');
-        } else {
-          div.classList.remove('active-marker');
-        }
+        var el = item.marker.getElement(); if (!el) return;
+        var div = el.querySelector('.dot-marker'); if (!div) return;
+        if (item.detail.id === activeId) div.classList.add('active-marker');
+        else div.classList.remove('active-marker');
       });
     }
 
@@ -998,33 +433,20 @@
       if (isTouchDevice) return;
       var prev = document.getElementById('marker-preview');
       var rect = markerEl.getBoundingClientRect();
-
       var html = '';
-      if (detail.photo) {
-        html += '<img src="' + detail.photo + '" alt="">';
-      } else {
-        html += '<div class="preview-no-photo">нет фото</div>';
-      }
+      if (detail.photo) { html += '<img src="' + detail.photo + '" alt="">'; }
+      else { html += '<div class="preview-no-photo">нет фото</div>'; }
       html += '<div class="preview-title">' + detail.title + '</div>';
       prev.innerHTML = html;
-
       var left = rect.left;
-      var top = rect.top - 10;
       prev.style.left = left + 'px';
-      prev.style.bottom = (window.innerHeight - top) + 'px';
+      prev.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
       prev.style.top = 'auto';
-
-      if (left + 200 > window.innerWidth) {
-        prev.style.left = (window.innerWidth - 210) + 'px';
-      }
-
+      if (left + 200 > window.innerWidth) prev.style.left = (window.innerWidth - 210) + 'px';
       prev.classList.add('visible');
     }
 
-    function hidePreview() {
-      var el = document.getElementById('marker-preview');
-      if (el) el.classList.remove('visible');
-    }
+    function hidePreview() { var el = document.getElementById('marker-preview'); if (el) el.classList.remove('visible'); }
 
     function geoLocate() {
       if (!navigator.geolocation) { alert('Геолокация не поддерживается'); return; }
@@ -1033,8 +455,7 @@
       navigator.geolocation.getCurrentPosition(function(pos) {
         var lat = pos.coords.latitude, lng = pos.coords.longitude;
         map.flyTo([lat, lng], 17, { duration: 1.2 });
-        if (userMarker) map.removeLayer(userMarker);
-        userMarker = L.marker([lat, lng], {
+                userMarker = L.marker([lat, lng], {
           icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14,14], iconAnchor: [7,7] })
         }).addTo(map);
         btn.classList.remove('locating');
@@ -1048,24 +469,13 @@
     function initMap() {
       map = L.map('map', { center: [54.1935, 37.6180], zoom: 15, zoomControl: false });
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
-      }).addTo(map);
-
-      map.on('mousemove', function(e) {
-        mouseLatLng = e.latlng;
-        if (!proximityRAF) {
-          proximityRAF = requestAnimationFrame(updateProximity);
-        }
-      });
-
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }).addTo(map);
+      map.on('mousemove', function(e) { mouseLatLng = e.latlng; if (!proximityRAF) proximityRAF = requestAnimationFrame(updateProximity); });
       map.on('click', function(e) {
         if (!isAddingMode) return;
         pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
         if (tempMarker) map.removeLayer(tempMarker);
-        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], {
-          icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] })
-        }).addTo(map);
+        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] }) }).addTo(map);
         var box = document.getElementById('status-box');
         box.className = 'status-box status-ready';
         box.textContent = '✓ ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
@@ -1077,46 +487,29 @@
       proximityRAF = null;
       if (!mouseLatLng) return;
       var mousePoint = map.latLngToContainerPoint(mouseLatLng);
-
       markerObjects.forEach(function(item) {
-        var el = item.marker.getElement();
-        if (!el) return;
-        var div = el.querySelector('.dot-marker');
-        if (!div) return;
-
+        var el = item.marker.getElement(); if (!el) return;
+        var div = el.querySelector('.dot-marker'); if (!div) return;
         var markerPoint = map.latLngToContainerPoint([item.detail.lat, item.detail.lng]);
-        var dx = mousePoint.x - markerPoint.x;
-        var dy = mousePoint.y - markerPoint.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-
+        var dx = mousePoint.x - markerPoint.x, dy = mousePoint.y - markerPoint.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
         div.classList.remove('prox-1', 'prox-2', 'prox-3');
         if (dist < 60) div.classList.add('prox-1');
         else if (dist < 120) div.classList.add('prox-2');
         else if (dist < 200) div.classList.add('prox-3');
       });
     }
-    function renderMarkers() {
-      if (clusterGroup) {
-        map.removeLayer(clusterGroup);
-      }
 
+    function renderMarkers() {
+      if (clusterGroup) map.removeLayer(clusterGroup);
       clusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 50,
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true,
+        maxClusterRadius: 50, spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true,
         iconCreateFunction: function(cluster) {
           var count = cluster.getChildCount();
-          return L.divIcon({
-            html: '<div class="marker-cluster-inner">' + count + '</div>',
-            className: 'marker-cluster marker-cluster-' + (count < 5 ? 'small' : count < 15 ? 'medium' : 'large'),
-            iconSize: [40, 40]
-          });
+          return L.divIcon({ html: '<div class="marker-cluster-inner">' + count + '</div>', className: 'marker-cluster marker-cluster-' + (count < 5 ? 'small' : count < 15 ? 'medium' : 'large'), iconSize: [40, 40] });
         }
       });
-
       markerObjects = [];
-
       details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
         if (activeFilter !== 'all' && d.category !== activeFilter) return false;
@@ -1125,63 +518,68 @@
         var cls = (detail.status === 'pending') ? ' pending' : '';
         var title = detail.title || '';
         if (title.length > 18) title = title.substring(0, 18) + '…';
-
-        var h = '<div class="dot-marker' + cls + '">' +
-                  '<div class="dot"></div>' +
-                  '<div class="label">' + title + '</div>' +
-                '</div>';
-
-        var marker = L.marker([detail.lat, detail.lng], {
-          icon: L.divIcon({
-            html: h,
-            className: '',
-            iconSize: [150, 20],
-            iconAnchor: [4, 10]
-          })
-        });
-
-        marker.on('click', function() {
-          if (isAddingMode) return;
-          hidePreview();
-          openDetail(detail);
-        });
-
+        var h = '<div class="dot-marker' + cls + '"><div class="dot"></div><div class="label">' + title + '</div></div>';
+        var marker = L.marker([detail.lat, detail.lng], { icon: L.divIcon({ html: h, className: '', iconSize: [150, 20], iconAnchor: [4, 10] }) });
+        marker.on('click', function() { if (isAddingMode) return; hidePreview(); openDetail(detail); });
         (function(det) {
-          marker.on('mouseover', function() {
-            if (isAddingMode || isTouchDevice) return;
-            previewTimeout = setTimeout(function() {
-              var el = marker.getElement();
-              if (el) showPreview(det, el);
-            }, 300);
-          });
-          marker.on('mouseout', function() {
-            clearTimeout(previewTimeout);
-            hidePreview();
-          });
+          marker.on('mouseover', function() { if (isAddingMode || isTouchDevice) return; previewTimeout = setTimeout(function() { var el = marker.getElement(); if (el) showPreview(det, el); }, 300); });
+          marker.on('mouseout', function() { clearTimeout(previewTimeout); hidePreview(); });
         })(detail);
-
         clusterGroup.addLayer(marker);
         markerObjects.push({ marker: marker, detail: detail });
       });
-
       map.addLayer(clusterGroup);
     }
+
+    function doSearch(query) {
+      searchQuery = query.toLowerCase().trim();
+      var clearBtn = document.getElementById('search-clear');
+      var resultsEl = document.getElementById('search-results');
+      if (!searchQuery) { clearBtn.classList.add('hidden'); resultsEl.classList.add('hidden'); resultsEl.innerHTML = ''; return; }
+      clearBtn.classList.remove('hidden');
+      var matches = details.filter(function(d) {
+        if (!isAdmin && d.status !== 'approved') return false;
+        var hay = (d.title + ' ' + d.description + ' ' + d.author).toLowerCase();
+        return hay.indexOf(searchQuery) !== -1;
+      });
+      if (matches.length === 0) { resultsEl.innerHTML = '<div class="search-no-results">Ничего не найдено</div>'; resultsEl.classList.remove('hidden'); return; }
+      var html = '<div class="search-count">Найдено: ' + matches.length + '</div>';
+      var show = matches.slice(0, 7);
+      show.forEach(function(d) {
+        var title = d.title;
+        var re = new RegExp('(' + searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        var highlighted = title.replace(re, '<mark>$1</mark>');
+        var cat = CATEGORIES[d.category] || CATEGORIES.other;
+        html += '<div class="search-result-item" data-id="' + d.id + '">';
+        if (d.photo) { html += '<img class="search-result-photo" src="' + d.photo + '" alt="">'; }
+        else { html += '<div class="search-result-nophoto">●</div>'; }
+        html += '<div class="search-result-info"><div class="search-result-title">' + highlighted + '</div>';
+        html += '<div class="search-result-meta">' + cat.label + (d.author ? ' · ' + d.author : '') + '</div></div></div>';
+      });
+      resultsEl.innerHTML = html;
+      resultsEl.classList.remove('hidden');
+      resultsEl.querySelectorAll('.search-result-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var id = el.getAttribute('data-id');
+          var d = details.find(function(x) { return x.id === id; });
+          if (d) { resultsEl.classList.add('hidden'); map.flyTo([d.lat, d.lng], 17, { duration: 0.8 }); setTimeout(function() { openDetail(d); }, 900); }
+        });
+      });
+    }
+
+    function clearSearch() { document.getElementById('search-input').value = ''; doSearch(''); document.getElementById('search-input').focus(); }
 
     function openDetail(d) {
       gallery = buildGallery();
       galleryIndex = 0;
-      for (var i = 0; i < gallery.length; i++) {
-        if (gallery[i].id === d.id) { galleryIndex = i; break; }
-      }
+      for (var i = 0; i < gallery.length; i++) { if (gallery[i].id === d.id) { galleryIndex = i; break; } }
       showGalleryItem(galleryIndex);
       document.getElementById('detail-panel').classList.remove('hidden');
     }
 
     function closeDetail() {
       document.getElementById('detail-panel').classList.add('hidden');
-      currentDetailId = null;
-      gallery = [];
-      galleryIndex = 0;
+      currentDetailId = null; gallery = []; galleryIndex = 0;
       highlightActiveMarker(null);
     }
 
@@ -1247,7 +645,6 @@
       if (!pendingCoords) { alert('Кликните на карту'); return; }
       var btn = document.getElementById('submit-detail');
       btn.disabled = true; btn.textContent = 'Отправка...';
-
       function saveToDb(photoUrl) {
         var row = { title: title, description: desc, category: cat, lat: pendingCoords.lat, lng: pendingCoords.lng, photo_url: photoUrl || '', status: isAdmin ? 'approved' : 'pending', author: author || 'Аноним' };
         supaFetch('details', { method: 'POST', body: row }).then(function(data) {
@@ -1260,10 +657,8 @@
           if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
         }).catch(function(e) { alert('Ошибка'); btn.disabled = false; btn.textContent = 'Отправить'; });
       }
-
-      if (fileInput.files && fileInput.files[0]) {
-        uploadPhoto(fileInput.files[0]).then(function(url) { saveToDb(url); }).catch(function() { saveToDb(''); });
-      } else { saveToDb(''); }
+      if (fileInput.files && fileInput.files[0]) { uploadPhoto(fileInput.files[0]).then(function(url) { saveToDb(url); }).catch(function() { saveToDb(''); }); }
+      else { saveToDb(''); }
     }
 
     function setFilter(f) {
@@ -1275,10 +670,8 @@
     function toggleAdmin() {
       if (isAdmin) { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('admin-btn').classList.remove('active'); closeModPanel(); loadDetails().then(function() { renderMarkers(); }); return; }
       var code = prompt('Код администратора:');
-      if (code === ADMIN_CODE) {
-        isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('admin-btn').classList.add('active');
-        loadAllForAdmin().then(function() { renderMarkers(); if (getPendingCount() > 0) openModPanel(); });
-      } else if (code !== null) alert('Неверный код');
+      if (code === ADMIN_CODE) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('admin-btn').classList.add('active'); loadAllForAdmin().then(function() { renderMarkers(); if (getPendingCount() > 0) openModPanel(); }); }
+      else if (code !== null) alert('Неверный код');
     }
 
     function openModPanel() { document.getElementById('mod-panel').classList.add('open'); closeAddForm(); closeDetail(); renderModList(); }
@@ -1324,14 +717,26 @@
       document.querySelectorAll('.filter-btn').forEach(function(b) {
         b.addEventListener('click', function() { setFilter(b.dataset.filter); });
       });
+      var searchInput = document.getElementById('search-input');
+      var searchTimer = null;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function() { doSearch(searchInput.value); }, 200);
+      });
+      document.getElementById('search-clear').addEventListener('click', clearSearch);
+      document.addEventListener('click', function(e) {
+        var bar = document.getElementById('search-bar');
+        if (!bar.contains(e.target)) document.getElementById('search-results').classList.add('hidden');
+      });
+      searchInput.addEventListener('focus', function() { if (searchInput.value.trim()) doSearch(searchInput.value); });
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); }
+        if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); clearSearch(); }
         if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
         if (e.key === 'ArrowRight' && gallery.length > 0) navigateDetail(1);
       });
     }
 
-        if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW skip:', e); });
     }
 
@@ -1352,13 +757,10 @@
     function dismissOnboarding() {
       var onb = document.getElementById('onboarding');
       if (onb.classList.contains('hidden')) return;
-
       localStorage.setItem('textula_onboarding', Date.now().toString());
       document.getElementById('loading').classList.remove('hidden');
-
       onb.style.transition = 'opacity 0.5s ease';
       onb.style.opacity = '0';
-
       setTimeout(function() {
         onb.style.display = 'none';
         onb.classList.add('hidden');
@@ -1383,3 +785,6 @@
   </script>
 </body>
 </html>
+
+
+
