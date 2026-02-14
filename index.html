@@ -587,15 +587,29 @@
         });
       }
     }
-        function drawConnectLine(matches) {
+           function drawConnectLine(matches) {
       removeConnectLine();
       if (matches.length < 2) return;
+      lastSearchMatches = matches;
+      updateConnectLines();
+      map.on('moveend', updateConnectLines);
+      map.on('zoomend', updateConnectLines);
+    }
+
+    function updateConnectLines() {
+      if (!lastSearchMatches.length) return;
+      if (connectLine) { map.removeLayer(connectLine); connectLine = null; }
+      var bounds = map.getBounds();
+      var visible = lastSearchMatches.filter(function(d) {
+        return bounds.contains([d.lat, d.lng]);
+      });
+      if (visible.length < 2) return;
       var lines = [];
-      for (var i = 0; i < matches.length; i++) {
-        for (var j = i + 1; j < matches.length; j++) {
+      for (var i = 0; i < visible.length; i++) {
+        for (var j = i + 1; j < visible.length; j++) {
           lines.push([
-            [matches[i].lat, matches[i].lng],
-            [matches[j].lat, matches[j].lng]
+            [visible[i].lat, visible[i].lng],
+            [visible[j].lat, visible[j].lng]
           ]);
         }
       }
@@ -608,14 +622,14 @@
           });
         })
       ).addTo(map);
-      var allPoints = matches.map(function(d) { return [d.lat, d.lng]; });
-      map.fitBounds(L.latLngBounds(allPoints), { padding: [60, 60] });
     }
 
-
-    function removeConnectLine() {
+        function removeConnectLine() {
+      map.off('moveend', updateConnectLines);
+      map.off('zoomend', updateConnectLines);
       if (connectLine) { map.removeLayer(connectLine); connectLine = null; }
     }
+
 
 
         function clearSearch() { document.getElementById('search-input').value = ''; lastSearchMatches = []; removeConnectLine(); doSearch(''); document.getElementById('search-input').focus(); }
