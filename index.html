@@ -587,18 +587,31 @@
         });
       }
     }
-    function drawConnectLine(matches) {
+        function drawConnectLine(matches) {
       removeConnectLine();
       if (matches.length < 2) return;
-      var points = matches.map(function(d) { return [d.lat, d.lng]; });
-      connectLine = L.polyline(points, {
-        color: '#000',
-        weight: 1.5,
-        opacity: 0.6,
-        dashArray: '6, 4'
-      }).addTo(map);
-      map.fitBounds(connectLine.getBounds(), { padding: [60, 60] });
+      var lines = [];
+      for (var i = 0; i < matches.length; i++) {
+        for (var j = i + 1; j < matches.length; j++) {
+          lines.push([
+            [matches[i].lat, matches[i].lng],
+            [matches[j].lat, matches[j].lng]
+          ]);
+        }
+      }
+      connectLine = L.layerGroup(
+        lines.map(function(pair) {
+          return L.polyline(pair, {
+            color: '#000',
+            weight: 1,
+            opacity: 0.4
+          });
+        })
+      ).addTo(map);
+      var allPoints = matches.map(function(d) { return [d.lat, d.lng]; });
+      map.fitBounds(L.latLngBounds(allPoints), { padding: [60, 60] });
     }
+
 
     function removeConnectLine() {
       if (connectLine) { map.removeLayer(connectLine); connectLine = null; }
