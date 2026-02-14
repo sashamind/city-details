@@ -1331,25 +1331,15 @@
       });
     }
 
-    if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW skip:', e); });
     }
 
     var mapReady = false;
+    var ONBOARDING_DAYS = 7;
+    var onboardingSeen = localStorage.getItem('textula_onboarding');
 
-    function dismissOnboarding() {
-      var onb = document.getElementById('onboarding');
-      if (onb.classList.contains('hiding')) return;
-      onb.classList.add('hiding');
-
-      if (!mapReady) {
-        document.getElementById('loading').classList.remove('hidden');
-      }
-
-      setTimeout(function() {
-        onb.classList.add('hidden');
-      }, 600);
-
+    function startApp() {
       initMap();
       initEvents();
       loadDetails().then(function() {
@@ -1359,13 +1349,37 @@
       });
     }
 
-    document.getElementById('onboarding-enter').addEventListener('click', dismissOnboarding);
-    document.addEventListener('keydown', function handler(e) {
-      if (!document.getElementById('onboarding').classList.contains('hidden')) {
-        dismissOnboarding();
-        document.removeEventListener('keydown', handler);
-      }
-    });
+    function dismissOnboarding() {
+      var onb = document.getElementById('onboarding');
+      if (onb.classList.contains('hidden')) return;
+
+      localStorage.setItem('textula_onboarding', Date.now().toString());
+      document.getElementById('loading').classList.remove('hidden');
+
+      onb.style.transition = 'opacity 0.5s ease';
+      onb.style.opacity = '0';
+
+      setTimeout(function() {
+        onb.style.display = 'none';
+        onb.classList.add('hidden');
+        startApp();
+      }, 500);
+    }
+
+    if (onboardingSeen && (Date.now() - parseInt(onboardingSeen)) < ONBOARDING_DAYS * 24 * 60 * 60 * 1000) {
+      document.getElementById('onboarding').style.display = 'none';
+      document.getElementById('onboarding').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+      startApp();
+    } else {
+      document.getElementById('onboarding-enter').addEventListener('click', dismissOnboarding);
+      document.addEventListener('keydown', function handler(e) {
+        if (!document.getElementById('onboarding').classList.contains('hidden')) {
+          dismissOnboarding();
+          document.removeEventListener('keydown', handler);
+        }
+      });
+    }
   </script>
 </body>
 </html>
