@@ -256,7 +256,7 @@
 <body>
   <div id="onboarding" class="onboarding">
   <div class="onboarding-content">
-    <div id="lottie-container" style="width: 280px; height: 86px; margin: 0 auto 24px;"></div>
+    <div id="lottie-container" style="width: 140px; height: 43px; margin: 0 auto 24px;"></div>
     <div class="onboarding-dots">
       <div class="onboarding-dot"></div>
       <div class="onboarding-dot"></div>
@@ -1054,13 +1054,21 @@
   startApp();
 } else {
   // Init Lottie
-  var lottieAnim = lottie.loadAnimation({
+    var lottieAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-container'),
     renderer: 'svg',
     loop: true,
     autoplay: true,
     path: 'textula.json'
   });
+
+  var lottieDirection = 1;
+  lottieAnim.addEventListener('complete', function() {
+    lottieDirection *= -1;
+    lottieAnim.setDirection(lottieDirection);
+    lottieAnim.play();
+  });
+  lottieAnim.setLoop(false);
 
   document.getElementById('onboarding-enter').addEventListener('click', dismissOnboarding);
   document.addEventListener('keydown', function handler(e) {
