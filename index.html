@@ -93,7 +93,7 @@
     .close-btn:hover { background: #000; color: #fff; }
     .panel-content { display: flex; gap: 0; }
     #detail-photo { width: 320px; max-height: 400px; object-fit: contain; flex-shrink: 0; background: #f5f5f5; border-right: 1px solid #000; }
-    .detail-info { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+    .detail-info { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
     .detail-info h2 { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 24px; color: #000; letter-spacing: -0.02em; line-height: 1.2; }
     .detail-info p { font-family: 'Source Serif 4', Georgia, serif; color: #333; line-height: 1.7; font-size: 15px; }
     .detail-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -182,17 +182,52 @@
     .onboarding-enter { background: #000; color: #fff; border: none; padding: 14px 40px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; }
     .onboarding-enter:hover { background: #333; }
     .onboarding-hint { margin-top: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #ccc; letter-spacing: 0.05em; }
-        .search-connect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 16px; background: #fff; border: none; border-top: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: #000; transition: all 0.15s; }
+    .search-connect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 16px; background: #fff; border: none; border-top: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px;    text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: #000; transition: all 0.15s; }
     .search-connect:hover { background: #000; color: #fff; }
     .search-connect.active { background: #000; color: #fff; }
     .search-connect-icon { font-size: 14px; }
+
+    /* === NOTES === */
+    .notes-section { margin-top: 16px; border-top: 1px solid #eee; padding-top: 16px; }
+    .notes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .notes-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #999; }
+    .notes-count { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #ccc; }
+    .btn-add-note { background: none; border: 1px solid #000; padding: 4px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: #000; transition: all 0.15s; }
+    .btn-add-note:hover { background: #000; color: #fff; }
+    .note-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .note-item:last-child { border-bottom: none; }
+    .note-text { font-family: 'Source Serif 4', Georgia, serif; font-size: 14px; color: #333; line-height: 1.6; }
+    .note-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #bbb; margin-top: 6px; }
+    .note-status { display: inline-block; padding: 1px 6px; font-size: 9px; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; margin-left: 8px; }
+    .note-status.pending { border: 1px dashed #999; color: #999; }
+    .note-form { margin-top: 12px; padding: 16px; border: 1px solid #000; display: none; }
+    .note-form.open { display: block; }
+    .note-form textarea { width: 100%; height: 70px; padding: 10px; border: 1px solid #ddd; font-family: 'Source Serif 4', Georgia, serif; font-size: 14px; color: #000; outline: none; resize: vertical; }
+    .note-form textarea:focus { border-color: #000; }
+    .note-form-row { display: flex; gap: 0; margin-top: 8px; }
+    .note-form-author { flex: 1; padding: 8px 10px; border: 1px solid #ddd; border-right: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; outline: none; }
+    .note-form-author:focus { border-color: #000; }
+    .note-form-submit { padding: 8px 16px; background: #000; color: #fff; border: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
+    .note-form-submit:hover { background: #333; }
+    .note-form-cancel { padding: 8px 16px; background: #fff; color: #000; border: 1px solid #000; border-left: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; }
+    .note-form-cancel:hover { background: #f0f0f0; }
+    .note-admin-actions { display: inline-flex; gap: 4px; margin-left: 8px; }
+    .note-admin-btn { background: none; border: none; font-size: 12px; cursor: pointer; opacity: 0.4; transition: opacity 0.15s; padding: 0 2px; }
+    .note-admin-btn:hover { opacity: 1; }
+    .notes-empty { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #ccc; padding: 8px 0; }
+    .mod-section-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+    .mod-note-card { border: 1px dashed #000; padding: 14px; margin-bottom: 10px; }
+    .mod-note-text { font-family: 'Source Serif 4', Georgia, serif; font-size: 13px; line-height: 1.6; color: #333; margin-bottom: 6px; }
+    .mod-note-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #999; margin-bottom: 10px; }
+    .mod-note-actions { display: flex; gap: 0; }
+    .mod-note-actions button { flex: 1; padding: 6px; font-size: 10px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; }
 
     @media (max-width: 768px) {
       .marker-preview { display: none !important; }
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
       .search-bar { top: 41px; height: 36px; padding: 0 12px; }
-     .search-input { font-size: 16px; }
+      .search-input { font-size: 16px; }
       .search-results { top: 36px; }
       .filters-bar { top: auto; bottom: 16px; left: 50%; right: auto; transform: translateX(-50%); border: 1px solid #000; max-width: 94vw; overflow-x: auto; z-index: 900; }
       .filter-btn:last-child { border-right: none; }
@@ -202,7 +237,7 @@
       .detail-info h2 { font-size: 20px; }
       .add-button { bottom: 64px; right: 16px; width: 44px; height: 44px; }
       .geo-button { bottom: 116px; right: 16px; width: 44px; height: 44px; }
-            .add-panel { width: 100%; height: auto; max-height: 120px; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid #000; transform: translateY(100%); padding: 16px 20px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s; }
+      .add-panel { width: 100%; height: auto; max-height: 120px; top: auto; bottom: 0; right: 0; border-left: none; border-top: 1px solid #000; transform: translateY(100%); padding: 16px 20px; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s; }
       .add-panel.open { transform: translateY(0); max-height: 120px; }
       .add-panel.open.expanded { max-height: 80vh; overflow-y: auto; }
       .add-panel .form-field, .add-panel .form-actions { display: none; }
@@ -225,10 +260,9 @@
         <div class="onboarding-dot"></div>
       </div>
       <h1 class="onboarding-title">textula <span>— детали города</span></h1>
-           <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
+      <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
       <button id="onboarding-enter" class="onboarding-enter">Исследовать</button>
       <p class="onboarding-hint">или нажмите любую клавишу</p>
-
     </div>
   </div>
   <div id="loading" class="loading-overlay hidden">Загрузка...</div>
@@ -279,6 +313,22 @@
         <div class="detail-actions admin-only">
           <button id="btn-approve-detail" class="btn-approve">✓ Одобрить</button>
           <button id="btn-delete-detail" class="btn-delete">✕ Удалить</button>
+        </div>
+        <!-- NOTES SECTION -->
+        <div id="notes-section" class="notes-section">
+          <div class="notes-header">
+            <span class="notes-title">Описания <span id="notes-count" class="notes-count"></span></span>
+            <button id="btn-add-note" class="btn-add-note">+ Добавить</button>
+          </div>
+          <div id="note-form" class="note-form">
+            <textarea id="note-text" placeholder="Ваше описание или наблюдение..."></textarea>
+            <div class="note-form-row">
+              <input type="text" id="note-author" class="note-form-author" placeholder="Ваше имя">
+              <button id="note-submit" class="note-form-submit">Отправить</button>
+              <button id="note-cancel" class="note-form-cancel">×</button>
+            </div>
+          </div>
+          <div id="notes-list"></div>
         </div>
       </div>
     </div>
@@ -334,7 +384,8 @@
     var searchQuery = '';
     var connectLine = null;
     var lastSearchMatches = [];
-
+    var currentNotes = [];
+    var pendingNotes = [];
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -361,6 +412,118 @@
       }).catch(function(e) { console.error('Load error:', e); });
     }
 
+    /* === NOTES FUNCTIONS === */
+    function loadNotes(detailId) {
+      var query = isAdmin
+        ? 'notes?detail_id=eq.' + detailId + '&order=created_at.asc'
+        : 'notes?detail_id=eq.' + detailId + '&status=eq.approved&order=created_at.asc';
+      return supaFetch(query).then(function(data) {
+        if (Array.isArray(data)) { currentNotes = data; }
+        else { currentNotes = []; }
+        renderNotes();
+      }).catch(function() { currentNotes = []; renderNotes(); });
+    }
+
+    function loadPendingNotes() {
+      return supaFetch('notes?status=eq.pending&order=created_at.asc').then(function(data) {
+        if (Array.isArray(data)) { pendingNotes = data; }
+        else { pendingNotes = []; }
+      }).catch(function() { pendingNotes = []; });
+    }
+
+    function renderNotes() {
+      var list = document.getElementById('notes-list');
+      var countEl = document.getElementById('notes-count');
+      var approved = currentNotes.filter(function(n) { return n.status === 'approved'; });
+      var pending = isAdmin ? currentNotes.filter(function(n) { return n.status === 'pending'; }) : [];
+      var total = approved.length + pending.length;
+      countEl.textContent = total > 0 ? '(' + total + ')' : '';
+
+      if (total === 0) {
+        list.innerHTML = '<div class="notes-empty">Пока нет описаний. Будьте первым!</div>';
+        return;
+      }
+
+      var html = '';
+      approved.forEach(function(n) {
+        html += '<div class="note-item">';
+        html += '<div class="note-text">' + escapeHtml(n.text) + '</div>';
+        html += '<div class="note-meta">' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
+        if (isAdmin) {
+          html += '<span class="note-admin-actions">';
+          html += '<button class="note-admin-btn" onclick="deleteNote(\'' + n.id + '\')" title="Удалить">✕</button>';
+          html += '</span>';
+        }
+        html += '</div></div>';
+      });
+
+      pending.forEach(function(n) {
+        html += '<div class="note-item" style="opacity:0.5;border-left:2px dashed #000;padding-left:10px;">';
+        html += '<div class="note-text">' + escapeHtml(n.text) + '</div>';
+        html += '<div class="note-meta">' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
+        html += '<span class="note-status pending">На модерации</span>';
+        if (isAdmin) {
+          html += '<span class="note-admin-actions">';
+          html += '<button class="note-admin-btn" onclick="approveNote(\'' + n.id + '\')" title="Одобрить">✓</button>';
+          html += '<button class="note-admin-btn" onclick="deleteNote(\'' + n.id + '\')" title="Удалить">✕</button>';
+          html += '</span>';
+        }
+        html += '</div></div>';
+      });
+
+      list.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function submitNote() {
+      var text = document.getElementById('note-text').value.trim();
+      var author = document.getElementById('note-author').value.trim() || 'Аноним';
+      if (!text) { alert('Введите описание'); return; }
+      if (!currentDetailId) return;
+
+      var btn = document.getElementById('note-submit');
+      btn.disabled = true; btn.textContent = '...';
+
+      var row = { detail_id: currentDetailId, text: text, author: author, status: isAdmin ? 'approved' : 'pending' };
+      supaFetch('notes', { method: 'POST', body: row }).then(function(data) {
+        if (data && data[0]) { currentNotes.push(data[0]); }
+        renderNotes();
+        document.getElementById('note-text').value = '';
+        document.getElementById('note-author').value = '';
+        document.getElementById('note-form').classList.remove('open');
+        btn.disabled = false; btn.textContent = 'Отправить';
+        if (!isAdmin) alert('Спасибо! Описание отправлено на модерацию.');
+        updateBadge();
+      }).catch(function() {
+        alert('Ошибка отправки');
+        btn.disabled = false; btn.textContent = 'Отправить';
+      });
+    }
+
+    function approveNote(id) {
+      supaFetch('notes?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(function() {
+        var n = currentNotes.find(function(x) { return x.id === id; });
+        if (n) n.status = 'approved';
+        renderNotes();
+        updateBadge();
+        renderModList();
+      });
+    }
+
+    function deleteNote(id) {
+      if (!confirm('Удалить описание?')) return;
+      supaFetch('notes?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(function() {
+        currentNotes = currentNotes.filter(function(n) { return n.id !== id; });
+        pendingNotes = pendingNotes.filter(function(n) { return n.id !== id; });
+        renderNotes();
+        updateBadge();
+        renderModList();
+      });
+    }
+
     function uploadPhoto(file) {
       var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '');
       return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, { method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': file.type }, body: file }).then(function(r) { if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + fileName; throw new Error('Upload failed'); });
@@ -373,11 +536,24 @@
       return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    function getPendingCount() { return details.filter(function(d) { return d.status === 'pending'; }).length; }
+    function getPendingCount() {
+      var detailsPending = details.filter(function(d) { return d.status === 'pending'; }).length;
+      var notesPending = pendingNotes.length;
+      return detailsPending + notesPending;
+    }
 
     function updateBadge() {
-      var c = getPendingCount(), b = document.getElementById('pending-badge');
-      if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
+      if (isAdmin) {
+        loadPendingNotes().then(function() {
+          var c = getPendingCount();
+          var b = document.getElementById('pending-badge');
+          if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
+        });
+      } else {
+        var c = details.filter(function(d) { return d.status === 'pending'; }).length;
+        var b = document.getElementById('pending-badge');
+        if (c > 0) { b.textContent = c; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
+      }
     }
 
     function buildGallery() {
@@ -427,6 +603,9 @@
       document.getElementById('nav-prev').disabled = !hasMany;
       document.getElementById('nav-next').disabled = !hasMany;
       highlightActiveMarker(d.id);
+      // Load notes for this detail
+      document.getElementById('note-form').classList.remove('open');
+      loadNotes(d.id);
     }
 
     function highlightActiveMarker(activeId) {
@@ -441,7 +620,7 @@
     function showPreview(detail, markerEl) {
       if (isTouchDevice) return;
       var prev = document.getElementById('marker-preview');
-      var rect = markerEl.getBoundingClientRect();
+            var rect = markerEl.getBoundingClientRect();
       var html = '';
       if (detail.photo) { html += '<img src="' + detail.photo + '" alt="">'; }
       else { html += '<div class="preview-no-photo">нет фото</div>'; }
@@ -464,7 +643,7 @@
       navigator.geolocation.getCurrentPosition(function(pos) {
         var lat = pos.coords.latitude, lng = pos.coords.longitude;
         map.flyTo([lat, lng], 17, { duration: 1.2 });
-                userMarker = L.marker([lat, lng], {
+        userMarker = L.marker([lat, lng], {
           icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14,14], iconAnchor: [7,7] })
         }).addTo(map);
         btn.classList.remove('locating');
@@ -501,7 +680,7 @@
         var div = el.querySelector('.dot-marker'); if (!div) return;
         var markerPoint = map.latLngToContainerPoint([item.detail.lat, item.detail.lng]);
         var dx = mousePoint.x - markerPoint.x, dy = mousePoint.y - markerPoint.y;
-                var dist = Math.sqrt(dx * dx + dy * dy);
+        var dist = Math.sqrt(dx * dx + dy * dy);
         div.classList.remove('prox-1', 'prox-2', 'prox-3');
         if (dist < 60) div.classList.add('prox-1');
         else if (dist < 120) div.classList.add('prox-2');
@@ -540,7 +719,7 @@
       map.addLayer(clusterGroup);
     }
 
-        function doSearch(query) {
+    function doSearch(query) {
       searchQuery = query.toLowerCase().trim();
       var clearBtn = document.getElementById('search-clear');
       var resultsEl = document.getElementById('search-results');
@@ -588,7 +767,8 @@
         });
       }
     }
-           function drawConnectLine(matches) {
+
+    function drawConnectLine(matches) {
       removeConnectLine();
       if (matches.length < 2) return;
       lastSearchMatches = matches;
@@ -601,40 +781,26 @@
       if (!lastSearchMatches.length) return;
       if (connectLine) { map.removeLayer(connectLine); connectLine = null; }
       var bounds = map.getBounds();
-      var visible = lastSearchMatches.filter(function(d) {
-        return bounds.contains([d.lat, d.lng]);
-      });
+      var visible = lastSearchMatches.filter(function(d) { return bounds.contains([d.lat, d.lng]); });
       if (visible.length < 2) return;
       var lines = [];
       for (var i = 0; i < visible.length; i++) {
         for (var j = i + 1; j < visible.length; j++) {
-          lines.push([
-            [visible[i].lat, visible[i].lng],
-            [visible[j].lat, visible[j].lng]
-          ]);
+          lines.push([[visible[i].lat, visible[i].lng], [visible[j].lat, visible[j].lng]]);
         }
       }
-      connectLine = L.layerGroup(
-        lines.map(function(pair) {
-          return L.polyline(pair, {
-            color: '#000',
-            weight: 1,
-            opacity: 0.4
-          });
-        })
-      ).addTo(map);
+      connectLine = L.layerGroup(lines.map(function(pair) {
+        return L.polyline(pair, { color: '#000', weight: 1, opacity: 0.4 });
+      })).addTo(map);
     }
 
-        function removeConnectLine() {
+    function removeConnectLine() {
       map.off('moveend', updateConnectLines);
       map.off('zoomend', updateConnectLines);
       if (connectLine) { map.removeLayer(connectLine); connectLine = null; }
     }
 
-
-
-        function clearSearch() { document.getElementById('search-input').value = ''; lastSearchMatches = []; removeConnectLine(); doSearch(''); document.getElementById('search-input').focus(); }
-
+    function clearSearch() { document.getElementById('search-input').value = ''; lastSearchMatches = []; removeConnectLine(); doSearch(''); document.getElementById('search-input').focus(); }
 
     function openDetail(d) {
       gallery = buildGallery();
@@ -648,6 +814,7 @@
       document.getElementById('detail-panel').classList.add('hidden');
       currentDetailId = null; gallery = []; galleryIndex = 0;
       highlightActiveMarker(null);
+      currentNotes = [];
     }
 
     function deleteDetail() {
@@ -737,7 +904,7 @@
     function toggleAdmin() {
       if (isAdmin) { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('admin-btn').classList.remove('active'); closeModPanel(); loadDetails().then(function() { renderMarkers(); }); return; }
       var code = prompt('Код администратора:');
-      if (code === ADMIN_CODE) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('admin-btn').classList.add('active'); loadAllForAdmin().then(function() { renderMarkers(); if (getPendingCount() > 0) openModPanel(); }); }
+      if (code === ADMIN_CODE) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('admin-btn').classList.add('active'); loadAllForAdmin().then(function() { renderMarkers(); updateBadge(); if (getPendingCount() > 0) openModPanel(); }); }
       else if (code !== null) alert('Неверный код');
     }
 
@@ -746,19 +913,43 @@
 
     function renderModList() {
       var list = document.getElementById('mod-list');
-      var pending = details.filter(function(d) { return d.status === 'pending'; });
+      var pendingDetails = details.filter(function(d) { return d.status === 'pending'; });
+
       var exitBtn = '<button onclick="toggleAdmin()" style="width:100%;margin-top:20px;padding:12px;background:none;border:1px solid #000;font-size:11px;cursor:pointer;font-family:IBM Plex Mono,monospace;text-transform:uppercase;letter-spacing:0.05em;">Выйти из админки</button>';
-      if (pending.length === 0) { list.innerHTML = '<div class="mod-empty"><div class="mod-empty-icon">✓</div><p>Нет заявок</p></div>' + exitBtn; return; }
+
       var html = '';
-      pending.forEach(function(d) {
-        var cat = CATEGORIES[d.category] || CATEGORIES.other;
-        html += '<div class="mod-card">';
-        if (d.photo) html += '<img class="mod-card-photo" src="' + d.photo + '" alt="">';
-        html += '<h3>' + d.title + '</h3>';
-        if (d.description) html += '<p>' + d.description + '</p>';
-        html += '<div class="mod-card-cat">' + cat.label + ' · ' + (d.author || 'Аноним') + ' · ' + formatDate(d.created_at) + '</div>';
-        html += '<div class="mod-card-actions"><button class="mod-btn-approve" onclick="approveDetail(\'' + d.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="rejectDetail(\'' + d.id + '\')">✕ Отклонить</button></div></div>';
-      });
+
+      // Details section
+      if (pendingDetails.length > 0) {
+        html += '<div class="mod-section-title">Точки (' + pendingDetails.length + ')</div>';
+        pendingDetails.forEach(function(d) {
+          var cat = CATEGORIES[d.category] || CATEGORIES.other;
+          html += '<div class="mod-card">';
+          if (d.photo) html += '<img class="mod-card-photo" src="' + d.photo + '" alt="">';
+          html += '<h3>' + d.title + '</h3>';
+          if (d.description) html += '<p>' + d.description + '</p>';
+          html += '<div class="mod-card-cat">' + cat.label + ' · ' + (d.author || 'Аноним') + ' · ' + formatDate(d.created_at) + '</div>';
+          html += '<div class="mod-card-actions"><button class="mod-btn-approve" onclick="approveDetail(\'' + d.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="rejectDetail(\'' + d.id + '\')">✕ Отклонить</button></div></div>';
+        });
+      }
+
+      // Notes section
+      if (pendingNotes.length > 0) {
+        html += '<div class="mod-section-title">Описания (' + pendingNotes.length + ')</div>';
+        pendingNotes.forEach(function(n) {
+          var parentDetail = details.find(function(d) { return d.id === n.detail_id; });
+          var parentTitle = parentDetail ? parentDetail.title : 'Неизвестная точка';
+          html += '<div class="mod-note-card">';
+          html += '<div class="mod-note-text">' + escapeHtml(n.text) + '</div>';
+          html += '<div class="mod-note-meta">К точке: ' + escapeHtml(parentTitle) + ' · ' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at) + '</div>';
+          html += '<div class="mod-note-actions"><button class="mod-btn-approve" onclick="approveNote(\'' + n.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="deleteNote(\'' + n.id + '\')">✕ Отклонить</button></div></div>';
+        });
+      }
+
+      if (pendingDetails.length === 0 && pendingNotes.length === 0) {
+        html = '<div class="mod-empty"><div class="mod-empty-icon">✓</div><p>Нет заявок</p></div>';
+      }
+
       list.innerHTML = html + exitBtn;
     }
 
@@ -784,6 +975,8 @@
       document.querySelectorAll('.filter-btn').forEach(function(b) {
         b.addEventListener('click', function() { setFilter(b.dataset.filter); });
       });
+
+      // Search
       var searchInput = document.getElementById('search-input');
       var searchTimer = null;
       searchInput.addEventListener('input', function() {
@@ -796,6 +989,21 @@
         if (!bar.contains(e.target)) document.getElementById('search-results').classList.add('hidden');
       });
       searchInput.addEventListener('focus', function() { if (searchInput.value.trim()) doSearch(searchInput.value); });
+
+      // Notes
+      document.getElementById('btn-add-note').addEventListener('click', function() {
+        var form = document.getElementById('note-form');
+        form.classList.toggle('open');
+        if (form.classList.contains('open')) { document.getElementById('note-text').focus(); }
+      });
+      document.getElementById('note-submit').addEventListener('click', submitNote);
+      document.getElementById('note-cancel').addEventListener('click', function() {
+        document.getElementById('note-form').classList.remove('open');
+        document.getElementById('note-text').value = '';
+        document.getElementById('note-author').value = '';
+      });
+
+      // Keyboard
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); clearSearch(); }
         if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
@@ -852,6 +1060,5 @@
   </script>
 </body>
 </html>
-
 
 
