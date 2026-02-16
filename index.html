@@ -1054,19 +1054,28 @@
   startApp();
 } else {
   // Init Lottie
-    var lottieAnim = lottie.loadAnimation({
+      var lottieAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-container'),
     renderer: 'svg',
-    loop: true,
-    autoplay: true,
+    loop: false,
+    autoplay: false,
     path: 'textula.json'
   });
 
   var lottieDirection = 1;
   lottieAnim.addEventListener('complete', function() {
-    lottieDirection *= -1;
-    lottieAnim.setDirection(lottieDirection);
-    lottieAnim.play();
+    setTimeout(function() {
+      lottieDirection *= -1;
+      lottieAnim.setDirection(lottieDirection);
+      lottieAnim.play();
+    }, 2000);
+  });
+
+  // Первый запуск с паузой
+  lottieAnim.addEventListener('DOMLoaded', function() {
+    setTimeout(function() {
+      lottieAnim.play();
+    }, 2000);
   });
   lottieAnim.setLoop(false);
 
