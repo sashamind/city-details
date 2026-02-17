@@ -746,15 +746,16 @@
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }).addTo(map);
       map.on('mousemove', function(e) { mouseLatLng = e.latlng; if (!proximityRAF) proximityRAF = requestAnimationFrame(updateProximity); });
       map.on('click', function(e) {
-        if (!isAddingMode) return;
-        pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
-        if (tempMarker) map.removeLayer(tempMarker);
-        tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] }) }).addTo(map);
-        var box = document.getElementById('status-box');
-        box.className = 'status-box status-ready';
-        box.textContent = '✓ ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
-        document.getElementById('add-panel').classList.add('expanded');
-      });
+  if (!isAddingMode) return;
+  pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
+  if (tempMarker) map.removeLayer(tempMarker);
+  tempMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] }) }).addTo(map);
+  var box = document.getElementById('status-box');
+  box.className = 'status-box status-ready';
+  box.textContent = '✓ ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
+  document.getElementById('add-panel').classList.add('expanded');
+  document.getElementById('map-hint').classList.remove('visible');
+});
     }
 
     function updateProximity() {
@@ -933,12 +934,12 @@
 
     function openAddForm() {
   isAddingMode = true;
+  closeDetail(); closeModPanel();
   document.getElementById('add-panel').classList.add('open');
   document.getElementById('add-btn').classList.add('hidden');
   document.getElementById('geo-float').style.display = 'none';
   document.getElementById('map-hint').classList.add('visible');
   document.getElementById('map').style.cursor = 'crosshair';
-  closeDetail(); closeModPanel();
 }
 
     function closeAddForm() {
