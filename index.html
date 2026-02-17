@@ -328,7 +328,6 @@
   <p class="onboarding-hint">или нажмите любую клавишу</p>
 </div>
 </div>
-  </div>
   <div id="loading" class="loading-overlay hidden">Загрузка...</div>
   <div id="map"></div>
   <div id="marker-preview" class="marker-preview"></div>
@@ -416,12 +415,11 @@
         <option value="other">Другое</option>
       </select>
     </div>
-    <div class="form-field form-agree">
+        <div class="form-field form-agree">
   <label class="agree-label">
     <input type="checkbox" id="input-agree">
     <span>Я подтверждаю, что фото принадлежит мне, и даю согласие на его размещение. <a href="#" id="terms-link" class="terms-link">Условия</a> · <a href="privacy.html" target="_blank" class="terms-link">Конфиденциальность</a></span>
   </label>
-</div>
 </div>
     <div class="form-actions">
       <button id="submit-detail" class="btn-primary">Отправить</button>
@@ -1099,7 +1097,7 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
 
       // Keyboard
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); clearSearch(); }
+        if (e.key === 'Escape') { closeDetail(); closeModPanel(); if (isAddingMode) closeAddForm(); clearSearch(); document.getElementById('terms-modal').classList.remove('open'); }
         if (e.key === 'ArrowLeft' && gallery.length > 0) navigateDetail(-1);
         if (e.key === 'ArrowRight' && gallery.length > 0) navigateDetail(1);
       });
