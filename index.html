@@ -338,8 +338,7 @@
   <div id="marker-preview" class="marker-preview"></div>
   <div class="site-header">
     <h1>textula <span>— детали города</span></h1>
-    <div class="header-right">
-      <button id="geo-btn" class="header-btn">◎ Локация</button>
+        <div class="header-right">
       <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
     </div>
   </div>
@@ -1094,7 +1093,6 @@ var cat = { label: catLabels.join(' · ') };
       document.getElementById('submit-detail').addEventListener('click', submitDetail);
       document.getElementById('btn-delete-detail').addEventListener('click', deleteDetail);
       document.getElementById('btn-approve-detail').addEventListener('click', function() { if (currentDetailId) approveDetail(currentDetailId); });
-      document.getElementById('geo-btn').addEventListener('click', geoLocate);
       document.getElementById('geo-float').addEventListener('click', geoLocate);
       document.getElementById('admin-btn').addEventListener('click', function() {
         if (isAdmin) { var p = document.getElementById('mod-panel'); if (p.classList.contains('open')) closeModPanel(); else openModPanel(); }
