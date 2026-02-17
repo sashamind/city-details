@@ -184,6 +184,19 @@
     .onboarding-enter { background: #000; color: #fff; border: none; padding: 14px 40px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; }
     .onboarding-enter:hover { background: #333; }
     .onboarding-hint { margin-top: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #ccc; letter-spacing: 0.05em; }
+    .plus-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 14px;
+    vertical-align: middle;
+    margin: 0 4px;
+}
     .search-connect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 16px; background: #fff; border: none; border-top: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px;    text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: #000; transition: all 0.15s; }
     .search-connect:hover { background: #000; color: #fff; }
     .search-connect.active { background: #000; color: #fff; }
@@ -256,17 +269,28 @@
 <body>
   <div id="onboarding" class="onboarding">
   <div class="onboarding-content">
-    <div id="lottie-container" style="width: 98px; height: 30px; margin: 0 auto 24px;"></div>
-    <div class="onboarding-dots">
-      <div class="onboarding-dot"></div>
-      <div class="onboarding-dot"></div>
-      <div class="onboarding-dot"></div>
-    </div>
-    <h1 class="onboarding-title"><span>— детали города</span></h1>
-    <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
-    <button id="onboarding-enter" class="onboarding-enter">Исследовать</button>
-    <p class="onboarding-hint">или нажмите любую клавишу</p>
+  <!-- Статичная часть (не меняется) -->
+  <div id="lottie-container" style="width: 98px; height: 30px; margin: 0 auto 24px;"></div>
+  <div class="onboarding-dots">
+    <div class="onboarding-dot"></div>
+    <div class="onboarding-dot"></div>
+    <div class="onboarding-dot"></div>
   </div>
+  <h1 class="onboarding-title"><span>— детали города</span></h1>
+
+  <!-- Сменяемая часть -->
+  <div id="step-1">
+    <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
+    <button id="btn-next" class="onboarding-enter">Далее &rarr;</button>
+  </div>
+
+  <div id="step-2" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+    <p class="onboarding-desc">Изучай детали города и добавляй свои визуальные находки <span class="plus-icon">+</span>. Скоро они появятся на карте!</p>
+    <button id="btn-finish" class="onboarding-enter">Исследовать</button>
+  </div>
+  
+  <p class="onboarding-hint">или нажмите любую клавишу</p>
+</div>
 </div>
   </div>
   <div id="loading" class="loading-overlay hidden">Загрузка...</div>
@@ -1053,8 +1077,8 @@
   document.getElementById('loading').classList.remove('hidden');
   startApp();
 } else {
-  // Init Lottie
-      var lottieAnim = lottie.loadAnimation({
+  // 1. Запуск Lottie (с паузой 3 сек)
+  var lottieAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-container'),
     renderer: 'svg',
     loop: false,
@@ -1071,19 +1095,42 @@
     }, 3000);
   });
 
-  // Первый запуск с паузой
   lottieAnim.addEventListener('DOMLoaded', function() {
     setTimeout(function() {
       lottieAnim.play();
     }, 3000);
   });
-  lottieAnim.setLoop(false);
 
-  document.getElementById('onboarding-enter').addEventListener('click', dismissOnboarding);
+  // 2. Логика переключения шагов
+  var step1 = document.getElementById('step-1');
+  var step2 = document.getElementById('step-2');
+  var btnNext = document.getElementById('btn-next');
+  var btnFinish = document.getElementById('btn-finish');
+
+  // Кнопка "Далее"
+  btnNext.addEventListener('click', function() {
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    // Небольшая задержка для плавного появления (fade in)
+    setTimeout(function() {
+        step2.style.opacity = '1';
+    }, 50);
+  });
+
+  // Кнопка "Исследовать" (финиш)
+  btnFinish.addEventListener('click', dismissOnboarding);
+
+  // Клавиатура (Enter/Space тоже переключат, или закроют)
   document.addEventListener('keydown', function handler(e) {
     if (!document.getElementById('onboarding').classList.contains('hidden')) {
-      dismissOnboarding();
-      document.removeEventListener('keydown', handler);
+        // Если видим первый шаг — переключаем на второй
+        if (step1.style.display !== 'none') {
+            btnNext.click();
+        } else {
+            // Если видим второй шаг — закрываем
+            dismissOnboarding();
+            document.removeEventListener('keydown', handler);
+        }
     }
   });
 }
