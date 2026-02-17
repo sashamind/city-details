@@ -1187,7 +1187,22 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
   var step2 = document.getElementById('step-2');
   var btnNext = document.getElementById('btn-next');
   var btnFinish = document.getElementById('btn-finish');
-
+  // Terms from onboarding
+  var onbTerms = document.getElementById('onb-terms-link');
+  if (onbTerms) {
+    onbTerms.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('terms-modal').classList.add('open');
+    });
+  }
+  // Close terms on onboarding
+  document.getElementById('terms-close').addEventListener('click', function() {
+    document.getElementById('terms-modal').classList.remove('open');
+  });
+  document.getElementById('terms-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
   // Кнопка "Далее"
   btnNext.addEventListener('click', function() {
     step1.style.display = 'none';
