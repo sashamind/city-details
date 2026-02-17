@@ -889,19 +889,23 @@
     function clearSearch() { document.getElementById('search-input').value = ''; lastSearchMatches = []; removeConnectLine(); doSearch(''); document.getElementById('search-input').focus(); }
 
     function openDetail(d) {
-      gallery = buildGallery();
-      galleryIndex = 0;
-      for (var i = 0; i < gallery.length; i++) { if (gallery[i].id === d.id) { galleryIndex = i; break; } }
-      showGalleryItem(galleryIndex);
-      document.getElementById('detail-panel').classList.remove('hidden');
-    }
+  gallery = buildGallery();
+  galleryIndex = 0;
+  for (var i = 0; i < gallery.length; i++) { if (gallery[i].id === d.id) { galleryIndex = i; break; } }
+  showGalleryItem(galleryIndex);
+  document.getElementById('detail-panel').classList.remove('hidden');
+  document.getElementById('add-btn').style.display = 'none';
+  document.getElementById('geo-float').style.display = 'none';
+}
 
     function closeDetail() {
-      document.getElementById('detail-panel').classList.add('hidden');
-      currentDetailId = null; gallery = []; galleryIndex = 0;
-      highlightActiveMarker(null);
-      currentNotes = [];
-    }
+  document.getElementById('detail-panel').classList.add('hidden');
+  currentDetailId = null; gallery = []; galleryIndex = 0;
+  highlightActiveMarker(null);
+  currentNotes = [];
+  document.getElementById('add-btn').style.display = '';
+  document.getElementById('geo-float').style.display = '';
+}
 
     function deleteDetail() {
       if (!currentDetailId || !confirm('Удалить?')) return;
@@ -928,33 +932,35 @@
     }
 
     function openAddForm() {
-      isAddingMode = true;
-      document.getElementById('add-panel').classList.add('open');
-      document.getElementById('add-btn').classList.add('hidden');
-      document.getElementById('map-hint').classList.add('visible');
-      document.getElementById('map').style.cursor = 'crosshair';
-      closeDetail(); closeModPanel();
-    }
+  isAddingMode = true;
+  document.getElementById('add-panel').classList.add('open');
+  document.getElementById('add-btn').classList.add('hidden');
+  document.getElementById('geo-float').style.display = 'none';
+  document.getElementById('map-hint').classList.add('visible');
+  document.getElementById('map').style.cursor = 'crosshair';
+  closeDetail(); closeModPanel();
+}
 
     function closeAddForm() {
-      isAddingMode = false; pendingCoords = null;
-      if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; }
-      document.getElementById('add-panel').classList.remove('open');
-      document.getElementById('add-panel').classList.remove('expanded');
-      document.getElementById('add-btn').classList.remove('hidden');
-      document.getElementById('map-hint').classList.remove('visible');
-      document.getElementById('map').style.cursor = '';
-      document.getElementById('input-title').value = '';
-      document.getElementById('input-description').value = '';
-      document.getElementById('input-author').value = '';
-      document.getElementById('input-category').value = 'texture';
-      document.getElementById('input-photo').value = '';
-      document.getElementById('photo-preview').innerHTML = '';
-      document.getElementById('input-agree').checked = false;
-      var box = document.getElementById('status-box');
-      box.className = 'status-box status-waiting';
-      box.textContent = '← Кликните на карту чтобы выбрать место';
-    }
+  isAddingMode = false; pendingCoords = null;
+  if (tempMarker) { map.removeLayer(tempMarker); tempMarker = null; }
+  document.getElementById('add-panel').classList.remove('open');
+  document.getElementById('add-panel').classList.remove('expanded');
+  document.getElementById('add-btn').classList.remove('hidden');
+  document.getElementById('geo-float').style.display = '';
+  document.getElementById('map-hint').classList.remove('visible');
+  document.getElementById('map').style.cursor = '';
+  document.getElementById('input-title').value = '';
+  document.getElementById('input-description').value = '';
+  document.getElementById('input-author').value = '';
+  document.getElementById('input-category').value = 'texture';
+  document.getElementById('input-photo').value = '';
+  document.getElementById('photo-preview').innerHTML = '';
+  document.getElementById('input-agree').checked = false;
+  var box = document.getElementById('status-box');
+  box.className = 'status-box status-waiting';
+  box.textContent = '← Кликните на карту чтобы выбрать место';
+}
 
     function submitDetail() {
       var title = document.getElementById('input-title').value.trim();
