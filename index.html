@@ -133,6 +133,11 @@
     .form-field input:focus, .form-field textarea:focus, .form-field select:focus { box-shadow: 3px 3px 0 #000; }
     .form-field textarea { height: 80px; resize: vertical; }
     .form-field select { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+    .category-checkboxes { display: flex; flex-wrap: wrap; gap: 4px; }
+.cat-check { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.15s; user-select: none; }
+.cat-check:hover { background: #f0f0f0; }
+.cat-check input { display: none; }
+.cat-check.checked { background: #000; color: #fff; }
     .form-field input[type="file"] { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #666; }
     .photo-preview { margin-top: 8px; }
     .photo-preview img { max-width: 100%; max-height: 120px; border: 1px solid #000; }
@@ -406,15 +411,16 @@
     <div class="form-field"><label>Название</label><input type="text" id="input-title" placeholder="Старинная решётка на Металлистов"></div>
     <div class="form-field"><label>Описание</label><textarea id="input-description" placeholder="Что вы заметили?"></textarea></div>
     <div class="form-field"><label>Автор</label><input type="text" id="input-author" placeholder="Ваше имя"></div>
-    <div class="form-field"><label>Категория</label>
-      <select id="input-category">
-        <option value="texture">Текстура</option>
-        <option value="sign">Знак</option>
-        <option value="art">Арт</option>
-        <option value="detail">Деталь</option>
-        <option value="other">Другое</option>
-      </select>
-    </div>
+    <div class="form-field">
+  <label>Категории</label>
+  <div id="input-categories" class="category-checkboxes">
+    <label class="cat-check"><input type="checkbox" value="texture"> Текстура</label>
+    <label class="cat-check"><input type="checkbox" value="sign"> Знак</label>
+    <label class="cat-check"><input type="checkbox" value="art"> Арт</label>
+    <label class="cat-check"><input type="checkbox" value="detail"> Деталь</label>
+    <label class="cat-check"><input type="checkbox" value="other"> Другое</label>
+  </div>
+</div>
         <div class="form-field form-agree">
   <label class="agree-label">
     <input type="checkbox" id="input-agree">
@@ -646,7 +652,10 @@
       var bounds = map.getBounds();
       return details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
-        if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        if (activeFilter !== 'all') {
+  var cats = (d.category || '').split(',');
+  if (cats.indexOf(activeFilter) === -1) return false;
+}
         if (!bounds.contains([d.lat, d.lng])) return false;
         return true;
       }).sort(function(a, b) {
@@ -673,8 +682,10 @@
       if (d.photo) { photo.style.display = ''; photo.src = d.photo; }
       document.getElementById('detail-title').textContent = d.title;
       document.getElementById('detail-description').textContent = d.description;
-      var cat = CATEGORIES[d.category] || CATEGORIES.other;
-      document.getElementById('detail-category').textContent = cat.label;
+      var catLabels = (d.category || 'other').split(',').map(function(c) {
+  return (CATEGORIES[c.trim()] || CATEGORIES.other).label;
+});
+document.getElementById('detail-category').textContent = catLabels.join(' · ');
       var st = document.getElementById('detail-status');
       if (d.status === 'pending') { st.textContent = 'На модерации'; st.className = 'status-tag pending'; st.style.display = ''; }
       else if (isAdmin) { st.textContent = 'Одобрено'; st.className = 'status-tag approved'; st.style.display = ''; }
@@ -787,7 +798,10 @@
       markerObjects = [];
       details.filter(function(d) {
         if (!isAdmin && d.status !== 'approved') return false;
-        if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        if (activeFilter !== 'all') {
+  var cats = (d.category || '').split(',');
+  if (cats.indexOf(activeFilter) === -1) return false;
+}
         return true;
       }).forEach(function(detail) {
         var cls = (detail.status === 'pending') ? ' pending' : '';
@@ -825,7 +839,10 @@
         var title = d.title;
         var re = new RegExp('(' + searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
         var highlighted = title.replace(re, '<mark>$1</mark>');
-        var cat = CATEGORIES[d.category] || CATEGORIES.other;
+        var catLabels = (d.category || 'other').split(',').map(function(c) {
+  return (CATEGORIES[c.trim()] || CATEGORIES.other).label;
+});
+var cat = { label: catLabels.join(' · ') };
         html += '<div class="search-result-item" data-id="' + d.id + '">';
         if (d.photo) { html += '<img class="search-result-photo" src="' + d.photo + '" alt="">'; }
         else { html += '<div class="search-result-nophoto">●</div>'; }
@@ -954,7 +971,7 @@
   document.getElementById('input-title').value = '';
   document.getElementById('input-description').value = '';
   document.getElementById('input-author').value = '';
-  document.getElementById('input-category').value = 'texture';
+  clearCategoryCheckboxes();
   document.getElementById('input-photo').value = '';
   document.getElementById('photo-preview').innerHTML = '';
   document.getElementById('input-agree').checked = false;
@@ -962,12 +979,28 @@
   box.className = 'status-box status-waiting';
   box.textContent = '← Кликните на карту чтобы выбрать место';
 }
+function getSelectedCategories() {
+  var checks = document.querySelectorAll('#input-categories input:checked');
+  var cats = [];
+  checks.forEach(function(c) { cats.push(c.value); });
+  return cats;
+}
 
+function clearCategoryCheckboxes() {
+  document.querySelectorAll('#input-categories input').forEach(function(c) {
+    c.checked = false;
+  });
+  document.querySelectorAll('.cat-check').forEach(function(l) {
+    l.classList.remove('checked');
+  });
+}
     function submitDetail() {
       var title = document.getElementById('input-title').value.trim();
       var desc = document.getElementById('input-description').value.trim();
       var author = document.getElementById('input-author').value.trim();
-      var cat = document.getElementById('input-category').value;
+      var cats = getSelectedCategories();
+if (cats.length === 0) { alert('Выберите хотя бы одну категорию'); return; }
+var cat = cats.join(',');
       var fileInput = document.getElementById('input-photo');
       var agreed = document.getElementById('input-agree').checked;
 if (!agreed) { alert('Пожалуйста, подтвердите согласие с условиями'); return; }
@@ -1019,7 +1052,10 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
       if (pendingDetails.length > 0) {
         html += '<div class="mod-section-title">Точки (' + pendingDetails.length + ')</div>';
         pendingDetails.forEach(function(d) {
-          var cat = CATEGORIES[d.category] || CATEGORIES.other;
+          var catLabels = (d.category || 'other').split(',').map(function(c) {
+  return (CATEGORIES[c.trim()] || CATEGORIES.other).label;
+});
+var cat = { label: catLabels.join(' · ') };
           html += '<div class="mod-card">';
           if (d.photo) html += '<img class="mod-card-photo" src="' + d.photo + '" alt="">';
           html += '<h3>' + d.title + '</h3>';
@@ -1068,6 +1104,14 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
       document.getElementById('input-photo').addEventListener('change', function() {
         var f = this.files[0]; if (f) { var r = new FileReader(); r.onload = function(e) { document.getElementById('photo-preview').innerHTML = '<img src="' + e.target.result + '">'; }; r.readAsDataURL(f); }
       });
+      // Category checkboxes toggle
+document.querySelectorAll('.cat-check').forEach(function(label) {
+  label.addEventListener('click', function() {
+    var cb = label.querySelector('input');
+    cb.checked = !cb.checked;
+    label.classList.toggle('checked', cb.checked);
+  });
+});
       document.querySelectorAll('.filter-btn').forEach(function(b) {
         b.addEventListener('click', function() { setFilter(b.dataset.filter); });
       });
