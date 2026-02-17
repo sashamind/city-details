@@ -190,15 +190,17 @@
     align-items: center;
     width: 22px;
     height: 22px;
-    background: #000000;    /* Черный квадрат */
-    color: #ffffff;         /* Белый плюс */
-    border-radius: 0;       /* Острые углы */
-    font-weight: bold;
+    background: transparent;    /* Прозрачный фон */
+    border: 1.5px solid #000;   /* Чёрная рамка */
+    color: #000;                /* Чёрный плюс */
+    border-radius: 0;           /* Острые углы */
+    font-weight: 600;
     font-size: 16px;
     line-height: 1;
-    vertical-align: middle;
+    vertical-align: middle;     /* Выравнивание по тексту */
     margin: 0 5px;
-    padding-bottom: 2px;    /* Центровка плюса */
+    padding-bottom: 2px;        /* Оптическая центровка */
+    box-sizing: border-box;
 }
     .search-connect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 16px; background: #fff; border: none; border-top: 1px solid #000; font-family: 'IBM Plex Mono', monospace; font-size: 11px;    text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; color: #000; transition: all 0.15s; }
     .search-connect:hover { background: #000; color: #fff; }
