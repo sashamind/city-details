@@ -574,6 +574,7 @@
       var author = document.getElementById('note-author').value.trim() || 'Аноним';
       if (!text) { alert('Введите описание'); return; }
       if (!currentDetailId) return;
+      if (!isAdmin && isReservedName(author)) { alert('Это имя зарезервировано'); return; }
 
       var btn = document.getElementById('note-submit');
       btn.disabled = true; btn.textContent = '...';
@@ -993,6 +994,14 @@ function clearCategoryCheckboxes() {
     l.classList.remove('checked');
   });
 }
+function isReservedName(name) {
+  var blocked = ['админ', 'администратор', 'admin', 'administrator', 'модератор', 'moderator'];
+  var lower = name.toLowerCase().trim();
+  for (var i = 0; i < blocked.length; i++) {
+    if (lower === blocked[i] || lower.indexOf(blocked[i]) !== -1) return true;
+  }
+  return false;
+}
     function submitDetail() {
       var title = document.getElementById('input-title').value.trim();
       var desc = document.getElementById('input-description').value.trim();
@@ -1001,6 +1010,7 @@ function clearCategoryCheckboxes() {
 if (cats.length === 0) { alert('Выберите хотя бы одну категорию'); return; }
 var cat = cats.join(',');
       var fileInput = document.getElementById('input-photo');
+      if (!isAdmin && isReservedName(author)) { alert('Это имя зарезервировано'); return; }
       var agreed = document.getElementById('input-agree').checked;
 if (!agreed) { alert('Пожалуйста, подтвердите согласие с условиями'); return; }
       if (!title) { alert('Укажите название'); return; }
