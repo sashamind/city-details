@@ -995,7 +995,7 @@ function clearCategoryCheckboxes() {
   });
 }
 function isReservedName(name) {
-  var blocked = ['админ', 'администратор', 'admin', 'administrator', 'модератор', 'moderator'];
+  var blocked = ['админ', 'администратор', 'admin', 'administrator', 'модератор', 'moderator', 'сашь'];
   var lower = name.toLowerCase().trim();
   for (var i = 0; i < blocked.length; i++) {
     if (lower === blocked[i] || lower.indexOf(blocked[i]) !== -1) return true;
