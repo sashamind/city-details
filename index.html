@@ -24,7 +24,10 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Source Serif 4', Georgia, serif; background: #fff; color: #000; overflow: hidden; }
     #map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
-   .leaflet-tile { filter: grayscale(1) contrast(1.1) brightness(1.05); }
+   .leaflet-tile {
+  filter: grayscale(1) contrast(0.95) brightness(0.97);
+  -webkit-filter: grayscale(1) contrast(0.95) brightness(0.97);
+}
     .leaflet-control-attribution { font-family: 'IBM Plex Mono', monospace !important; font-size: 9px !important; opacity: 0.3; background: rgba(255,255,255,0.8) !important; }
     .leaflet-control-zoom { border: none !important; box-shadow: none !important; }
     .leaflet-control-zoom a { background: #fff !important; color: #000 !important; border: 1px solid #000 !important; border-radius: 0 !important; width: 28px !important; height: 28px !important; line-height: 28px !important; font-size: 14px !important; font-family: 'IBM Plex Mono', monospace !important; }
