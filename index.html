@@ -324,12 +324,17 @@
   <h1 class="onboarding-title"><span>— детали города</span></h1>
 
   <!-- Сменяемая часть -->
-  <div id="step-1">
-    <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
-    <button id="btn-next" class="onboarding-enter">Далее &rarr;</button>
-  </div>
+<div id="step-1">
+  <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
+  <button id="btn-next" class="onboarding-enter">Далее &rarr;</button>
+</div>
 
-  <div id="step-2" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+<div id="step-2" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+  <p class="onboarding-desc">Что-то останется, что-то исчезнет. Вместе — мы можем это зафиксировать.</p>
+  <button id="btn-next2" class="onboarding-enter">Далее &rarr;</button>
+</div>
+
+<div id="step-3" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
   <p class="onboarding-desc">Изучай детали города и добавляй свои визуальные находки <span class="plus-icon">+</span>. Скоро они появятся на карте!</p>
   <button id="btn-finish" class="onboarding-enter">Исследовать</button>
   <p class="onboarding-terms">Нажимая «Исследовать», вы принимаете <a href="#" id="onb-terms-link" class="terms-link">условия</a> и <a href="privacy.html" target="_blank" class="terms-link">политику конфиденциальности</a></p>
@@ -1271,52 +1276,54 @@ document.querySelectorAll('.cat-check').forEach(function(label) {
   });
 
   // 2. Логика переключения шагов
-  var step1 = document.getElementById('step-1');
-  var step2 = document.getElementById('step-2');
-  var btnNext = document.getElementById('btn-next');
-  var btnFinish = document.getElementById('btn-finish');
-  // Terms from onboarding
-  var onbTerms = document.getElementById('onb-terms-link');
-  if (onbTerms) {
-    onbTerms.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      document.getElementById('terms-modal').classList.add('open');
-    });
-  }
-  // Close terms on onboarding
-  document.getElementById('terms-close').addEventListener('click', function() {
-    document.getElementById('terms-modal').classList.remove('open');
-  });
-  document.getElementById('terms-modal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
-  });
-  // Кнопка "Далее"
-  btnNext.addEventListener('click', function() {
-    step1.style.display = 'none';
-    step2.style.display = 'block';
-    // Небольшая задержка для плавного появления (fade in)
-    setTimeout(function() {
-        step2.style.opacity = '1';
-    }, 50);
-  });
+var step1 = document.getElementById('step-1');
+var step2 = document.getElementById('step-2');
+var step3 = document.getElementById('step-3');
+var btnNext = document.getElementById('btn-next');
+var btnNext2 = document.getElementById('btn-next2');
+var btnFinish = document.getElementById('btn-finish');
 
-  // Кнопка "Исследовать" (финиш)
-  btnFinish.addEventListener('click', dismissOnboarding);
+var onbTerms = document.getElementById('onb-terms-link');
+if (onbTerms) {
+  onbTerms.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.getElementById('terms-modal').classList.add('open');
+  });
+}
+document.getElementById('terms-close').addEventListener('click', function() {
+  document.getElementById('terms-modal').classList.remove('open');
+});
+document.getElementById('terms-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
 
-  // Клавиатура (Enter/Space тоже переключат, или закроют)
-  document.addEventListener('keydown', function handler(e) {
-    if (!document.getElementById('onboarding').classList.contains('hidden')) {
-        // Если видим первый шаг — переключаем на второй
-        if (step1.style.display !== 'none') {
-            btnNext.click();
-        } else {
-            // Если видим второй шаг — закрываем
-            dismissOnboarding();
-            document.removeEventListener('keydown', handler);
-        }
+btnNext.addEventListener('click', function() {
+  step1.style.display = 'none';
+  step2.style.display = 'block';
+  setTimeout(function() { step2.style.opacity = '1'; }, 50);
+});
+
+btnNext2.addEventListener('click', function() {
+  step2.style.display = 'none';
+  step3.style.display = 'block';
+  setTimeout(function() { step3.style.opacity = '1'; }, 50);
+});
+
+btnFinish.addEventListener('click', dismissOnboarding);
+
+document.addEventListener('keydown', function handler(e) {
+  if (!document.getElementById('onboarding').classList.contains('hidden')) {
+    if (step1.style.display !== 'none') {
+      btnNext.click();
+    } else if (step2.style.display !== 'none') {
+      btnNext2.click();
+    } else {
+      dismissOnboarding();
+      document.removeEventListener('keydown', handler);
     }
-    });
+  }
+});
 }
     </script>
 </body>
