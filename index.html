@@ -18,6 +18,7 @@
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -478,6 +479,26 @@
     var lastSearchMatches = [];
     var currentNotes = [];
     var pendingNotes = [];
+    var EMAILJS_PUBLIC_KEY = 'Vvny9RUBFyNXNw6nn';
+var EMAILJS_SERVICE_ID = 'service_textula';
+var EMAILJS_TEMPLATE_ID = 'template_0d0q9ed';
+
+function sendEmailNotification(detail) {
+  if (isAdmin) return;
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    title: detail.title,
+    author: detail.author || 'Аноним',
+    category: detail.category,
+    lat: detail.lat,
+    lng: detail.lng,
+    description: detail.description || '—'
+  }).then(function() {
+    console.log('Email sent');
+  }).catch(function(err) {
+    console.log('Email error:', err);
+  });
+}
 
     function supaFetch(path, options) {
       var opts = options || {};
@@ -1025,6 +1046,7 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
             var d = data[0];
             details.push({ id: d.id, title: d.title, description: d.description || '', category: d.category, lat: d.lat, lng: d.lng, photo: d.photo_url || '', status: d.status, author: d.author || '', created_at: d.created_at || '' });
           }
+          sendEmailNotification({ title: title, author: author || 'Аноним', category: cat, lat: pendingCoords.lat, lng: pendingCoords.lng, description: desc });
           renderMarkers(); closeAddForm(); updateBadge();
           btn.disabled = false; btn.textContent = 'Отправить';
           if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
