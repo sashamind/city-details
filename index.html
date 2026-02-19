@@ -1035,6 +1035,39 @@ function isReservedName(name) {
   }
   return false;
 }
+function compressImage(file, maxWidth, quality) {
+  maxWidth = maxWidth || 1200;
+  quality = quality || 0.7;
+  return new Promise(function(resolve) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var w = img.width;
+        var h = img.height;
+        if (w > maxWidth) {
+          h = Math.round(h * maxWidth / w);
+          w = maxWidth;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function(blob) {
+          var compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          console.log('Compressed: ' + (file.size / 1024).toFixed(0) + 'KB → ' + (compressed.size / 1024).toFixed(0) + 'KB');
+          resolve(compressed);
+        }, 'image/jpeg', quality);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
     function submitDetail() {
       var title = document.getElementById('input-title').value.trim();
       var desc = document.getElementById('input-description').value.trim();
@@ -1063,8 +1096,17 @@ if (!agreed) { alert('Пожалуйста, подтвердите соглас�
           if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
         }).catch(function(e) { alert('Ошибка'); btn.disabled = false; btn.textContent = 'Отправить'; });
       }
-      if (fileInput.files && fileInput.files[0]) { uploadPhoto(fileInput.files[0]).then(function(url) { saveToDb(url); }).catch(function() { saveToDb(''); }); }
-      else { saveToDb(''); }
+      if (fileInput.files && fileInput.files[0]) {
+  compressImage(fileInput.files[0], 1200, 0.7).then(function(compressed) {
+    return uploadPhoto(compressed);
+  }).then(function(url) {
+    saveToDb(url);
+  }).catch(function() {
+    saveToDb('');
+  });
+} else {
+  saveToDb('');
+}
     }
 
     function setFilter(f) {
