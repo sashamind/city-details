@@ -3,7 +3,7 @@
 // ================================
 
 var SUPABASE_URL = 'https://yzvigrtnwmkwkpmqmdzh.supabase.co';
-var SUPABASE_KEY = 'sb_publishable__AIRJSDqAYUK_vxwYhXmRA_4-QzSKkR'; // меняй на актуальный, секрет убрать из публичного доступа
+var SUPABASE_KEY = 'sb_publishable__AIRJSDqAYUK_vxwYhXmRA_4-QzSKkR'; // поменяй на актуальный, если нужно
 var ADMIN_LOGIN_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-login';
 
 var isAdmin = false;
@@ -19,53 +19,76 @@ var CATEGORIES = {
 var details = [], markerObjects = [], activeFilter = 'all';
 
 var isAddingMode = false, pendingCoords = null, tempMarker = null, currentDetailId = null, map;
-
 var userMarker = null, mouseLatLng = null, proximityRAF = null, clusterGroup = null;
 
 var gallery = [], galleryIndex = 0, previewTimeout = null;
-
 var isTouchDevice = ('ontouchstart' in window);
 
 var searchQuery = '', connectLine = null, lastSearchMatches = [];
-
 var currentNotes = [], pendingNotes = [];
 
 var EMAILJS_PUBLIC_KEY = 'Vvny9RUBFyNXNw6nn';
 var EMAILJS_SERVICE_ID = 'service_textula';
 var EMAILJS_TEMPLATE_ID = 'template_0d0q9ed';
 
-// ===================================
-// Вспомогательные функции / утилиты
-// ===================================
+// ================================
+// Игровой режим “Угадай локацию”
+// ================================
+
+var guessModeActive = false;
+var guessPoints = [];
+var guessCurrentIndex = 0;
+var guessTotalRounds = 5;
+var guessScore = 0;
+var guessMarkers = [];
+var guessCorrectMarker = null;
+var guessTimer = null;
+var guessTimeLeft = 60;
+
+var guessBtn = null;
+var guessPanel = null;
+var guessImage = null;
+var guessCurrentEl = null;
+var guessScoreEl = null;
+var guessNextBtn = null;
+var guessExitBtn = null;
+var guessResult = null;
+var guessCenterBtn = null;
+var guessTimerEl = null;
+
+// ================================
+// Вспомогательные функции
+// ================================
 
 function escapeHtml(str) {
   str = String(str || '');
-  return str.replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return str.replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
+
 function createMarkerIcon(detail) {
   const hasPhoto = detail.photo && detail.photo.trim() !== '';
+
   if (hasPhoto) {
     const imgHtml = `<img src="${detail.photo}" alt="" style="width:20px; height:20px; border-radius:4px;" />`;
     return L.divIcon({
-      html: `<div class="dot-marker${detail.status==='pending' ? ' pending' : ''}" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
-              <div class="dot" style="width:20px; height:20px; overflow:hidden;">${imgHtml}</div>
-              <div class="label" style="font-size:10px;">${escapeHtml(detail.title.length > 18 ? detail.title.substring(0,18) + '…' : detail.title)}</div>
-            </div>`,
+      html: `<div class="dot-marker${detail.status === 'pending' ? ' pending' : ''}" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+        <div class="dot" style="width:20px; height:20px; overflow:hidden;">${imgHtml}</div>
+        <div class="label" style="font-size:10px;">${escapeHtml(detail.title.length > 18 ? detail.title.substring(0, 18) + '…' : detail.title)}</div>
+      </div>`,
       className: '',
       iconSize: [150, 20],
       iconAnchor: [10, 10]
     });
   } else {
-    // fallback — точка без фото
-    const title = detail.title.length > 18 ? detail.title.substring(0,18) + '…' : detail.title;
+    const title = detail.title.length > 18 ? detail.title.substring(0, 18) + '…' : detail.title;
     return L.divIcon({
-      html: `<div class="dot-marker${detail.status==='pending' ? ' pending' : ''}">
-              <div class="dot"></div>
-              <div class="label">${escapeHtml(title)}</div>
-             </div>`,
+      html: `<div class="dot-marker${detail.status === 'pending' ? ' pending' : ''}">
+        <div class="dot"></div>
+        <div class="label">${escapeHtml(title)}</div>
+      </div>`,
       className: '',
       iconSize: [150, 20],
       iconAnchor: [4, 10]
@@ -76,13 +99,14 @@ function createMarkerIcon(detail) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   var d = new Date(dateStr);
-  var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  var months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 function isReservedName(name) {
   var blocked = ['админ', 'администратор', 'admin', 'administrator', 'модератор', 'moderator', 'сашь'];
   var lower = String(name || '').toLowerCase().trim();
+
   for (var i = 0; i < blocked.length; i++) {
     if (lower === blocked[i] || lower.indexOf(blocked[i]) !== -1) return true;
   }
@@ -92,37 +116,43 @@ function isReservedName(name) {
 function getSelectedCategories() {
   var checks = document.querySelectorAll('#input-categories input:checked');
   var cats = [];
-  checks.forEach(function(c) { cats.push(c.value); });
+  checks.forEach(function (c) { cats.push(c.value); });
   return cats;
 }
 
 function clearCategoryCheckboxes() {
-  document.querySelectorAll('#input-categories input').forEach(function(c) {
+  document.querySelectorAll('#input-categories input').forEach(function (c) {
     c.checked = false;
   });
-  document.querySelectorAll('.cat-check').forEach(function(l) {
+  document.querySelectorAll('.cat-check').forEach(function (l) {
     l.classList.remove('checked');
   });
 }
 
 function compressImage(file, maxWidth = 1200, quality = 0.7) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     var reader = new FileReader();
-    reader.onload = function(e) {
+
+    reader.onload = function (e) {
       var img = new Image();
-      img.onload = function() {
+
+      img.onload = function () {
         var canvas = document.createElement('canvas');
         var w = img.width;
         var h = img.height;
+
         if (w > maxWidth) {
           h = Math.round(h * maxWidth / w);
           w = maxWidth;
         }
+
         canvas.width = w;
         canvas.height = h;
+
         var ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, w, h);
-        canvas.toBlob(function(blob) {
+
+        canvas.toBlob(function (blob) {
           var compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {
             type: 'image/jpeg',
             lastModified: Date.now()
@@ -130,19 +160,18 @@ function compressImage(file, maxWidth = 1200, quality = 0.7) {
           resolve(compressed);
         }, 'image/jpeg', quality);
       };
+
       img.src = e.target.result;
     };
+
     reader.readAsDataURL(file);
   });
 }
 
-// ==========================
-// Работа с API (Supabase)
-// ==========================
+// ================================
+// Supabase
+// ================================
 
-// ==========================
-// Универсальный запрос к Supabase
-// ==========================
 function supaFetch(path, options = {}) {
   var headers = {
     'apikey': SUPABASE_KEY,
@@ -155,8 +184,7 @@ function supaFetch(path, options = {}) {
     method: options.method || 'GET',
     headers: headers,
     body: options.body ? JSON.stringify(options.body) : undefined
-  }).then(async function(r) {
-    // Если ответ пустой (часто бывает у DELETE), не пытаемся парсить JSON
+  }).then(async function (r) {
     if (r.status === 204) return null;
 
     var text = await r.text();
@@ -171,8 +199,11 @@ function supaFetch(path, options = {}) {
 }
 
 function loadDetails() {
-  var query = isAdmin ? 'details?select=*&order=created_at.desc' : 'details?select=*&status=eq.approved&order=created_at.desc';
-  return supaFetch(query).then(function(data) {
+  var query = isAdmin
+    ? 'details?select=*&order=created_at.desc'
+    : 'details?select=*&status=eq.approved&order=created_at.desc';
+
+  return supaFetch(query).then(function (data) {
     if (Array.isArray(data)) {
       details = data.map(d => ({
         id: d.id,
@@ -192,7 +223,7 @@ function loadDetails() {
 }
 
 function loadAllForAdmin() {
-  return supaFetch('details?select=*&order=created_at.desc').then(function(data) {
+  return supaFetch('details?select=*&order=created_at.desc').then(function (data) {
     if (Array.isArray(data)) {
       details = data.map(d => ({
         id: d.id,
@@ -212,9 +243,9 @@ function loadAllForAdmin() {
 }
 
 function loadNotes(detailId) {
-  var query = isAdmin ?
-    'notes?detail_id=eq.' + detailId + '&order=created_at.asc' :
-    'notes?detail_id=eq.' + detailId + '&status=eq.approved&order=created_at.asc';
+  var query = isAdmin
+    ? 'notes?detail_id=eq.' + detailId + '&order=created_at.asc'
+    : 'notes?detail_id=eq.' + detailId + '&status=eq.approved&order=created_at.asc';
 
   return supaFetch(query).then(data => {
     currentNotes = Array.isArray(data) ? data : [];
@@ -235,6 +266,7 @@ function loadPendingNotes() {
 
 function sendEmailNotification(detail) {
   if (isAdmin) return;
+
   try {
     emailjs.init(EMAILJS_PUBLIC_KEY);
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
@@ -256,6 +288,7 @@ function sendEmailNotification(detail) {
 
 function uploadPhoto(file) {
   var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+
   return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, {
     method: 'POST',
     headers: {
@@ -278,6 +311,7 @@ function getPendingCount() {
 function updateBadge() {
   var badge = document.getElementById('pending-badge');
   if (!badge) return;
+
   if (isAdmin) {
     loadPendingNotes().then(() => {
       var count = getPendingCount();
@@ -299,9 +333,9 @@ function updateBadge() {
   }
 }
 
-// ==========================
-// Рендер и работа с заметками (notes)
-// ==========================
+// ================================
+// Заметки
+// ================================
 
 function renderNotes() {
   var list = document.getElementById('notes-list');
@@ -349,8 +383,6 @@ function renderNotes() {
 
   list.innerHTML = html;
 }
-
-// Функции отправки, одобрения, удаления заметок
 
 function submitNote() {
   var text = document.getElementById('note-text').value.trim();
@@ -410,9 +442,9 @@ function deleteNote(id) {
   });
 }
 
-// ========================
-// Работа с деталями (карта и галерея)
-// ========================
+// ================================
+// Детали / галерея
+// ================================
 
 function buildGallery() {
   var bounds = map.getBounds();
@@ -424,7 +456,7 @@ function buildGallery() {
     }
     if (!bounds.contains([d.lat, d.lng])) return false;
     return true;
-  }).sort((a,b) => {
+  }).sort((a, b) => {
     var dy = b.lat - a.lat;
     if (Math.abs(dy) > 0.0005) return dy;
     return a.lng - b.lng;
@@ -522,22 +554,23 @@ function hidePreview() {
   if (el) el.classList.remove('visible');
 }
 
-// ========================
-// Карта и взаимодействия
-// ========================
+// ================================
+// Карта
+// ================================
 
 function geoLocate() {
   if (!navigator.geolocation) { alert('Геолокация не поддерживается'); return; }
   var btn = document.getElementById('geo-float');
   btn.classList.add('locating');
-  navigator.geolocation.getCurrentPosition(function(pos) {
+
+  navigator.geolocation.getCurrentPosition(function (pos) {
     var lat = pos.coords.latitude, lng = pos.coords.longitude;
     map.flyTo([lat, lng], 17, { duration: 1.2 });
     userMarker = L.marker([lat, lng], {
-      icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14,14], iconAnchor: [7,7] })
+      icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14, 14], iconAnchor: [7, 7] })
     }).addTo(map);
     btn.classList.remove('locating');
-  }, function(err) {
+  }, function (err) {
     btn.classList.remove('locating');
     if (err.code === 1) alert('Разрешите доступ к геолокации');
     else alert('Не удалось определить местоположение');
@@ -549,25 +582,26 @@ function initMap() {
   L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO',
-  maxZoom: 19
-}).on('tileerror', function(e) {
-  console.warn('Ошибка загрузки тайла карты', e);
-  // Опционально: можно показать сообщение или перезагрузить слой через таймер
-}).addTo(map);
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 19
+  }).on('tileerror', function (e) {
+    console.warn('Ошибка загрузки тайла карты', e);
+  }).addTo(map);
 
-  map.on('mousemove', function(e) {
+  map.on('mousemove', function (e) {
     mouseLatLng = e.latlng;
     if (!proximityRAF) proximityRAF = requestAnimationFrame(updateProximity);
   });
 
-  map.on('click', function(e) {
+  map.on('click', function (e) {
     if (!isAddingMode) return;
     pendingCoords = { lat: e.latlng.lat, lng: e.latlng.lng };
+
     if (tempMarker) map.removeLayer(tempMarker);
     tempMarker = L.marker([e.latlng.lat, e.latlng.lng], {
-      icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] })
+      icon: L.divIcon({ html: '<div class="temp-marker"></div>', className: '', iconSize: [16, 16], iconAnchor: [8, 8] })
     }).addTo(map);
+
     var box = document.getElementById('status-box');
     box.className = 'status-box status-ready';
     box.textContent = '✓ ' + e.latlng.lat.toFixed(4) + ', ' + e.latlng.lng.toFixed(4);
@@ -581,7 +615,7 @@ function updateProximity() {
   if (!mouseLatLng) return;
   var mousePoint = map.latLngToContainerPoint(mouseLatLng);
 
-  markerObjects.forEach(function(item) {
+  markerObjects.forEach(function (item) {
     var el = item.marker.getElement();
     if (!el) return;
     var div = el.querySelector('.dot-marker');
@@ -604,7 +638,7 @@ function renderMarkers() {
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: false,
     zoomToBoundsOnClick: true,
-    iconCreateFunction: function(cluster) {
+    iconCreateFunction: function (cluster) {
       var count = cluster.getChildCount();
       return L.divIcon({
         html: '<div class="marker-cluster-inner">' + count + '</div>',
@@ -616,36 +650,33 @@ function renderMarkers() {
 
   markerObjects = [];
 
-  details.filter(function(d) {
+  details.filter(function (d) {
     if (!isAdmin && d.status !== 'approved') return false;
     if (activeFilter !== 'all') {
       var cats = (d.category || '').split(',');
       if (cats.indexOf(activeFilter) === -1) return false;
     }
     return true;
-  }).forEach(function(detail) {
-    var cls = (detail.status === 'pending') ? ' pending' : '';
-    var title = detail.title || '';
-    if (title.length > 18) title = title.substring(0, 18) + '…';
+  }).forEach(function (detail) {
     var marker = L.marker([detail.lat, detail.lng], {
-  icon: createMarkerIcon(detail)
-});
+      icon: createMarkerIcon(detail)
+    });
 
-    marker.on('click', function() {
+    marker.on('click', function () {
       if (isAddingMode) return;
       hidePreview();
       openDetail(detail);
     });
 
-    (function(det) {
-      marker.on('mouseover', function() {
+    (function (det) {
+      marker.on('mouseover', function () {
         if (isAddingMode || isTouchDevice) return;
-        previewTimeout = setTimeout(function() {
+        previewTimeout = setTimeout(function () {
           var el = marker.getElement();
           if (el) showPreview(det, el);
         }, 300);
       });
-      marker.on('mouseout', function() {
+      marker.on('mouseout', function () {
         clearTimeout(previewTimeout);
         hidePreview();
       });
@@ -658,9 +689,9 @@ function renderMarkers() {
   map.addLayer(clusterGroup);
 }
 
-// ========================
-// Поиск, фильтры, детали, модерация
-// ========================
+// ================================
+// Поиск / фильтры
+// ================================
 
 function doSearch(query) {
   searchQuery = query.toLowerCase().trim();
@@ -770,14 +801,15 @@ function updateConnectLines() {
     map.removeLayer(connectLine);
     connectLine = null;
   }
+
   var bounds = map.getBounds();
   var visible = lastSearchMatches.filter(d => bounds.contains([d.lat, d.lng]));
   if (visible.length < 2) return;
 
   var lines = [];
   for (var i = 0; i < visible.length; i++) {
-    for (var j = i+1; j < visible.length; j++) {
-      lines.push([[visible[i].lat, visible[i].lng],[visible[j].lat, visible[j].lng]]);
+    for (var j = i + 1; j < visible.length; j++) {
+      lines.push([[visible[i].lat, visible[i].lng], [visible[j].lat, visible[j].lng]]);
     }
   }
 
@@ -793,19 +825,21 @@ function removeConnectLine() {
   }
 }
 
-// ===========================
-// Open/close details and forms
-// ===========================
+// ================================
+// Открытие/закрытие форм
+// ================================
 
 function openDetail(d) {
   gallery = buildGallery();
   galleryIndex = 0;
-  for (var i=0; i < gallery.length; i++) {
+
+  for (var i = 0; i < gallery.length; i++) {
     if (gallery[i].id === d.id) {
       galleryIndex = i;
       break;
     }
   }
+
   showGalleryItem(galleryIndex);
   document.getElementById('detail-panel').classList.remove('hidden');
   document.getElementById('add-btn').style.display = 'none';
@@ -837,10 +871,12 @@ function openAddForm() {
 function closeAddForm() {
   isAddingMode = false;
   pendingCoords = null;
+
   if (tempMarker) {
     map.removeLayer(tempMarker);
     tempMarker = null;
   }
+
   document.getElementById('add-panel').classList.remove('open');
   document.getElementById('add-panel').classList.remove('expanded');
   document.getElementById('add-btn').classList.remove('hidden');
@@ -854,14 +890,15 @@ function closeAddForm() {
   document.getElementById('input-photo').value = '';
   document.getElementById('photo-preview').innerHTML = '';
   document.getElementById('input-agree').checked = false;
+
   var box = document.getElementById('status-box');
   box.className = 'status-box status-waiting';
   box.textContent = '← Кликните на карту чтобы выбрать место';
 }
 
-// ===========================
-// Submitting details
-// ===========================
+// ================================
+// Отправка детали
+// ================================
 
 function submitDetail() {
   var title = document.getElementById('input-title').value.trim();
@@ -913,12 +950,22 @@ function submitDetail() {
           created_at: d.created_at || ''
         });
       }
-      sendEmailNotification({ title, author: author || 'Аноним', category: cat, lat: pendingCoords.lat, lng: pendingCoords.lng, description: desc });
+
+      sendEmailNotification({
+        title,
+        author: author || 'Аноним',
+        category: cat,
+        lat: pendingCoords.lat,
+        lng: pendingCoords.lng,
+        description: desc
+      });
+
       renderMarkers();
       closeAddForm();
       updateBadge();
       btn.disabled = false;
       btn.textContent = 'Отправить';
+
       if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
     }).catch(() => {
       alert('Ошибка');
@@ -937,9 +984,9 @@ function submitDetail() {
   }
 }
 
-// ===========================
-// Filtering markers
-// ===========================
+// ================================
+// Фильтры
+// ================================
 
 function setFilter(f) {
   activeFilter = f;
@@ -949,9 +996,9 @@ function setFilter(f) {
   renderMarkers();
 }
 
-// ===========================
-// Admin: toggle, panels, mod list
-// ===========================
+// ================================
+// Админка
+// ================================
 
 async function toggleAdmin() {
   if (isAdmin) {
@@ -969,46 +1016,40 @@ async function toggleAdmin() {
 
   try {
     var response = await fetch(ADMIN_LOGIN_FUNCTION_URL, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ password: code })
-});
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: code })
+    });
 
-var rawText = await response.text();
-var data = {};
+    var rawText = await response.text();
+    var data = {};
 
-try {
-  data = rawText ? JSON.parse(rawText) : {};
-} catch (err) {
-  data = { message: rawText };
-}
+    try {
+      data = rawText ? JSON.parse(rawText) : {};
+    } catch (err) {
+      data = { message: rawText };
+    }
 
-console.log('admin-login response status:', response.status);
-console.log('admin-login response body:', data);
+    console.log('admin-login response status:', response.status);
+    console.log('admin-login response body:', data);
 
-if (response.ok && data.success) {
-  isAdmin = true;
-  document.body.classList.add('admin-mode');
-  document.getElementById('admin-btn').classList.add('active');
-  await loadAllForAdmin();
-  renderMarkers();
-  updateBadge();
-  if (getPendingCount() > 0) openModPanel();
-} else {
-  alert(data.message || ('Неверный код или ошибка сервера (' + response.status + ')'));
-}
+    if (response.ok && data.success) {
+      isAdmin = true;
+      document.body.classList.add('admin-mode');
+      document.getElementById('admin-btn').classList.add('active');
+      await loadAllForAdmin();
+      renderMarkers();
+      updateBadge();
+      if (getPendingCount() > 0) openModPanel();
+    } else {
+      alert(data.message || ('Неверный код или ошибка сервера (' + response.status + ')'));
+    }
   } catch (e) {
-  console.error('Admin login error:', e);
-
-  var message = 'Ошибка подключения к серверу';
-  if (e && e.message) {
-    message += '\n' + e.message;
+    console.error('Admin login error:', e);
+    var message = 'Ошибка подключения к серверу';
+    if (e && e.message) message += '\n' + e.message;
+    alert(message);
   }
-
-  alert(message);
-}
 }
 
 function openModPanel() {
@@ -1061,9 +1102,9 @@ function renderModList() {
   list.innerHTML = html + exitBtnHtml;
 }
 
-// ==========================
-// Инициализация событий UI
-// ==========================
+// ================================
+// Инициализация событий
+// ================================
 
 function initEvents() {
   document.getElementById('close-panel').addEventListener('click', closeDetail);
@@ -1088,11 +1129,11 @@ function initEvents() {
 
   document.getElementById('mod-close').addEventListener('click', closeModPanel);
 
-  document.getElementById('input-photo').addEventListener('change', function() {
+  document.getElementById('input-photo').addEventListener('change', function () {
     var f = this.files[0];
     if (f) {
       var r = new FileReader();
-      r.onload = function(e) {
+      r.onload = function (e) {
         document.getElementById('photo-preview').innerHTML = '<img src="' + e.target.result + '">';
       };
       r.readAsDataURL(f);
@@ -1117,11 +1158,14 @@ function initEvents() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => doSearch(searchInput.value), 200);
   });
+
   document.getElementById('search-clear').addEventListener('click', clearSearch);
+
   document.addEventListener('click', e => {
     var bar = document.getElementById('search-bar');
     if (!bar.contains(e.target)) document.getElementById('search-results').classList.add('hidden');
   });
+
   searchInput.addEventListener('focus', () => {
     if (searchInput.value.trim()) doSearch(searchInput.value);
   });
@@ -1176,17 +1220,17 @@ function initEvents() {
   });
 }
 
-// ==========================
-// Сервис воркер (PWA)
-// ==========================
+// ================================
+// PWA
+// ================================
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(e => console.log('SW skip:', e));
 }
 
-// ==========================
+// ================================
 // Старт приложения и онбординг
-// ==========================
+// ================================
 
 var mapReady = false;
 var ONBOARDING_DAYS = 7;
@@ -1195,10 +1239,10 @@ var onboardingSeen = localStorage.getItem('textula_onboarding');
 function startApp() {
   initMap();
   initEvents();
+  initGuessElements();
 
   const loadingEl = document.getElementById('loading');
 
-  // Таймаут на 15 секунд - если не загрузилось, скрываем лоадер и выводим сообщение
   const loadingTimeout = setTimeout(() => {
     loadingEl.classList.add('hidden');
     alert('Не удалось загрузить данные или карту. Попробуйте обновить страницу.');
@@ -1306,27 +1350,9 @@ if (onboardingSeen && (Date.now() - parseInt(onboardingSeen, 10)) < ONBOARDING_D
   initOnboarding();
 }
 
-// ========================
-// Игровой режим “Угадай локацию”
-// ========================
-
-var guessModeActive = false;
-var guessPoints = [];
-var guessCurrentIndex = 0;
-var guessTotalRounds = 5;
-var guessScore = 0;
-var guessMarkers = [];
-var guessCorrectMarker = null;
-
-var guessBtn = document.getElementById('toggle-guess-mode');
-var guessPanel = document.getElementById('guess-mode');
-var guessImage = document.getElementById('guess-image');
-var guessCurrentEl = document.getElementById('guess-current');
-var guessScoreEl = document.getElementById('guess-score');
-var guessNextBtn = document.getElementById('guess-next-btn');
-var guessExitBtn = document.getElementById('guess-exit-btn');
-var guessResult = document.getElementById('guess-result');
-var guessCenterBtn = document.getElementById('guess-guess-center-btn');
+// ================================
+// Игровой режим
+// ================================
 
 function haversineDistance(lat1, lng1, lat2, lng2) {
   var R = 6371e3;
@@ -1335,24 +1361,165 @@ function haversineDistance(lat1, lng1, lat2, lng2) {
   var Δφ = (lat2 - lat1) * toRad;
   var Δλ = (lng2 - lng1) * toRad;
 
-  var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-          Math.cos(φ1)*Math.cos(φ2) *
-          Math.sin(Δλ/2)*Math.sin(Δλ/2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
+function initGuessElements() {
+  guessBtn = document.getElementById('toggle-guess-mode');
+  guessPanel = document.getElementById('guess-mode');
+  guessImage = document.getElementById('guess-image');
+  guessCurrentEl = document.getElementById('guess-current');
+  guessScoreEl = document.getElementById('guess-score');
+  guessNextBtn = document.getElementById('guess-next-btn');
+  guessExitBtn = document.getElementById('guess-exit-btn');
+  guessResult = document.getElementById('guess-result');
+  guessCenterBtn = document.getElementById('guess-guess-center-btn');
+
+  if (!guessPanel || !guessImage || !guessCurrentEl || !guessScoreEl || !guessNextBtn || !guessExitBtn || !guessResult || !guessBtn) return;
+
+  if (!guessTimerEl) {
+    guessTimerEl = document.createElement('div');
+    guessTimerEl.id = 'guess-timer';
+    guessTimerEl.style.textAlign = 'center';
+    guessTimerEl.style.fontFamily = "'IBM Plex Mono', monospace";
+    guessTimerEl.style.fontSize = '14px';
+    guessTimerEl.style.margin = '10px 0 14px';
+    guessTimerEl.style.fontWeight = '600';
+
+    var container = document.getElementById('guess-mode');
+    if (container) {
+      container.insertBefore(guessTimerEl, guessResult);
+    }
+  }
+
+  if (guessCenterBtn) {
+    guessCenterBtn.style.display = 'block';
+  }
+
+  guessBtn.addEventListener('click', () => {
+    if (guessModeActive) {
+      if (confirm('Выйти из игрового режима?')) {
+        endGuessMode();
+      }
+    } else {
+      startGuessMode();
+    }
+  });
+
+  guessExitBtn.addEventListener('click', () => {
+    if (confirm('Выйти из игрового режима?')) {
+      endGuessMode();
+    }
+  });
+
+  guessNextBtn.addEventListener('click', () => {
+    guessCurrentIndex++;
+
+    if (guessCurrentIndex >= guessTotalRounds) {
+      finishGuessGame();
+      return;
+    }
+
+    renderCurrentGuess();
+  });
+
+  if (guessCenterBtn) {
+    guessCenterBtn.addEventListener('click', () => {
+      if (!guessModeActive) return;
+      processGuessClick(map.getCenter());
+    });
+  }
+
+  updateGuessTimerUI();
+}
+
+function startGuessTimer() {
+  clearGuessTimer();
+  guessTimeLeft = 60;
+  updateGuessTimerUI();
+
+  guessTimer = setInterval(() => {
+    guessTimeLeft--;
+    updateGuessTimerUI();
+
+    if (guessTimeLeft <= 0) {
+      clearGuessTimer();
+      guessResult.innerHTML = '<em>Время вышло! Нажмите «Следующая».</em>';
+      guessNextBtn.disabled = false;
+    }
+  }, 1000);
+}
+
+function updateGuessTimerUI() {
+  if (guessTimerEl) {
+    guessTimerEl.textContent = 'Время: ' + guessTimeLeft + ' с';
+    guessTimerEl.style.color = guessTimeLeft <= 5 ? '#b00020' : '#000';
+  }
+}
+
+function clearGuessTimer() {
+  if (guessTimer) {
+    clearInterval(guessTimer);
+    guessTimer = null;
+  }
+}
+
+function updateScoreUI() {
+  guessScoreEl.textContent = guessScore;
+  var percent = Math.min(guessScore / (guessTotalRounds * 150), 1);
+  var color = 'hsl(' + Math.round(percent * 120) + ', 80%, 45%)';
+  guessScoreEl.style.color = color;
+  guessScoreEl.style.fontWeight = '700';
+  guessScoreEl.style.fontSize = '18px';
+}
+
+function saveGuessStats(score) {
+  let stats = localStorage.getItem('guessStats');
+  let obj = stats ? JSON.parse(stats) : { games: 0, totalScore: 0 };
+  obj.games++;
+  obj.totalScore += score;
+  localStorage.setItem('guessStats', JSON.stringify(obj));
+}
+
+function shareGuessResult() {
+  let stats = localStorage.getItem('guessStats');
+  let obj = stats ? JSON.parse(stats) : null;
+  let avgScore = obj && obj.games > 0 ? (obj.totalScore / obj.games).toFixed(0) : '—';
+
+  var shareText = `Я набрал ${guessScore} очков в игре "Угадай локацию" на textula. Средний результат: ${avgScore}. Попробуй сам: https://textula.ru`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: 'textula — игра "Угадай локацию"',
+      text: shareText,
+      url: 'https://textula.ru'
+    }).catch(err => alert('Ошибка шаринга: ' + err));
+  } else {
+    navigator.clipboard.writeText(shareText).then(() => {
+      alert('Текст результата скопирован в буфер обмена');
+    }).catch(() => {
+      alert('Ваш браузер не поддерживает шаринг');
+    });
+  }
+}
+
 function startGuessMode() {
-  if (details.length < guessTotalRounds) {
-    alert('Недостаточно точек для игры');
+  var pool = details.filter(d => d.status === 'approved' && d.photo);
+  if (pool.length < guessTotalRounds) {
+    alert('Недостаточно точек с фото для игры');
     return;
   }
 
   guessModeActive = true;
   guessScore = 0;
   guessCurrentIndex = 0;
+  updateScoreUI();
 
-  var pool = details.filter(d => d.status === 'approved' && d.photo);
   pool.sort(() => Math.random() - 0.5);
   guessPoints = pool.slice(0, guessTotalRounds);
 
@@ -1378,15 +1545,11 @@ function startGuessMode() {
   }
 
   renderCurrentGuess();
-
-  if (isTouchDevice) {
-    map.off('click', onMapGuessClick);
-  } else {
-    map.on('click', onMapGuessClick);
-  }
+  map.on('click', onMapGuessClick);
 
   guessNextBtn.disabled = true;
   guessResult.textContent = '';
+  startGuessTimer();
 }
 
 function endGuessMode() {
@@ -1411,6 +1574,7 @@ function endGuessMode() {
     guessCorrectMarker = null;
   }
 
+  clearGuessTimer();
   map.off('click', onMapGuessClick);
 }
 
@@ -1418,9 +1582,8 @@ function renderCurrentGuess() {
   var point = guessPoints[guessCurrentIndex];
   guessImage.src = point.photo;
   guessCurrentEl.textContent = (guessCurrentIndex + 1);
-  guessScoreEl.textContent = guessScore;
-  guessNextBtn.disabled = true;
   guessResult.textContent = '';
+  guessNextBtn.disabled = true;
 
   if (guessCorrectMarker) {
     map.removeLayer(guessCorrectMarker);
@@ -1431,6 +1594,7 @@ function renderCurrentGuess() {
   guessMarkers = [];
 
   map.flyTo([point.lat, point.lng], 15, { duration: 1 });
+  startGuessTimer();
 }
 
 function processGuessClick(latlng) {
@@ -1441,30 +1605,33 @@ function processGuessClick(latlng) {
   var dist = haversineDistance(latlng.lat, latlng.lng, point.lat, point.lng);
 
   var pointsEarned = 0;
-  if (dist <= 100) pointsEarned = 100;
-  else if (dist <= 500) pointsEarned = 50;
-  else if (dist <= 1000) pointsEarned = 25;
+  if (dist <= 50) pointsEarned = 150;
+  else if (dist <= 150) pointsEarned = 100;
+  else if (dist <= 500) pointsEarned = 75;
+  else if (dist <= 1000) pointsEarned = 50;
+  else pointsEarned = 25;
 
   guessScore += pointsEarned;
-  guessScoreEl.textContent = guessScore;
+  updateScoreUI();
 
   guessResult.innerHTML = 'Вы набрали <strong>' + pointsEarned + '</strong> очков! Расстояние: ' + dist.toFixed(0) + ' м';
+  clearGuessTimer();
 
   guessCorrectMarker = L.marker([point.lat, point.lng], {
     icon: L.divIcon({
-      html: '<div style="width:16px;height:16px;border:3px solid limegreen;border-radius:50%;background:rgba(0,255,0,0.3);"></div>',
+      html: '<div style="width:22px;height:22px;border:4px solid limegreen;border-radius:50%;background:rgba(0,255,0,0.3);"></div>',
       className: '',
-      iconSize: [16,16],
-      iconAnchor: [8,8]
+      iconSize: [22, 22],
+      iconAnchor: [11, 11]
     })
   }).addTo(map);
 
   var guessMarker = L.marker(latlng, {
     icon: L.divIcon({
-      html: '<div style="width:16px;height:16px;border:3px solid red;border-radius:50%;background:rgba(255,0,0,0.3);"></div>',
+      html: '<div style="width:22px;height:22px;border:4px solid red;border-radius:50%;background:rgba(255,0,0,0.3);"></div>',
       className: '',
-      iconSize: [16,16],
-      iconAnchor: [8,8]
+      iconSize: [22, 22],
+      iconAnchor: [11, 11]
     })
   }).addTo(map);
 
@@ -1476,63 +1643,55 @@ function onMapGuessClick(e) {
   processGuessClick(e.latlng);
 }
 
-if (guessCenterBtn) {
-  guessCenterBtn.addEventListener('click', () => {
-    var center = map.getCenter();
-    processGuessClick(center);
-  });
-}
+function finishGuessGame() {
+  clearGuessTimer();
+  saveGuessStats(guessScore);
 
-if (guessNextBtn) {
-  guessNextBtn.addEventListener('click', () => {
-    guessCurrentIndex++;
-    if (guessCurrentIndex >= guessTotalRounds) {
-      guessResult.innerHTML = '<strong>Игра окончена!</strong> Ваш итоговый счет: ' + guessScore + ' очков.';
-      guessNextBtn.disabled = true;
+  var stats = localStorage.getItem('guessStats');
+  var obj = stats ? JSON.parse(stats) : { games: 0, totalScore: 0 };
+  var avgScore = obj.games > 0 ? Math.round(obj.totalScore / obj.games) : 0;
 
-      var restartBtn = document.createElement('button');
-      restartBtn.textContent = 'Сыграть снова';
-      restartBtn.style.cssText = guessNextBtn.style.cssText;
+  guessResult.innerHTML = `
+    <div style="text-align:center; padding: 10px 0;">
+      <div style="font-size:18px; font-weight:700; margin-bottom:8px;">Игра окончена!</div>
+      <div style="margin-bottom:12px;">Ваш итоговый счёт: <strong>${guessScore}</strong></div>
+      <div style="margin-bottom:18px; color:#666;">Средний счёт: ${avgScore} · Игр сыграно: ${obj.games}</div>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button id="guess-restart-btn" style="background:#000;color:#fff;border:none;padding:12px 18px;font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.05em;cursor:pointer;">Сыграть снова</button>
+        <button id="guess-share-btn" style="background:#fff;color:#000;border:1px solid #000;padding:12px 18px;font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.05em;cursor:pointer;">Поделиться</button>
+      </div>
+    </div>
+  `;
+
+  guessNextBtn.disabled = true;
+
+  setTimeout(() => {
+    var restartBtn = document.getElementById('guess-restart-btn');
+    var shareBtn = document.getElementById('guess-share-btn');
+
+    if (restartBtn) {
       restartBtn.addEventListener('click', () => {
-        guessPanel.removeChild(restartBtn);
         startGuessMode();
       });
-      guessPanel.appendChild(restartBtn);
-      return;
     }
-    renderCurrentGuess();
-  });
+
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        shareGuessResult();
+      });
+    }
+  }, 0);
 }
 
-if (guessExitBtn) {
-  guessExitBtn.addEventListener('click', () => {
-    if (confirm('Выйти из игрового режима?')) {
-      endGuessMode();
-    }
-  });
-}
-
-if (guessBtn) {
-  guessBtn.addEventListener('click', () => {
-    if (guessModeActive) {
-      if (confirm('Выйти из игрового режима?')) {
-        endGuessMode();
-      }
-    } else {
-      startGuessMode();
-    }
-  });
-}
-
-// ==========================
-// Функции одобрения, удаления деталей
-// ==========================
+// ================================
+// Одобрение / удаление деталей
+// ================================
 
 function approveDetail(id) {
   if (!id) id = currentDetailId;
   if (!id) return;
+
   supaFetch('details?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
-    // Обновляем статус в списке деталей
     var d = details.find(x => x.id === id);
     if (d) d.status = 'approved';
     updateBadge();
@@ -1546,8 +1705,8 @@ function rejectDetail(id) {
   if (!id) id = currentDetailId;
   if (!id) return;
   if (!confirm('Отклонить и удалить деталь?')) return;
+
   supaFetch('details?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(() => {
-    // Удаляем из списка деталей
     details = details.filter(d => d.id !== id);
     updateBadge();
     renderMarkers();
