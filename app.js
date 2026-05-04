@@ -45,6 +45,33 @@ function escapeHtml(str) {
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
 }
+function createMarkerIcon(detail) {
+  const hasPhoto = detail.photo && detail.photo.trim() !== '';
+  if (hasPhoto) {
+    const imgHtml = `<img src="${detail.photo}" alt="" style="width:20px; height:20px; border-radius:4px;" />`;
+    return L.divIcon({
+      html: `<div class="dot-marker${detail.status==='pending' ? ' pending' : ''}" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+              <div class="dot" style="width:20px; height:20px; overflow:hidden;">${imgHtml}</div>
+              <div class="label" style="font-size:10px;">${escapeHtml(detail.title.length > 18 ? detail.title.substring(0,18) + '…' : detail.title)}</div>
+            </div>`,
+      className: '',
+      iconSize: [150, 20],
+      iconAnchor: [10, 10]
+    });
+  } else {
+    // fallback — точка без фото
+    const title = detail.title.length > 18 ? detail.title.substring(0,18) + '…' : detail.title;
+    return L.divIcon({
+      html: `<div class="dot-marker${detail.status==='pending' ? ' pending' : ''}">
+              <div class="dot"></div>
+              <div class="label">${escapeHtml(title)}</div>
+             </div>`,
+      className: '',
+      iconSize: [150, 20],
+      iconAnchor: [4, 10]
+    });
+  }
+}
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -522,9 +549,12 @@ function initMap() {
   L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    maxZoom: 19
-  }).addTo(map);
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  maxZoom: 19
+}).on('tileerror', function(e) {
+  console.warn('Ошибка загрузки тайла карты', e);
+  // Опционально: можно показать сообщение или перезагрузить слой через таймер
+}).addTo(map);
 
   map.on('mousemove', function(e) {
     mouseLatLng = e.latlng;
@@ -597,11 +627,9 @@ function renderMarkers() {
     var cls = (detail.status === 'pending') ? ' pending' : '';
     var title = detail.title || '';
     if (title.length > 18) title = title.substring(0, 18) + '…';
-    var h = '<div class="dot-marker' + cls + '"><div class="dot"></div><div class="label">' + title + '</div></div>';
-
     var marker = L.marker([detail.lat, detail.lng], {
-      icon: L.divIcon({ html: h, className: '', iconSize: [150, 20], iconAnchor: [4, 10] })
-    });
+  icon: createMarkerIcon(detail)
+});
 
     marker.on('click', function() {
       if (isAddingMode) return;
@@ -1167,10 +1195,25 @@ var onboardingSeen = localStorage.getItem('textula_onboarding');
 function startApp() {
   initMap();
   initEvents();
+
+  const loadingEl = document.getElementById('loading');
+
+  // Таймаут на 15 секунд - если не загрузилось, скрываем лоадер и выводим сообщение
+  const loadingTimeout = setTimeout(() => {
+    loadingEl.classList.add('hidden');
+    alert('Не удалось загрузить данные или карту. Попробуйте обновить страницу.');
+  }, 15000);
+
   loadDetails().then(() => {
+    clearTimeout(loadingTimeout);
     renderMarkers();
     mapReady = true;
-    document.getElementById('loading').classList.add('hidden');
+    loadingEl.classList.add('hidden');
+  }).catch(err => {
+    clearTimeout(loadingTimeout);
+    loadingEl.classList.add('hidden');
+    alert('Ошибка загрузки данных: ' + (err.message || err));
+    console.error(err);
   });
 }
 
