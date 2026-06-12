@@ -1,24 +1,38 @@
-const CACHE_NAME = 'city-details-v2';
+const CACHE_NAME = 'city-details-v3';
 const urlsToCache = [
-    '/city-details/',
-    '/city-details/index.html',
-    '/city-details/src/style.css',
-    '/city-details/src/main.js',
-    '/city-details/manifest.json',
-    '/city-details/icon-192.png'
+    '/',
+    '/index.html',
+    '/app.js',
+    '/manifest.json',
+    '/favicon.png',
+    '/icon-192.png'
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => cache.addAll(urlsToCache))
+            .then(() => self.skipWaiting())
     );
 });
 
 self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
+
+    const url = new URL(event.request.url);
+    if (url.origin !== self.location.origin) return;
+
+    // Сеть в приоритете, чтобы пользователи получали обновления; кэш — офлайн-запас
     event.respondWith(
-        caches.match(event.request)
-            .then((response) => response || fetch(event.request))
+        fetch(event.request)
+            .then((response) => {
+                if (response.ok) {
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+                }
+                return response;
+            })
+            .catch(() => caches.match(event.request))
     );
 });
 
@@ -29,6 +43,6 @@ self.addEventListener('activate', (event) => {
                 names.filter((name) => name !== CACHE_NAME)
                     .map((name) => caches.delete(name))
             )
-        )
+        ).then(() => self.clients.claim())
     );
 });

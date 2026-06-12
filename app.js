@@ -8,6 +8,9 @@ var ADMIN_LOGIN_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-login';
 
 var isAdmin = false;
 
+var MAP_CENTER = [54.1935, 37.6180];
+var MAP_ZOOM = 15;
+
 var CATEGORIES = {
   texture: { label: 'Текстура', color: '#000' },
   sign: { label: 'Знак', color: '#000' },
@@ -65,14 +68,38 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+var toastTimeout = null;
+
+function showToast(message, type) {
+  var el = document.getElementById('app-toast');
+
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'app-toast';
+    el.style.cssText = 'position:fixed;left:50%;bottom:30px;transform:translateX(-50%);' +
+      'max-width:90vw;padding:12px 20px;background:#000;color:#fff;' +
+      "font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.03em;" +
+      'z-index:10000;opacity:0;transition:opacity 0.25s ease;pointer-events:none;text-align:center;';
+    document.body.appendChild(el);
+  }
+
+  el.textContent = message;
+  el.style.background = type === 'error' ? '#b00020' : '#000';
+  el.style.opacity = '1';
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(function () { el.style.opacity = '0'; }, 3500);
 }
 
 function createMarkerIcon(detail) {
   const hasPhoto = detail.photo && detail.photo.trim() !== '';
 
   if (hasPhoto) {
-    const imgHtml = `<img src="${detail.photo}" alt="" style="width:20px; height:20px; border-radius:4px;" />`;
+    const imgHtml = `<img src="${escapeHtml(detail.photo)}" alt="" style="width:20px; height:20px; border-radius:4px;" />`;
     return L.divIcon({
       html: `<div class="dot-marker${detail.status === 'pending' ? ' pending' : ''}" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
         <div class="dot" style="width:20px; height:20px; overflow:hidden;">${imgHtml}</div>
@@ -99,6 +126,7 @@ function createMarkerIcon(detail) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   var d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
   var months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 }
@@ -133,8 +161,13 @@ function compressImage(file, maxWidth = 1200, quality = 0.7) {
   return new Promise(function (resolve) {
     var reader = new FileReader();
 
+    // при любой ошибке отдаём оригинал, чтобы отправка не зависала
+    reader.onerror = function () { resolve(file); };
+
     reader.onload = function (e) {
       var img = new Image();
+
+      img.onerror = function () { resolve(file); };
 
       img.onload = function () {
         var canvas = document.createElement('canvas');
@@ -153,6 +186,7 @@ function compressImage(file, maxWidth = 1200, quality = 0.7) {
         ctx.drawImage(img, 0, 0, w, h);
 
         canvas.toBlob(function (blob) {
+          if (!blob) { resolve(file); return; }
           var compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {
             type: 'image/jpeg',
             lastModified: Date.now()
@@ -185,6 +219,11 @@ function supaFetch(path, options = {}) {
     headers: headers,
     body: options.body ? JSON.stringify(options.body) : undefined
   }).then(async function (r) {
+    if (!r.ok) {
+      var errText = await r.text().catch(function () { return ''; });
+      throw new Error('Supabase ' + r.status + ': ' + errText.slice(0, 200));
+    }
+
     if (r.status === 204) return null;
 
     var text = await r.text();
@@ -198,48 +237,37 @@ function supaFetch(path, options = {}) {
   });
 }
 
+function mapDetailRow(d) {
+  return {
+    id: d.id,
+    title: d.title || '',
+    description: d.description || '',
+    category: d.category,
+    lat: d.lat,
+    lng: d.lng,
+    photo: d.photo_url || '',
+    status: d.status,
+    author: d.author || '',
+    created_at: d.created_at || ''
+  };
+}
+
 function loadDetails() {
   var query = isAdmin
     ? 'details?select=*&order=created_at.desc'
     : 'details?select=*&status=eq.approved&order=created_at.desc';
 
   return supaFetch(query).then(function (data) {
-    if (Array.isArray(data)) {
-      details = data.map(d => ({
-        id: d.id,
-        title: d.title,
-        description: d.description || '',
-        category: d.category,
-        lat: d.lat,
-        lng: d.lng,
-        photo: d.photo_url || '',
-        status: d.status,
-        author: d.author || '',
-        created_at: d.created_at || ''
-      }));
-    }
+    if (Array.isArray(data)) details = data.map(mapDetailRow);
     updateBadge();
-  }).catch(e => console.error('Load error:', e));
+  });
 }
 
 function loadAllForAdmin() {
   return supaFetch('details?select=*&order=created_at.desc').then(function (data) {
-    if (Array.isArray(data)) {
-      details = data.map(d => ({
-        id: d.id,
-        title: d.title,
-        description: d.description || '',
-        category: d.category,
-        lat: d.lat,
-        lng: d.lng,
-        photo: d.photo_url || '',
-        status: d.status,
-        author: d.author || '',
-        created_at: d.created_at || ''
-      }));
-    }
+    if (Array.isArray(data)) details = data.map(mapDetailRow);
     updateBadge();
-  }).catch(e => console.error('Load error:', e));
+  });
 }
 
 function loadNotes(detailId) {
@@ -287,7 +315,8 @@ function sendEmailNotification(detail) {
 }
 
 function uploadPhoto(file) {
-  var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+  var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '') || 'photo.jpg';
+  var fileName = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + safeName;
 
   return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, {
     method: 'POST',
@@ -308,12 +337,16 @@ function getPendingCount() {
   return detailsPending + pendingNotes.length;
 }
 
+var badgeRequestToken = 0;
+
 function updateBadge() {
   var badge = document.getElementById('pending-badge');
   if (!badge) return;
 
   if (isAdmin) {
+    var token = ++badgeRequestToken;
     loadPendingNotes().then(() => {
+      if (token !== badgeRequestToken) return;
       var count = getPendingCount();
       if (count > 0) {
         badge.textContent = count;
@@ -358,7 +391,7 @@ function renderNotes() {
   approved.forEach(n => {
     html += '<div class="note-item">';
     html += '<div class="note-text">' + escapeHtml(n.text) + '</div>';
-    html += '<div class="note-meta">' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
+    html += '<div class="note-meta">' + escapeHtml(n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
     if (isAdmin) {
       html += '<span class="note-admin-actions">';
       html += '<button class="note-admin-btn" onclick="deleteNote(\'' + n.id + '\')" title="Удалить">✕</button>';
@@ -370,7 +403,7 @@ function renderNotes() {
   pending.forEach(n => {
     html += '<div class="note-item" style="opacity:0.5;border-left:2px dashed #000;padding-left:10px;">';
     html += '<div class="note-text">' + escapeHtml(n.text) + '</div>';
-    html += '<div class="note-meta">' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
+    html += '<div class="note-meta">' + escapeHtml(n.author || 'Аноним') + ' · ' + formatDate(n.created_at);
     html += '<span class="note-status pending">На модерации</span>';
     if (isAdmin) {
       html += '<span class="note-admin-actions">';
@@ -387,9 +420,9 @@ function renderNotes() {
 function submitNote() {
   var text = document.getElementById('note-text').value.trim();
   var author = document.getElementById('note-author').value.trim() || 'Аноним';
-  if (!text) { alert('Введите описание'); return; }
+  if (!text) { showToast('Введите описание', 'error'); return; }
   if (!currentDetailId) return;
-  if (!isAdmin && isReservedName(author)) { alert('Это имя зарезервировано'); return; }
+  if (!isAdmin && isReservedName(author)) { showToast('Это имя зарезервировано', 'error'); return; }
 
   var btn = document.getElementById('note-submit');
   btn.disabled = true;
@@ -411,11 +444,11 @@ function submitNote() {
     btn.disabled = false;
     btn.textContent = 'Отправить';
 
-    if (!isAdmin) alert('Спасибо! Описание отправлено на модерацию.');
+    if (!isAdmin) showToast('Спасибо! Описание отправлено на модерацию.');
 
     updateBadge();
   }).catch(() => {
-    alert('Ошибка отправки');
+    showToast('Ошибка отправки', 'error');
     btn.disabled = false;
     btn.textContent = 'Отправить';
   });
@@ -425,10 +458,11 @@ function approveNote(id) {
   supaFetch('notes?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
     var n = currentNotes.find(x => x.id === id);
     if (n) n.status = 'approved';
+    pendingNotes = pendingNotes.filter(x => x.id !== id);
     renderNotes();
     updateBadge();
     renderModList();
-  });
+  }).catch(() => showToast('Не удалось одобрить описание', 'error'));
 }
 
 function deleteNote(id) {
@@ -439,7 +473,7 @@ function deleteNote(id) {
     renderNotes();
     updateBadge();
     renderModList();
-  });
+  }).catch(() => showToast('Не удалось удалить описание', 'error'));
 }
 
 // ================================
@@ -537,9 +571,9 @@ function showPreview(detail, markerEl) {
   var prev = document.getElementById('marker-preview');
   var rect = markerEl.getBoundingClientRect();
   var html = '';
-  if (detail.photo) html += '<img src="' + detail.photo + '" alt="">';
+  if (detail.photo) html += '<img src="' + escapeHtml(detail.photo) + '" alt="">';
   else html += '<div class="preview-no-photo">нет фото</div>';
-  html += '<div class="preview-title">' + detail.title + '</div>';
+  html += '<div class="preview-title">' + escapeHtml(detail.title) + '</div>';
   prev.innerHTML = html;
   var left = rect.left;
   prev.style.left = left + 'px';
@@ -559,26 +593,27 @@ function hidePreview() {
 // ================================
 
 function geoLocate() {
-  if (!navigator.geolocation) { alert('Геолокация не поддерживается'); return; }
+  if (!navigator.geolocation) { showToast('Геолокация не поддерживается', 'error'); return; }
   var btn = document.getElementById('geo-float');
   btn.classList.add('locating');
 
   navigator.geolocation.getCurrentPosition(function (pos) {
     var lat = pos.coords.latitude, lng = pos.coords.longitude;
     map.flyTo([lat, lng], 17, { duration: 1.2 });
+    if (userMarker) map.removeLayer(userMarker);
     userMarker = L.marker([lat, lng], {
       icon: L.divIcon({ html: '<div class="user-marker"></div>', className: '', iconSize: [14, 14], iconAnchor: [7, 7] })
     }).addTo(map);
     btn.classList.remove('locating');
   }, function (err) {
     btn.classList.remove('locating');
-    if (err.code === 1) alert('Разрешите доступ к геолокации');
-    else alert('Не удалось определить местоположение');
+    if (err.code === 1) showToast('Разрешите доступ к геолокации', 'error');
+    else showToast('Не удалось определить местоположение', 'error');
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
 function initMap() {
-  map = L.map('map', { center: [54.1935, 37.6180], zoom: 15, zoomControl: false });
+  map = L.map('map', { center: MAP_CENTER, zoom: MAP_ZOOM, zoomControl: false });
   L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -728,17 +763,17 @@ function doSearch(query) {
   var show = matches.slice(0, 7);
 
   show.forEach(d => {
-    var title = d.title;
-    var re = new RegExp('(' + searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    var title = escapeHtml(d.title);
+    var re = new RegExp('(' + escapeHtml(searchQuery).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
     var highlighted = title.replace(re, '<mark>$1</mark>');
     var catLabels = (d.category || 'other').split(',').map(c => (CATEGORIES[c.trim()] || CATEGORIES.other).label);
     var cat = { label: catLabels.join(' · ') };
 
-    html += '<div class="search-result-item" data-id="' + d.id + '">';
-    if (d.photo) html += '<img class="search-result-photo" src="' + d.photo + '" alt="">';
+    html += '<div class="search-result-item" data-id="' + escapeHtml(d.id) + '">';
+    if (d.photo) html += '<img class="search-result-photo" src="' + escapeHtml(d.photo) + '" alt="">';
     else html += '<div class="search-result-nophoto">●</div>';
     html += '<div class="search-result-info"><div class="search-result-title">' + highlighted + '</div>';
-    html += '<div class="search-result-meta">' + cat.label + (d.author ? ' · ' + d.author : '') + '</div></div></div>';
+    html += '<div class="search-result-meta">' + cat.label + (d.author ? ' · ' + escapeHtml(d.author) : '') + '</div></div></div>';
   });
 
   if (matches.length >= 2) {
@@ -906,17 +941,16 @@ function submitDetail() {
   var author = document.getElementById('input-author').value.trim();
   var cats = getSelectedCategories();
 
-  if (cats.length === 0) { alert('Выберите хотя бы одну категорию'); return; }
+  if (!title) { showToast('Укажите название', 'error'); return; }
+  if (!pendingCoords) { showToast('Кликните на карту, чтобы выбрать место', 'error'); return; }
+  if (cats.length === 0) { showToast('Выберите хотя бы одну категорию', 'error'); return; }
   var cat = cats.join(',');
   var fileInput = document.getElementById('input-photo');
 
-  if (!isAdmin && isReservedName(author)) { alert('Это имя зарезервировано'); return; }
+  if (!isAdmin && isReservedName(author)) { showToast('Это имя зарезервировано', 'error'); return; }
 
   var agreed = document.getElementById('input-agree').checked;
-  if (!agreed) { alert('Пожалуйста, подтвердите согласие с условиями'); return; }
-
-  if (!title) { alert('Укажите название'); return; }
-  if (!pendingCoords) { alert('Кликните на карту'); return; }
+  if (!agreed) { showToast('Пожалуйста, подтвердите согласие с условиями', 'error'); return; }
 
   var btn = document.getElementById('submit-detail');
   btn.disabled = true;
@@ -966,9 +1000,9 @@ function submitDetail() {
       btn.disabled = false;
       btn.textContent = 'Отправить';
 
-      if (!isAdmin) alert('Спасибо! Деталь отправлена на модерацию.');
+      if (!isAdmin) showToast('Спасибо! Деталь отправлена на модерацию.');
     }).catch(() => {
-      alert('Ошибка');
+      showToast('Ошибка отправки. Попробуйте ещё раз.', 'error');
       btn.disabled = false;
       btn.textContent = 'Отправить';
     });
@@ -1006,7 +1040,11 @@ async function toggleAdmin() {
     document.body.classList.remove('admin-mode');
     document.getElementById('admin-btn').classList.remove('active');
     closeModPanel();
-    await loadDetails();
+    try {
+      await loadDetails();
+    } catch (e) {
+      showToast('Не удалось обновить данные', 'error');
+    }
     renderMarkers();
     return;
   }
@@ -1030,9 +1068,6 @@ async function toggleAdmin() {
       data = { message: rawText };
     }
 
-    console.log('admin-login response status:', response.status);
-    console.log('admin-login response body:', data);
-
     if (response.ok && data.success) {
       isAdmin = true;
       document.body.classList.add('admin-mode');
@@ -1042,13 +1077,11 @@ async function toggleAdmin() {
       updateBadge();
       if (getPendingCount() > 0) openModPanel();
     } else {
-      alert(data.message || ('Неверный код или ошибка сервера (' + response.status + ')'));
+      showToast(data.message || ('Неверный код или ошибка сервера (' + response.status + ')'), 'error');
     }
   } catch (e) {
     console.error('Admin login error:', e);
-    var message = 'Ошибка подключения к серверу';
-    if (e && e.message) message += '\n' + e.message;
-    alert(message);
+    showToast('Ошибка подключения к серверу', 'error');
   }
 }
 
@@ -1075,10 +1108,10 @@ function renderModList() {
       var catLabels = (d.category || 'other').split(',').map(c => (CATEGORIES[c.trim()] || CATEGORIES.other).label);
       var cat = { label: catLabels.join(' · ') };
       html += '<div class="mod-card">';
-      if (d.photo) html += '<img class="mod-card-photo" src="' + d.photo + '" alt="">';
+      if (d.photo) html += '<img class="mod-card-photo" src="' + escapeHtml(d.photo) + '" alt="">';
       html += '<h3>' + escapeHtml(d.title) + '</h3>';
       if (d.description) html += '<p>' + escapeHtml(d.description) + '</p>';
-      html += '<div class="mod-card-cat">' + cat.label + ' · ' + (d.author || 'Аноним') + ' · ' + formatDate(d.created_at) + '</div>';
+      html += '<div class="mod-card-cat">' + cat.label + ' · ' + escapeHtml(d.author || 'Аноним') + ' · ' + formatDate(d.created_at) + '</div>';
       html += '<div class="mod-card-actions"><button class="mod-btn-approve" onclick="approveDetail(\'' + d.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="rejectDetail(\'' + d.id + '\')">✕ Отклонить</button></div></div>';
     });
   }
@@ -1090,7 +1123,7 @@ function renderModList() {
       var parentTitle = parentDetail ? parentDetail.title : 'Неизвестная точка';
       html += '<div class="mod-note-card">';
       html += '<div class="mod-note-text">' + escapeHtml(n.text) + '</div>';
-      html += '<div class="mod-note-meta">К точке: ' + escapeHtml(parentTitle) + ' · ' + (n.author || 'Аноним') + ' · ' + formatDate(n.created_at) + '</div>';
+      html += '<div class="mod-note-meta">К точке: ' + escapeHtml(parentTitle) + ' · ' + escapeHtml(n.author || 'Аноним') + ' · ' + formatDate(n.created_at) + '</div>';
       html += '<div class="mod-note-actions"><button class="mod-btn-approve" onclick="approveNote(\'' + n.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="deleteNote(\'' + n.id + '\')">✕ Отклонить</button></div></div>';
     });
   }
@@ -1199,14 +1232,6 @@ function initEvents() {
     if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
   });
 
-  var onbTermsLink = document.getElementById('onb-terms-link');
-  if (onbTermsLink) {
-    onbTermsLink.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('terms-modal').classList.add('open');
-    });
-  }
-
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeDetail();
@@ -1243,9 +1268,10 @@ function startApp() {
 
   const loadingEl = document.getElementById('loading');
 
+  // не финальная ошибка: данные могут догрузиться, поэтому только предупреждаем
   const loadingTimeout = setTimeout(() => {
     loadingEl.classList.add('hidden');
-    alert('Не удалось загрузить данные или карту. Попробуйте обновить страницу.');
+    showToast('Загрузка занимает дольше обычного…');
   }, 15000);
 
   loadDetails().then(() => {
@@ -1256,7 +1282,7 @@ function startApp() {
   }).catch(err => {
     clearTimeout(loadingTimeout);
     loadingEl.classList.add('hidden');
-    alert('Ошибка загрузки данных: ' + (err.message || err));
+    showToast('Не удалось загрузить данные. Обновите страницу.', 'error');
     console.error(err);
   });
 }
@@ -1307,13 +1333,18 @@ function initOnboarding() {
   btnFinish.addEventListener('click', dismissOnboarding);
 
   document.addEventListener('keydown', function handler(e) {
-    if (!document.getElementById('onboarding').classList.contains('hidden')) {
-      if (step1.style.display !== 'none') btnNext.click();
-      else if (step2.style.display !== 'none') btnNext2.click();
-      else {
-        dismissOnboarding();
-        document.removeEventListener('keydown', handler);
-      }
+    if (document.getElementById('onboarding').classList.contains('hidden')) {
+      document.removeEventListener('keydown', handler);
+      return;
+    }
+    // листаем шаги только по Enter/пробелу, чтобы Escape и Tab не закрывали онбординг
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    if (step1.style.display !== 'none') btnNext.click();
+    else if (step2.style.display !== 'none') btnNext2.click();
+    else {
+      dismissOnboarding();
+      document.removeEventListener('keydown', handler);
     }
   });
 }
@@ -1478,18 +1509,26 @@ function updateScoreUI() {
   guessScoreEl.style.fontSize = '18px';
 }
 
+function getGuessStats() {
+  try {
+    var stats = JSON.parse(localStorage.getItem('guessStats'));
+    if (stats && typeof stats.games === 'number' && typeof stats.totalScore === 'number') return stats;
+  } catch (e) { /* битые данные — начинаем заново */ }
+  return { games: 0, totalScore: 0 };
+}
+
 function saveGuessStats(score) {
-  let stats = localStorage.getItem('guessStats');
-  let obj = stats ? JSON.parse(stats) : { games: 0, totalScore: 0 };
+  var obj = getGuessStats();
   obj.games++;
   obj.totalScore += score;
-  localStorage.setItem('guessStats', JSON.stringify(obj));
+  try {
+    localStorage.setItem('guessStats', JSON.stringify(obj));
+  } catch (e) { /* приватный режим — статистика не сохранится */ }
 }
 
 function shareGuessResult() {
-  let stats = localStorage.getItem('guessStats');
-  let obj = stats ? JSON.parse(stats) : null;
-  let avgScore = obj && obj.games > 0 ? (obj.totalScore / obj.games).toFixed(0) : '—';
+  var obj = getGuessStats();
+  var avgScore = obj.games > 0 ? (obj.totalScore / obj.games).toFixed(0) : '—';
 
   var shareText = `Я набрал ${guessScore} очков в игре "Угадай локацию" на textula. Средний результат: ${avgScore}. Попробуй сам: https://textula.ru`;
 
@@ -1498,12 +1537,12 @@ function shareGuessResult() {
       title: 'textula — игра "Угадай локацию"',
       text: shareText,
       url: 'https://textula.ru'
-    }).catch(err => alert('Ошибка шаринга: ' + err));
+    }).catch(() => { /* пользователь отменил шаринг */ });
   } else {
     navigator.clipboard.writeText(shareText).then(() => {
-      alert('Текст результата скопирован в буфер обмена');
+      showToast('Результат скопирован в буфер обмена');
     }).catch(() => {
-      alert('Ваш браузер не поддерживает шаринг');
+      showToast('Ваш браузер не поддерживает шаринг', 'error');
     });
   }
 }
@@ -1511,7 +1550,7 @@ function shareGuessResult() {
 function startGuessMode() {
   var pool = details.filter(d => d.status === 'approved' && d.photo);
   if (pool.length < guessTotalRounds) {
-    alert('Недостаточно точек с фото для игры');
+    showToast('Недостаточно точек с фото для игры', 'error');
     return;
   }
 
@@ -1593,7 +1632,9 @@ function renderCurrentGuess() {
   guessMarkers.forEach(m => map.removeLayer(m));
   guessMarkers = [];
 
-  map.flyTo([point.lat, point.lng], 15, { duration: 1 });
+  // показываем обзор всех точек игры, а не загаданную — иначе ответ виден сразу
+  var bounds = L.latLngBounds(guessPoints.map(p => [p.lat, p.lng]));
+  map.flyToBounds(bounds, { padding: [60, 60], duration: 1 });
   startGuessTimer();
 }
 
@@ -1647,8 +1688,7 @@ function finishGuessGame() {
   clearGuessTimer();
   saveGuessStats(guessScore);
 
-  var stats = localStorage.getItem('guessStats');
-  var obj = stats ? JSON.parse(stats) : { games: 0, totalScore: 0 };
+  var obj = getGuessStats();
   var avgScore = obj.games > 0 ? Math.round(obj.totalScore / obj.games) : 0;
 
   guessResult.innerHTML = `
@@ -1698,7 +1738,7 @@ function approveDetail(id) {
     renderMarkers();
     renderModList();
     if (id === currentDetailId) showGalleryItem(galleryIndex);
-  });
+  }).catch(() => showToast('Не удалось одобрить деталь', 'error'));
 }
 
 function rejectDetail(id) {
@@ -1712,7 +1752,7 @@ function rejectDetail(id) {
     renderMarkers();
     renderModList();
     closeDetail();
-  });
+  }).catch(() => showToast('Не удалось удалить деталь', 'error'));
 }
 
 function deleteDetail() {
