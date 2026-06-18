@@ -163,7 +163,7 @@ function clearCategoryCheckboxes() {
   });
 }
 
-function compressImage(file, maxWidth = 1200, quality = 0.7) {
+function compressImage(file, maxWidth = 1000, quality = 0.5) {
   return new Promise(function (resolve) {
     var reader = new FileReader();
 
@@ -639,7 +639,7 @@ function submitPhoto() {
   var detailId = currentDetailId;
   var nextOrder = currentPhotos.reduce((m, p) => Math.max(m, p.sort_order || 0), 0) + 1;
 
-  compressImage(fileInput.files[0], 1200, 0.7)
+  compressImage(fileInput.files[0], 1000, 0.5)
     .then(uploadPhoto)
     .then(url => supaFetch('photos', {
       method: 'POST',
@@ -1255,7 +1255,7 @@ function submitDetail() {
   }
 
   if (fileInput.files && fileInput.files[0]) {
-    compressImage(fileInput.files[0], 1200, 0.7)
+    compressImage(fileInput.files[0], 1000, 0.5)
       .then(compressed => uploadPhoto(compressed))
       .then(url => saveToDb(url))
       .catch(err => {
