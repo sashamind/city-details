@@ -323,18 +323,21 @@ function sendEmailNotification(detail) {
 function uploadPhoto(file) {
   var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '') || 'photo.jpg';
   var fileName = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + safeName;
+  // На некоторых мобильных file.type пустой — без явного типа загрузка падает.
+  var contentType = file.type || 'image/jpeg';
 
   return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': file.type
+      'Content-Type': contentType
     },
     body: file
-  }).then(r => {
+  }).then(async function (r) {
     if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + fileName;
-    throw new Error('Upload failed');
+    var errText = await r.text().catch(function () { return ''; });
+    throw new Error('Upload ' + r.status + ': ' + errText.slice(0, 200));
   });
 }
 
@@ -1255,7 +1258,13 @@ function submitDetail() {
     compressImage(fileInput.files[0], 1200, 0.7)
       .then(compressed => uploadPhoto(compressed))
       .then(url => saveToDb(url))
-      .catch(() => saveToDb(''));
+      .catch(err => {
+        // Не сохраняем точку без фото молча — даём пользователю переотправить.
+        console.error('Photo upload failed:', err);
+        showToast('Не удалось загрузить фото. Попробуйте ещё раз или другое фото.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Отправить';
+      });
   } else {
     saveToDb('');
   }
