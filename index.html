@@ -505,13 +505,147 @@
       gap: 0;
     }
 
-    #detail-photo {
+    .photo-slider {
+      position: relative;
       width: 320px;
-      max-height: 400px;
-      object-fit: contain;
       flex-shrink: 0;
       background: #f5f5f5;
       border-right: 1px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #detail-photo {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .photo-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 48px;
+      border: none;
+      background: rgba(255,255,255,0.75);
+      color: #000;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: background 0.15s;
+    }
+
+    .photo-slider.has-many .photo-nav { display: flex; }
+    .photo-nav:hover { background: #fff; }
+    .photo-nav-prev { left: 0; }
+    .photo-nav-next { right: 0; }
+
+    .photo-counter {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 2px 7px;
+      letter-spacing: 0.04em;
+      z-index: 2;
+      display: none;
+    }
+
+    .photo-slider.has-many .photo-counter { display: block; }
+
+    .photo-caption {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      letter-spacing: 0.03em;
+      z-index: 2;
+      max-width: calc(100% - 16px);
+    }
+
+    .photo-caption:empty { display: none; }
+
+    .photo-caption .photo-pending {
+      color: #ffd34d;
+      margin-left: 6px;
+    }
+
+    .btn-add-photo {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid #000;
+      padding: 4px 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      color: #000;
+      z-index: 2;
+      transition: all 0.15s;
+    }
+
+    .btn-add-photo:hover { background: #000; color: #fff; }
+
+    .photo-admin-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      gap: 1px;
+      z-index: 3;
+    }
+
+    .photo-admin-bar:empty { display: none; }
+
+    .photo-admin-bar button {
+      flex: 1;
+      padding: 7px 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: none;
+      cursor: pointer;
+      background: rgba(0,0,0,0.82);
+      color: #fff;
+    }
+
+    .photo-admin-bar button:hover { background: #000; }
+    .photo-admin-bar button.pa-approve { background: rgba(20,120,40,0.9); }
+    .photo-admin-bar button.pa-delete { background: rgba(150,20,20,0.9); }
+    .photo-admin-bar button:disabled { opacity: 0.3; cursor: default; }
+
+    .photo-form-label {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      color: #000;
+    }
+
+    .photo-agree {
+      margin-top: 10px;
+      font-size: 12px;
     }
 
     .detail-info {
@@ -1650,7 +1784,8 @@
       }
       .filter-btn:last-child { border-right: none; }
       .panel-content { flex-direction: column; }
-      #detail-photo { width: 100%; max-height: 240px; border-right: none; border-bottom: 1px solid #000; }
+      .photo-slider { width: 100%; border-right: none; border-bottom: 1px solid #000; }
+      #detail-photo { max-height: 240px; }
       .detail-info { padding: 16px; }
       .detail-info h2 { font-size: 20px; }
       .add-button { bottom: 64px; right: 16px; width: 44px; height: 44px; }
@@ -1788,7 +1923,15 @@
     </div>
 
     <div class="panel-content">
-      <img id="detail-photo" src="" alt="">
+      <div id="photo-slider" class="photo-slider">
+        <img id="detail-photo" src="" alt="">
+        <button id="photo-prev" class="photo-nav photo-nav-prev" aria-label="Предыдущее фото">‹</button>
+        <button id="photo-next" class="photo-nav photo-nav-next" aria-label="Следующее фото">›</button>
+        <div id="photo-counter" class="photo-counter"></div>
+        <div id="photo-caption" class="photo-caption"></div>
+        <div id="photo-admin-bar" class="photo-admin-bar admin-only"></div>
+        <button id="btn-add-photo" class="btn-add-photo">+ фото</button>
+      </div>
       <div class="detail-info">
         <h2 id="detail-title"></h2>
         <p id="detail-description"></p>
@@ -1800,6 +1943,21 @@
         <div class="detail-actions admin-only">
           <button id="btn-approve-detail" class="btn-approve">✓ Одобрить</button>
           <button id="btn-delete-detail" class="btn-delete">✕ Удалить</button>
+        </div>
+
+        <div id="photo-form" class="note-form">
+          <label class="photo-form-label">Добавить фото к этой точке</label>
+          <input type="file" id="photo-input" accept="image/*">
+          <div id="photo-form-preview" class="photo-preview"></div>
+          <div class="note-form-row">
+            <input type="text" id="photo-author" class="note-form-author" placeholder="Ваше имя">
+            <button id="photo-submit" class="note-form-submit">Отправить</button>
+            <button id="photo-cancel" class="note-form-cancel">×</button>
+          </div>
+          <label class="agree-label photo-agree">
+            <input type="checkbox" id="photo-agree">
+            <span>Фото моё, согласен на размещение. <a href="#" id="photo-terms-link" class="terms-link">Условия</a></span>
+          </label>
         </div>
 
         <div id="notes-section" class="notes-section">

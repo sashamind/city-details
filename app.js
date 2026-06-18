@@ -30,6 +30,12 @@ var isTouchDevice = ('ontouchstart' in window);
 var searchQuery = '', connectLine = null, lastSearchMatches = [];
 var currentNotes = [], pendingNotes = [];
 
+// Фото-слайдер: обложка детали (details.photo_url) — самое старое фото,
+// плюс дополнительные из таблицы photos. currentPhotos — фото открытой точки,
+// pendingPhotos — все фото на модерации (для бейджа и панели модерации).
+var currentDetail = null, currentPhotos = [], pendingPhotos = [];
+var photoSlides = [], photoIndex = 0;
+
 var EMAILJS_PUBLIC_KEY = 'Vvny9RUBFyNXNw6nn';
 var EMAILJS_SERVICE_ID = 'service_textula';
 var EMAILJS_TEMPLATE_ID = 'template_0d0q9ed';
@@ -334,7 +340,7 @@ function uploadPhoto(file) {
 
 function getPendingCount() {
   var detailsPending = details.filter(d => d.status === 'pending').length;
-  return detailsPending + pendingNotes.length;
+  return detailsPending + pendingNotes.length + pendingPhotos.length;
 }
 
 var badgeRequestToken = 0;
@@ -345,7 +351,7 @@ function updateBadge() {
 
   if (isAdmin) {
     var token = ++badgeRequestToken;
-    loadPendingNotes().then(() => {
+    Promise.all([loadPendingNotes(), loadPendingPhotos()]).then(() => {
       if (token !== badgeRequestToken) return;
       var count = getPendingCount();
       if (count > 0) {
@@ -477,6 +483,238 @@ function deleteNote(id) {
 }
 
 // ================================
+// Фото-слайдер (хронология)
+// ================================
+
+function comparePhotos(a, b) {
+  if ((a.sort_order || 0) !== (b.sort_order || 0)) return (a.sort_order || 0) - (b.sort_order || 0);
+  return new Date(a.created_at || 0) - new Date(b.created_at || 0);
+}
+
+function loadPhotos(detailId, focusId) {
+  var base = 'photos?detail_id=eq.' + encodeURIComponent(detailId);
+  var query = isAdmin
+    ? base + '&order=sort_order.asc,created_at.asc'
+    : base + '&status=eq.approved&order=sort_order.asc,created_at.asc';
+
+  return supaFetch(query).then(data => {
+    currentPhotos = Array.isArray(data) ? data : [];
+    rebuildSlides(focusId);
+  }).catch(() => {
+    currentPhotos = [];
+    rebuildSlides(focusId);
+  });
+}
+
+function loadPendingPhotos() {
+  return supaFetch('photos?status=eq.pending&order=created_at.asc').then(data => {
+    pendingPhotos = Array.isArray(data) ? data : [];
+  }).catch(() => {
+    pendingPhotos = [];
+  });
+}
+
+function buildPhotoSlides(d) {
+  var slides = [];
+
+  // Обложка детали — самое первое (старое) фото.
+  if (d && d.photo) {
+    slides.push({ url: d.photo, date: d.created_at, author: d.author, status: 'approved', id: null, isCover: true });
+  }
+
+  currentPhotos.filter(p => p.status === 'approved').sort(comparePhotos).forEach(p => {
+    slides.push({ url: p.photo_url, date: p.created_at, author: p.author, status: 'approved', id: p.id, isCover: false });
+  });
+
+  // Фото на модерации видит только админ — в конце слайдера.
+  if (isAdmin) {
+    currentPhotos.filter(p => p.status === 'pending').sort(comparePhotos).forEach(p => {
+      slides.push({ url: p.photo_url, date: p.created_at, author: p.author, status: 'pending', id: p.id, isCover: false });
+    });
+  }
+
+  return slides;
+}
+
+function rebuildSlides(focusId) {
+  photoSlides = buildPhotoSlides(currentDetail);
+  if (focusId) {
+    var i = photoSlides.findIndex(s => s.id === focusId);
+    if (i >= 0) photoIndex = i;
+  }
+  if (photoIndex >= photoSlides.length) photoIndex = Math.max(0, photoSlides.length - 1);
+  renderPhotoSlider();
+}
+
+function renderPhotoSlider() {
+  var sliderEl = document.getElementById('photo-slider');
+  var img = document.getElementById('detail-photo');
+  var counter = document.getElementById('photo-counter');
+  var caption = document.getElementById('photo-caption');
+  var bar = document.getElementById('photo-admin-bar');
+  if (!sliderEl || !img) return;
+
+  if (photoIndex < 0) photoIndex = 0;
+  if (photoIndex >= photoSlides.length) photoIndex = Math.max(0, photoSlides.length - 1);
+
+  if (photoSlides.length === 0) {
+    img.style.display = 'none';
+    img.src = '';
+    counter.textContent = '';
+    caption.innerHTML = '';
+    bar.innerHTML = '';
+    sliderEl.classList.remove('has-many');
+    return;
+  }
+
+  var s = photoSlides[photoIndex];
+  img.style.display = '';
+  img.src = s.url;
+  sliderEl.classList.toggle('has-many', photoSlides.length > 1);
+  counter.textContent = (photoIndex + 1) + '/' + photoSlides.length;
+
+  var capParts = [];
+  if (s.date) capParts.push(formatDate(s.date));
+  if (s.author) capParts.push(escapeHtml(s.author));
+  var cap = capParts.join(' · ');
+  if (s.status === 'pending') cap += '<span class="photo-pending">на модерации</span>';
+  caption.innerHTML = cap;
+
+  bar.innerHTML = '';
+  if (isAdmin && s.id && !s.isCover) {
+    if (s.status === 'pending') {
+      bar.innerHTML =
+        '<button class="pa-approve" onclick="approvePhoto(\'' + s.id + '\')">✓ одобрить</button>' +
+        '<button class="pa-delete" onclick="deletePhoto(\'' + s.id + '\')">✕ удалить</button>';
+    } else {
+      var approved = photoSlides.filter(x => x.status === 'approved' && !x.isCover);
+      var pos = approved.findIndex(x => x.id === s.id);
+      var firstDis = pos <= 0 ? ' disabled' : '';
+      var lastDis = pos >= approved.length - 1 ? ' disabled' : '';
+      bar.innerHTML =
+        '<button onclick="movePhoto(\'' + s.id + '\',-1)"' + firstDis + '>← раньше</button>' +
+        '<button onclick="movePhoto(\'' + s.id + '\',1)"' + lastDis + '>позже →</button>' +
+        '<button class="pa-delete" onclick="deletePhoto(\'' + s.id + '\')">✕</button>';
+    }
+  }
+}
+
+function photoSliderNav(direction) {
+  if (photoSlides.length <= 1) return;
+  photoIndex = (photoIndex + direction + photoSlides.length) % photoSlides.length;
+  renderPhotoSlider();
+}
+
+function resetPhotoForm() {
+  var form = document.getElementById('photo-form');
+  if (form) form.classList.remove('open');
+  var input = document.getElementById('photo-input');
+  if (input) input.value = '';
+  var author = document.getElementById('photo-author');
+  if (author) author.value = '';
+  var agree = document.getElementById('photo-agree');
+  if (agree) agree.checked = false;
+  var preview = document.getElementById('photo-form-preview');
+  if (preview) preview.innerHTML = '';
+}
+
+function submitPhoto() {
+  if (!currentDetailId) return;
+
+  var fileInput = document.getElementById('photo-input');
+  var author = document.getElementById('photo-author').value.trim() || 'Аноним';
+  var agreed = document.getElementById('photo-agree').checked;
+
+  if (!fileInput.files || !fileInput.files[0]) { showToast('Выберите фото', 'error'); return; }
+  if (!isAdmin && isReservedName(author)) { showToast('Это имя зарезервировано', 'error'); return; }
+  if (!agreed) { showToast('Подтвердите согласие с условиями', 'error'); return; }
+
+  var btn = document.getElementById('photo-submit');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  var detailId = currentDetailId;
+  var nextOrder = currentPhotos.reduce((m, p) => Math.max(m, p.sort_order || 0), 0) + 1;
+
+  compressImage(fileInput.files[0], 1200, 0.7)
+    .then(uploadPhoto)
+    .then(url => supaFetch('photos', {
+      method: 'POST',
+      body: {
+        detail_id: detailId,
+        photo_url: url,
+        author: author,
+        status: isAdmin ? 'approved' : 'pending',
+        sort_order: nextOrder
+      }
+    }))
+    .then(() => {
+      resetPhotoForm();
+      btn.disabled = false;
+      btn.textContent = 'Отправить';
+      if (detailId === currentDetailId) loadPhotos(detailId);
+      updateBadge();
+      showToast(isAdmin ? 'Фото добавлено' : 'Спасибо! Фото отправлено на модерацию.');
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = 'Отправить';
+      showToast('Не удалось загрузить фото', 'error');
+    });
+}
+
+function approvePhoto(id) {
+  supaFetch('photos?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
+    pendingPhotos = pendingPhotos.filter(p => p.id !== id);
+    var p = currentPhotos.find(x => x.id === id);
+    if (p) p.status = 'approved';
+    rebuildSlides(id);
+    updateBadge();
+    renderModList();
+  }).catch(() => showToast('Не удалось одобрить фото', 'error'));
+}
+
+function deletePhoto(id) {
+  if (!confirm('Удалить фото?')) return;
+  supaFetch('photos?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(() => {
+    pendingPhotos = pendingPhotos.filter(p => p.id !== id);
+    currentPhotos = currentPhotos.filter(p => p.id !== id);
+    rebuildSlides();
+    updateBadge();
+    renderModList();
+  }).catch(() => showToast('Не удалось удалить фото', 'error'));
+}
+
+function movePhoto(id, direction) {
+  var list = currentPhotos.filter(p => p.status === 'approved').sort(comparePhotos);
+  var i = list.findIndex(p => p.id === id);
+  var j = i + direction;
+  if (i < 0 || j < 0 || j >= list.length) return;
+
+  var tmp = list[i];
+  list[i] = list[j];
+  list[j] = tmp;
+
+  // Нормализуем порядок (0,1,2,…) и сохраняем только изменившиеся записи.
+  var changed = [];
+  list.forEach((p, idx) => {
+    if ((p.sort_order || 0) !== idx) {
+      p.sort_order = idx;
+      changed.push(p);
+    }
+  });
+
+  rebuildSlides(id); // мгновенный отклик в UI
+
+  Promise.all(changed.map(p =>
+    supaFetch('photos?id=eq.' + p.id, { method: 'PATCH', body: { sort_order: p.sort_order }, prefer: 'return=minimal' })
+  )).catch(() => {
+    showToast('Не удалось сохранить порядок', 'error');
+    loadPhotos(currentDetailId, id);
+  });
+}
+
+// ================================
 // Детали / галерея
 // ================================
 
@@ -513,13 +751,13 @@ function showGalleryItem(idx) {
   var d = gallery[idx];
   currentDetailId = d.id;
 
-  var photo = document.getElementById('detail-photo');
-  photo.src = '';
-  photo.style.display = 'none';
-  if (d.photo) {
-    photo.style.display = '';
-    photo.src = d.photo;
-  }
+  currentDetail = d;
+  currentPhotos = [];
+  photoIndex = 0;
+  resetPhotoForm();
+  photoSlides = buildPhotoSlides(d);
+  renderPhotoSlider();
+  loadPhotos(d.id);
 
   document.getElementById('detail-title').textContent = d.title;
   document.getElementById('detail-description').textContent = d.description;
@@ -888,6 +1126,11 @@ function closeDetail() {
   galleryIndex = 0;
   highlightActiveMarker(null);
   currentNotes = [];
+  currentDetail = null;
+  currentPhotos = [];
+  photoSlides = [];
+  photoIndex = 0;
+  resetPhotoForm();
   document.getElementById('add-btn').style.display = '';
   document.getElementById('geo-float').style.display = '';
 }
@@ -1128,7 +1371,19 @@ function renderModList() {
     });
   }
 
-  if (pendingDetails.length === 0 && pendingNotes.length === 0) {
+  if (pendingPhotos.length > 0) {
+    html += '<div class="mod-section-title">Фото (' + pendingPhotos.length + ')</div>';
+    pendingPhotos.forEach(p => {
+      var parentDetail = details.find(d => d.id === p.detail_id);
+      var parentTitle = parentDetail ? parentDetail.title : 'Неизвестная точка';
+      html += '<div class="mod-card">';
+      html += '<img class="mod-card-photo" src="' + escapeHtml(p.photo_url) + '" alt="">';
+      html += '<div class="mod-card-cat">К точке: ' + escapeHtml(parentTitle) + ' · ' + escapeHtml(p.author || 'Аноним') + ' · ' + formatDate(p.created_at) + '</div>';
+      html += '<div class="mod-card-actions"><button class="mod-btn-approve" onclick="approvePhoto(\'' + p.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="deletePhoto(\'' + p.id + '\')">✕ Отклонить</button></div></div>';
+    });
+  }
+
+  if (pendingDetails.length === 0 && pendingNotes.length === 0 && pendingPhotos.length === 0) {
     html = '<div class="mod-empty"><div class="mod-empty-icon">✓</div><p>Нет заявок</p></div>';
   }
 
@@ -1218,6 +1473,46 @@ function initEvents() {
     document.getElementById('note-text').value = '';
     document.getElementById('note-author').value = '';
   });
+
+  // --- Фото-слайдер ---
+  document.getElementById('photo-prev').addEventListener('click', () => photoSliderNav(-1));
+  document.getElementById('photo-next').addEventListener('click', () => photoSliderNav(1));
+
+  document.getElementById('btn-add-photo').addEventListener('click', () => {
+    var form = document.getElementById('photo-form');
+    form.classList.toggle('open');
+    if (form.classList.contains('open')) document.getElementById('photo-input').focus();
+  });
+
+  document.getElementById('photo-submit').addEventListener('click', submitPhoto);
+  document.getElementById('photo-cancel').addEventListener('click', resetPhotoForm);
+
+  document.getElementById('photo-input').addEventListener('change', function () {
+    var f = this.files[0];
+    if (f) {
+      var r = new FileReader();
+      r.onload = function (e) {
+        document.getElementById('photo-form-preview').innerHTML = '<img src="' + e.target.result + '">';
+      };
+      r.readAsDataURL(f);
+    }
+  });
+
+  document.getElementById('photo-terms-link').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('terms-modal').classList.add('open');
+  });
+
+  // Свайп по фото на тач-устройствах.
+  var slider = document.getElementById('photo-slider');
+  var swipeX = null;
+  slider.addEventListener('touchstart', e => { swipeX = e.changedTouches[0].clientX; }, { passive: true });
+  slider.addEventListener('touchend', e => {
+    if (swipeX === null) return;
+    var dx = e.changedTouches[0].clientX - swipeX;
+    if (Math.abs(dx) > 40) photoSliderNav(dx < 0 ? 1 : -1);
+    swipeX = null;
+  }, { passive: true });
 
   document.getElementById('terms-link').addEventListener('click', e => {
     e.preventDefault();
