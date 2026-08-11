@@ -5,8 +5,14 @@
 var SUPABASE_URL = 'https://yzvigrtnwmkwkpmqmdzh.supabase.co';
 var SUPABASE_KEY = 'sb_publishable__AIRJSDqAYUK_vxwYhXmRA_4-QzSKkR'; // поменяй на актуальный, если нужно
 var ADMIN_LOGIN_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-login';
+var ADMIN_ACTION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-action';
+var ADMIN_TOKEN_KEY = 'textula_admin_token';
 
+// Публичный ключ ниже даёт право только читать одобренное и присылать записи на
+// модерацию — это ограничено политиками RLS. Всё, что меняет или удаляет данные,
+// идёт через функцию admin-action с токеном сессии администратора.
 var isAdmin = false;
+var adminToken = null;
 
 var MAP_CENTER = [54.1935, 37.6180];
 var MAP_ZOOM = 15;
@@ -243,6 +249,56 @@ function supaFetch(path, options = {}) {
   });
 }
 
+// Любое действие администратора: сервер проверит токен и сделает работу сам.
+function adminAction(action, payload) {
+  if (!adminToken) return Promise.reject(new Error('Нет сессии администратора'));
+
+  return fetch(ADMIN_ACTION_FUNCTION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: adminToken, action: action, payload: payload || {} })
+  }).then(async function (r) {
+    var data = null;
+    try { data = await r.json(); } catch (e) { data = null; }
+
+    if (r.status === 401) {
+      endAdminSession(true);
+      var expired = new Error('Сессия администратора истекла');
+      expired.sessionExpired = true;
+      throw expired;
+    }
+
+    if (!r.ok || !data || !data.success) {
+      throw new Error((data && data.message) || ('admin-action ' + r.status));
+    }
+
+    return data.data;
+  });
+}
+
+// Про истёкшую сессию пользователю уже сказали — не перекрываем это сообщение
+// частной ошибкой вроде «не удалось одобрить».
+function adminError(message) {
+  return function (err) {
+    if (err && err.sessionExpired) return;
+    showToast(message, 'error');
+  };
+}
+
+function endAdminSession(expired) {
+  isAdmin = false;
+  adminToken = null;
+
+  try { sessionStorage.removeItem(ADMIN_TOKEN_KEY); } catch (e) { /* приватный режим */ }
+
+  document.body.classList.remove('admin-mode');
+  var btn = document.getElementById('admin-btn');
+  if (btn) btn.classList.remove('active');
+  closeModPanel();
+
+  if (expired) showToast('Сессия администратора истекла — войдите заново', 'error');
+}
+
 function mapDetailRow(d) {
   return {
     id: d.id,
@@ -258,10 +314,10 @@ function mapDetailRow(d) {
   };
 }
 
+// Публичная загрузка точек. Всё, что на модерации, анониму не отдаст и сам
+// сервер — админка грузит данные через loadAllForAdmin.
 function loadDetails() {
-  var query = isAdmin
-    ? 'details?select=*&order=created_at.desc'
-    : 'details?select=*&status=eq.approved&order=created_at.desc';
+  var query = 'details?select=*&status=eq.approved&order=created_at.desc';
 
   return supaFetch(query).then(function (data) {
     if (Array.isArray(data)) details = data.map(mapDetailRow);
@@ -270,18 +326,18 @@ function loadDetails() {
 }
 
 function loadAllForAdmin() {
-  return supaFetch('details?select=*&order=created_at.desc').then(function (data) {
+  return adminAction('list_details').then(function (data) {
     if (Array.isArray(data)) details = data.map(mapDetailRow);
     updateBadge();
   });
 }
 
 function loadNotes(detailId) {
-  var query = isAdmin
-    ? 'notes?detail_id=eq.' + detailId + '&order=created_at.asc'
-    : 'notes?detail_id=eq.' + detailId + '&status=eq.approved&order=created_at.asc';
+  var request = isAdmin
+    ? adminAction('list_notes', { detail_id: detailId })
+    : supaFetch('notes?detail_id=eq.' + encodeURIComponent(detailId) + '&status=eq.approved&order=created_at.asc');
 
-  return supaFetch(query).then(data => {
+  return request.then(data => {
     currentNotes = Array.isArray(data) ? data : [];
     renderNotes();
   }).catch(() => {
@@ -290,11 +346,20 @@ function loadNotes(detailId) {
   });
 }
 
-function loadPendingNotes() {
-  return supaFetch('notes?status=eq.pending&order=created_at.asc').then(data => {
-    pendingNotes = Array.isArray(data) ? data : [];
+// Очередь модерации целиком: одним запросом и только для админа.
+function loadPendingQueue() {
+  if (!isAdmin) {
+    pendingNotes = [];
+    pendingPhotos = [];
+    return Promise.resolve();
+  }
+
+  return adminAction('list_pending').then(data => {
+    pendingNotes = data && Array.isArray(data.notes) ? data.notes : [];
+    pendingPhotos = data && Array.isArray(data.photos) ? data.photos : [];
   }).catch(() => {
     pendingNotes = [];
+    pendingPhotos = [];
   });
 }
 
@@ -354,7 +419,7 @@ function updateBadge() {
 
   if (isAdmin) {
     var token = ++badgeRequestToken;
-    Promise.all([loadPendingNotes(), loadPendingPhotos()]).then(() => {
+    loadPendingQueue().then(() => {
       if (token !== badgeRequestToken) return;
       var count = getPendingCount();
       if (count > 0) {
@@ -365,13 +430,8 @@ function updateBadge() {
       }
     });
   } else {
-    var count = details.filter(d => d.status === 'pending').length;
-    if (count > 0) {
-      badge.textContent = count;
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
-    }
+    // Не-админ вообще не видит записи на модерации, показывать нечего.
+    badge.classList.add('hidden');
   }
 }
 
@@ -444,8 +504,14 @@ function submitNote() {
     status: isAdmin ? 'approved' : 'pending'
   };
 
-  supaFetch('notes', { method: 'POST', body: row }).then(data => {
-    if (data && data[0]) currentNotes.push(data[0]);
+  // Аноним может только прислать запись на модерацию, поэтому и ответа с ней
+  // не получает (RLS не даёт прочитать неодобренное). Админ пишет через сервер.
+  var request = isAdmin
+    ? adminAction('create_note', { row: row })
+    : supaFetch('notes', { method: 'POST', body: row, prefer: 'return=minimal' });
+
+  request.then(data => {
+    if (isAdmin && data && data[0]) currentNotes.push(data[0]);
     renderNotes();
     document.getElementById('note-text').value = '';
     document.getElementById('note-author').value = '';
@@ -464,25 +530,25 @@ function submitNote() {
 }
 
 function approveNote(id) {
-  supaFetch('notes?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
+  adminAction('approve_note', { id: id }).then(() => {
     var n = currentNotes.find(x => x.id === id);
     if (n) n.status = 'approved';
     pendingNotes = pendingNotes.filter(x => x.id !== id);
     renderNotes();
     updateBadge();
     renderModList();
-  }).catch(() => showToast('Не удалось одобрить описание', 'error'));
+  }).catch(adminError('Не удалось одобрить описание'));
 }
 
 function deleteNote(id) {
   if (!confirm('Удалить описание?')) return;
-  supaFetch('notes?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(() => {
+  adminAction('delete_note', { id: id }).then(() => {
     currentNotes = currentNotes.filter(n => n.id !== id);
     pendingNotes = pendingNotes.filter(n => n.id !== id);
     renderNotes();
     updateBadge();
     renderModList();
-  }).catch(() => showToast('Не удалось удалить описание', 'error'));
+  }).catch(adminError('Не удалось удалить описание'));
 }
 
 // ================================
@@ -495,25 +561,17 @@ function comparePhotos(a, b) {
 }
 
 function loadPhotos(detailId, focusId) {
-  var base = 'photos?detail_id=eq.' + encodeURIComponent(detailId);
-  var query = isAdmin
-    ? base + '&order=sort_order.asc,created_at.asc'
-    : base + '&status=eq.approved&order=sort_order.asc,created_at.asc';
+  var request = isAdmin
+    ? adminAction('list_photos', { detail_id: detailId })
+    : supaFetch('photos?detail_id=eq.' + encodeURIComponent(detailId) +
+        '&status=eq.approved&order=sort_order.asc,created_at.asc');
 
-  return supaFetch(query).then(data => {
+  return request.then(data => {
     currentPhotos = Array.isArray(data) ? data : [];
     rebuildSlides(focusId);
   }).catch(() => {
     currentPhotos = [];
     rebuildSlides(focusId);
-  });
-}
-
-function loadPendingPhotos() {
-  return supaFetch('photos?status=eq.pending&order=created_at.asc').then(data => {
-    pendingPhotos = Array.isArray(data) ? data : [];
-  }).catch(() => {
-    pendingPhotos = [];
   });
 }
 
@@ -641,16 +699,19 @@ function submitPhoto() {
 
   compressImage(fileInput.files[0], 1000, 0.5)
     .then(uploadPhoto)
-    .then(url => supaFetch('photos', {
-      method: 'POST',
-      body: {
+    .then(url => {
+      var row = {
         detail_id: detailId,
         photo_url: url,
         author: author,
         status: isAdmin ? 'approved' : 'pending',
         sort_order: nextOrder
-      }
-    }))
+      };
+
+      return isAdmin
+        ? adminAction('create_photo', { row: row })
+        : supaFetch('photos', { method: 'POST', body: row, prefer: 'return=minimal' });
+    })
     .then(() => {
       resetPhotoForm();
       btn.disabled = false;
@@ -667,25 +728,25 @@ function submitPhoto() {
 }
 
 function approvePhoto(id) {
-  supaFetch('photos?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
+  adminAction('approve_photo', { id: id }).then(() => {
     pendingPhotos = pendingPhotos.filter(p => p.id !== id);
     var p = currentPhotos.find(x => x.id === id);
     if (p) p.status = 'approved';
     rebuildSlides(id);
     updateBadge();
     renderModList();
-  }).catch(() => showToast('Не удалось одобрить фото', 'error'));
+  }).catch(adminError('Не удалось одобрить фото'));
 }
 
 function deletePhoto(id) {
   if (!confirm('Удалить фото?')) return;
-  supaFetch('photos?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(() => {
+  adminAction('delete_photo', { id: id }).then(() => {
     pendingPhotos = pendingPhotos.filter(p => p.id !== id);
     currentPhotos = currentPhotos.filter(p => p.id !== id);
     rebuildSlides();
     updateBadge();
     renderModList();
-  }).catch(() => showToast('Не удалось удалить фото', 'error'));
+  }).catch(adminError('Не удалось удалить фото'));
 }
 
 function movePhoto(id, direction) {
@@ -709,9 +770,9 @@ function movePhoto(id, direction) {
 
   rebuildSlides(id); // мгновенный отклик в UI
 
-  Promise.all(changed.map(p =>
-    supaFetch('photos?id=eq.' + p.id, { method: 'PATCH', body: { sort_order: p.sort_order }, prefer: 'return=minimal' })
-  )).catch(() => {
+  adminAction('reorder_photos', {
+    items: changed.map(p => ({ id: p.id, sort_order: p.sort_order }))
+  }).catch(() => {
     showToast('Не удалось сохранить порядок', 'error');
     loadPhotos(currentDetailId, id);
   });
@@ -753,6 +814,7 @@ function showGalleryItem(idx) {
   galleryIndex = idx;
   var d = gallery[idx];
   currentDetailId = d.id;
+  syncUrlToDetail(d.id, true); // листание галереи не должно засорять историю
 
   currentDetail = d;
   currentPhotos = [];
@@ -1031,8 +1093,7 @@ function doSearch(query) {
       var d = details.find(x => x.id === id);
       if (d) {
         resultsEl.classList.add('hidden');
-        map.flyTo([d.lat, d.lng], 17, { duration: 0.8 });
-        setTimeout(() => openDetail(d), 900);
+        focusDetail(d);
       }
     });
   });
@@ -1106,24 +1167,118 @@ function removeConnectLine() {
 // ================================
 
 function openDetail(d) {
-  gallery = buildGallery();
-  galleryIndex = 0;
+  if (!d) return;
 
-  for (var i = 0; i < gallery.length; i++) {
-    if (gallery[i].id === d.id) {
-      galleryIndex = i;
-      break;
-    }
+  // Поиск ищет по всем точкам и фильтр категорий не учитывает, поэтому открытая
+  // точка может быть им скрыта. Сбрасываем фильтр, иначе на карте не будет даже
+  // её маркера.
+  if (activeFilter !== 'all' && (d.category || '').split(',').indexOf(activeFilter) === -1) {
+    setFilter('all');
   }
 
+  gallery = buildGallery();
+  galleryIndex = gallery.findIndex(x => x.id === d.id);
+
+  // Точка может не попасть в галерею: она строится по видимой области карты, а
+  // карта, например, ещё летит к ней. Раньше в этом случае открывалась чужая
+  // деталь по индексу 0 (или падало на пустой галерее) — показываем саму точку.
+  if (galleryIndex === -1) {
+    gallery = [d];
+    galleryIndex = 0;
+  }
+
+  syncUrlToDetail(d.id, false);
   showGalleryItem(galleryIndex);
   document.getElementById('detail-panel').classList.remove('hidden');
   document.getElementById('add-btn').style.display = 'none';
   document.getElementById('geo-float').style.display = 'none';
 }
 
+// ================================
+// Ссылки на конкретную точку
+// ================================
+
+function detailPath(id) {
+  return window.location.pathname + '?d=' + encodeURIComponent(id);
+}
+
+// Держим адресную строку в согласии с открытой точкой, чтобы ссылкой можно было
+// поделиться, а «Назад» на телефоне закрывал панель.
+function syncUrlToDetail(id, replace) {
+  if (!window.history || !window.history.pushState) return;
+
+  var url = id ? detailPath(id) : window.location.pathname;
+  if (window.location.pathname + window.location.search === url) return;
+
+  try {
+    if (replace) window.history.replaceState({ d: id || null }, '', url);
+    else window.history.pushState({ d: id || null }, '', url);
+  } catch (e) { /* file:// и подобные — просто не трогаем адрес */ }
+}
+
+function detailIdFromUrl() {
+  try {
+    return new URLSearchParams(window.location.search).get('d');
+  } catch (e) {
+    return null;
+  }
+}
+
+// Перелетаем к точке и открываем её, дождавшись конца анимации: иначе точка
+// может ещё не попасть в видимую область, из которой строится галерея.
+function focusDetail(d) {
+  var opened = false;
+
+  function open() {
+    if (opened) return;
+    opened = true;
+    openDetail(d);
+  }
+
+  map.once('moveend', open);
+  setTimeout(open, 1000); // подстраховка, если карта уже стоит на месте
+  map.flyTo([d.lat, d.lng], Math.max(map.getZoom(), 17), { duration: 0.8 });
+}
+
+function openDetailFromUrl() {
+  var id = detailIdFromUrl();
+  if (!id) return;
+
+  var d = details.find(x => x.id === id);
+  if (!d) {
+    showToast('Точка не найдена — возможно, она ещё на модерации', 'error');
+    syncUrlToDetail(null, true);
+    return;
+  }
+
+  focusDetail(d);
+}
+
+function shareCurrentDetail() {
+  if (!currentDetail) return;
+
+  var url = window.location.origin + detailPath(currentDetail.id);
+  var title = currentDetail.title || 'textula';
+
+  if (navigator.share) {
+    navigator.share({ title: 'textula — ' + title, text: title, url: url })
+      .catch(() => { /* пользователь отменил */ });
+    return;
+  }
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('Ссылка скопирована'))
+      .catch(() => showToast('Не удалось скопировать ссылку', 'error'));
+    return;
+  }
+
+  showToast('Ссылка: ' + url);
+}
+
 function closeDetail() {
   document.getElementById('detail-panel').classList.add('hidden');
+  syncUrlToDetail(null, true);
   currentDetailId = null;
   gallery = [];
   galleryIndex = 0;
@@ -1214,22 +1369,14 @@ function submitDetail() {
       author: author || 'Аноним'
     };
 
-    supaFetch('details', { method: 'POST', body: row }).then(data => {
-      if (data && data[0]) {
-        var d = data[0];
-        details.push({
-          id: d.id,
-          title: d.title,
-          description: d.description || '',
-          category: d.category,
-          lat: d.lat,
-          lng: d.lng,
-          photo: d.photo_url || '',
-          status: d.status,
-          author: d.author || '',
-          created_at: d.created_at || ''
-        });
-      }
+    // Аноним отправляет точку на модерацию и ответа с ней не получает: читать
+    // неодобренное ему нельзя. Свою точку он всё равно не увидел бы на карте.
+    var request = isAdmin
+      ? adminAction('create_detail', { row: row })
+      : supaFetch('details', { method: 'POST', body: row, prefer: 'return=minimal' });
+
+    request.then(data => {
+      if (isAdmin && data && data[0]) details.push(mapDetailRow(data[0]));
 
       sendEmailNotification({
         title,
@@ -1288,10 +1435,7 @@ function setFilter(f) {
 
 async function toggleAdmin() {
   if (isAdmin) {
-    isAdmin = false;
-    document.body.classList.remove('admin-mode');
-    document.getElementById('admin-btn').classList.remove('active');
-    closeModPanel();
+    endAdminSession(false);
     try {
       await loadDetails();
     } catch (e) {
@@ -1320,14 +1464,10 @@ async function toggleAdmin() {
       data = { message: rawText };
     }
 
-    if (response.ok && data.success) {
-      isAdmin = true;
-      document.body.classList.add('admin-mode');
-      document.getElementById('admin-btn').classList.add('active');
-      await loadAllForAdmin();
-      renderMarkers();
-      updateBadge();
-      if (getPendingCount() > 0) openModPanel();
+    if (response.ok && data.success && data.token) {
+      adminToken = data.token;
+      try { sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token); } catch (e) { /* приватный режим */ }
+      await enterAdminMode();
     } else {
       showToast(data.message || ('Неверный код или ошибка сервера (' + response.status + ')'), 'error');
     }
@@ -1335,6 +1475,37 @@ async function toggleAdmin() {
     console.error('Admin login error:', e);
     showToast('Ошибка подключения к серверу', 'error');
   }
+}
+
+async function enterAdminMode() {
+  isAdmin = true;
+  document.body.classList.add('admin-mode');
+  document.getElementById('admin-btn').classList.add('active');
+
+  try {
+    await loadAllForAdmin();
+  } catch (e) {
+    // токен не приняли — endAdminSession уже вызван внутри adminAction
+    if (!isAdmin) return;
+    endAdminSession(false);
+    showToast('Не удалось загрузить данные админки', 'error');
+    return;
+  }
+
+  renderMarkers();
+  updateBadge();
+  if (getPendingCount() > 0) openModPanel();
+}
+
+// Токен живёт в sessionStorage: перезагрузка страницы больше не выкидывает из
+// админки, но и не оставляет вход открытым после закрытия вкладки.
+function restoreAdminSession() {
+  var saved = null;
+  try { saved = sessionStorage.getItem(ADMIN_TOKEN_KEY); } catch (e) { saved = null; }
+  if (!saved) return;
+
+  adminToken = saved;
+  enterAdminMode();
 }
 
 function openModPanel() {
@@ -1405,6 +1576,22 @@ function renderModList() {
 
 function initEvents() {
   document.getElementById('close-panel').addEventListener('click', closeDetail);
+  document.getElementById('share-detail').addEventListener('click', shareCurrentDetail);
+
+  // «Назад» в браузере закрывает панель или возвращает к предыдущей точке.
+  window.addEventListener('popstate', () => {
+    var id = detailIdFromUrl();
+
+    if (!id) {
+      if (currentDetailId) closeDetail();
+      return;
+    }
+
+    if (id === currentDetailId) return;
+    var d = details.find(x => x.id === id);
+    if (d) focusDetail(d);
+  });
+
   document.getElementById('nav-prev').addEventListener('click', () => navigateDetail(-1));
   document.getElementById('nav-next').addEventListener('click', () => navigateDetail(1));
   document.getElementById('add-btn').addEventListener('click', openAddForm);
@@ -1537,6 +1724,8 @@ function initEvents() {
   });
 
   document.addEventListener('keydown', e => {
+    // пока открыт онбординг, клавиши обрабатывает он
+    if (!document.getElementById('onboarding').classList.contains('hidden')) return;
     if (e.key === 'Escape') {
       closeDetail();
       closeModPanel();
@@ -1562,10 +1751,21 @@ if ('serviceWorker' in navigator) {
 // ================================
 
 var mapReady = false;
+var appStarted = false;
 var ONBOARDING_DAYS = 7;
 var onboardingSeen = localStorage.getItem('textula_onboarding');
 
 function startApp() {
+  if (appStarted) return;
+
+  // Без Leaflet рисовать нечего: раньше в этом случае был просто белый экран.
+  if (typeof L === 'undefined') {
+    document.getElementById('loading').classList.add('hidden');
+    showToast('Не удалось загрузить карту. Обновите страницу.', 'error');
+    return;
+  }
+
+  appStarted = true;
   initMap();
   initEvents();
   initGuessElements();
@@ -1583,6 +1783,8 @@ function startApp() {
     renderMarkers();
     mapReady = true;
     loadingEl.classList.add('hidden');
+    restoreAdminSession();
+    openDetailFromUrl();
   }).catch(err => {
     clearTimeout(loadingTimeout);
     loadingEl.classList.add('hidden');
@@ -1595,7 +1797,8 @@ function dismissOnboarding() {
   var onb = document.getElementById('onboarding');
   if (onb.classList.contains('hidden')) return;
   localStorage.setItem('textula_onboarding', Date.now().toString());
-  document.getElementById('loading').classList.remove('hidden');
+  // при первом показе за онбордингом ещё нет приложения — показываем лоадер и стартуем
+  if (!appStarted) document.getElementById('loading').classList.remove('hidden');
   onb.style.transition = 'opacity 0.5s ease';
   onb.style.opacity = '0';
   setTimeout(() => {
@@ -1603,6 +1806,32 @@ function dismissOnboarding() {
     onb.classList.add('hidden');
     startApp();
   }, 500);
+}
+
+// повторный показ онбординга по кнопке «?» — приложение при этом уже работает
+function showOnboarding() {
+  var onb = document.getElementById('onboarding');
+  if (!onb.classList.contains('hidden')) return;
+
+  var step1 = document.getElementById('step-1');
+  var step2 = document.getElementById('step-2');
+  var step3 = document.getElementById('step-3');
+  step1.style.display = 'block';
+  step2.style.display = 'none';
+  step2.style.opacity = '0';
+  step3.style.display = 'none';
+  step3.style.opacity = '0';
+
+  document.getElementById('onboarding-close').classList.remove('hidden');
+  initOnboardingLottie();
+
+  onb.classList.remove('hidden');
+  onb.style.display = 'flex';
+  onb.style.opacity = '0';
+  requestAnimationFrame(() => {
+    onb.style.transition = 'opacity 0.4s ease';
+    onb.style.opacity = '1';
+  });
 }
 
 function initOnboarding() {
@@ -1636,30 +1865,33 @@ function initOnboarding() {
 
   btnFinish.addEventListener('click', dismissOnboarding);
 
-  document.addEventListener('keydown', function handler(e) {
-    if (document.getElementById('onboarding').classList.contains('hidden')) {
-      document.removeEventListener('keydown', handler);
+  document.getElementById('onboarding-close').addEventListener('click', dismissOnboarding);
+
+  document.addEventListener('keydown', function (e) {
+    if (document.getElementById('onboarding').classList.contains('hidden')) return;
+    // закрыть по Escape можно только при повторном показе: на первом нужно принять условия
+    if (e.key === 'Escape') {
+      if (appStarted) {
+        e.preventDefault();
+        dismissOnboarding();
+      }
       return;
     }
-    // листаем шаги только по Enter/пробелу, чтобы Escape и Tab не закрывали онбординг
+    // листаем шаги только по Enter/пробелу, чтобы Tab не закрывал онбординг
     if (e.key !== 'Enter' && e.key !== ' ') return;
     e.preventDefault();
     if (step1.style.display !== 'none') btnNext.click();
     else if (step2.style.display !== 'none') btnNext2.click();
-    else {
-      dismissOnboarding();
-      document.removeEventListener('keydown', handler);
-    }
+    else dismissOnboarding();
   });
 }
 
-if (onboardingSeen && (Date.now() - parseInt(onboardingSeen, 10)) < ONBOARDING_DAYS * 24 * 60 * 60 * 1000) {
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('onboarding').classList.add('hidden');
-  document.getElementById('loading').classList.remove('hidden');
-  startApp();
-} else {
-  var lottieAnim = lottie.loadAnimation({
+var lottieAnim = null;
+
+function initOnboardingLottie() {
+  if (lottieAnim) return; // анимация зациклена сама по себе, второй раз грузить не нужно
+
+  lottieAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-container'),
     renderer: 'svg',
     loop: false,
@@ -1681,8 +1913,18 @@ if (onboardingSeen && (Date.now() - parseInt(onboardingSeen, 10)) < ONBOARDING_D
       lottieAnim.play();
     }, 3000);
   });
+}
 
-  initOnboarding();
+initOnboarding();
+document.getElementById('help-btn').addEventListener('click', showOnboarding);
+
+if (onboardingSeen && (Date.now() - parseInt(onboardingSeen, 10)) < ONBOARDING_DAYS * 24 * 60 * 60 * 1000) {
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('onboarding').classList.add('hidden');
+  document.getElementById('loading').classList.remove('hidden');
+  startApp();
+} else {
+  initOnboardingLottie();
 }
 
 // ================================
@@ -2035,14 +2277,14 @@ function approveDetail(id) {
   if (!id) id = currentDetailId;
   if (!id) return;
 
-  supaFetch('details?id=eq.' + id, { method: 'PATCH', body: { status: 'approved' } }).then(() => {
+  adminAction('approve_detail', { id: id }).then(() => {
     var d = details.find(x => x.id === id);
     if (d) d.status = 'approved';
     updateBadge();
     renderMarkers();
     renderModList();
     if (id === currentDetailId) showGalleryItem(galleryIndex);
-  }).catch(() => showToast('Не удалось одобрить деталь', 'error'));
+  }).catch(adminError('Не удалось одобрить деталь'));
 }
 
 function rejectDetail(id) {
@@ -2050,13 +2292,14 @@ function rejectDetail(id) {
   if (!id) return;
   if (!confirm('Отклонить и удалить деталь?')) return;
 
-  supaFetch('details?id=eq.' + id, { method: 'DELETE', prefer: 'return=minimal' }).then(() => {
+  // Сервер заодно удалит описания, фото и файлы этой точки.
+  adminAction('delete_detail', { id: id }).then(() => {
     details = details.filter(d => d.id !== id);
     updateBadge();
     renderMarkers();
     renderModList();
     closeDetail();
-  }).catch(() => showToast('Не удалось удалить деталь', 'error'));
+  }).catch(adminError('Не удалось удалить деталь'));
 }
 
 function deleteDetail() {

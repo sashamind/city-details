@@ -1,11 +1,20 @@
-const CACHE_NAME = 'city-details-v3';
+const CACHE_NAME = 'city-details-v4';
 const urlsToCache = [
     '/',
     '/index.html',
     '/app.js',
     '/manifest.json',
     '/favicon.png',
-    '/icon-192.png'
+    '/icon-192.png',
+    // Библиотеки лежат локально, поэтому их можно положить в офлайн-кэш —
+    // раньше карта офлайн не работала вовсе, так как Leaflet грузился с CDN.
+    '/vendor/leaflet/leaflet.js',
+    '/vendor/leaflet/leaflet.css',
+    '/vendor/markercluster/leaflet.markercluster.js',
+    '/vendor/markercluster/MarkerCluster.css',
+    '/vendor/markercluster/MarkerCluster.Default.css',
+    '/vendor/lottie/lottie.min.js',
+    '/vendor/fonts/fonts.css'
 ];
 
 self.addEventListener('install', (event) => {

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>textula — детали города</title>
+  <meta name="description" content="Карта визуальных находок Тулы: фактуры стен, старинные вывески, узоры решёток. Смотрите детали города и добавляйте свои.">
+  <link rel="canonical" href="https://textula.ru/">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
@@ -25,18 +27,18 @@
   <meta name="twitter:image" content="https://textula.ru/og-image.png">
 
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Библиотеки и шрифты лежат в репозитории: сайт не должен зависеть от того,
+       доступны ли unpkg, cdnjs и fonts.googleapis.com у конкретного человека. -->
+  <link rel="stylesheet" href="vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.css">
+  <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.Default.css">
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/markercluster/leaflet.markercluster.js"></script>
+  <script src="vendor/lottie/lottie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -141,6 +143,24 @@
 
     .header-btn:hover { border-bottom-color: #000; }
     .header-btn.active { border-bottom-color: #000; }
+
+    .header-btn-help {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 1px solid #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .header-btn-help:hover {
+      background: #000;
+      color: #fff;
+    }
 
     .search-bar {
       position: fixed;
@@ -453,6 +473,13 @@
       display: flex;
       align-items: center;
       height: 100%;
+    }
+
+    /* В правой группе разделитель нужен слева, иначе кнопка «поделиться»
+       отделяется от крестика чертой не с той стороны. */
+    .panel-toolbar-right .nav-btn {
+      border-right: none;
+      border-left: 1px solid #000;
     }
 
     .nav-btn {
@@ -1195,6 +1222,24 @@
 
     .onboarding.hidden { display: none; }
 
+    .onboarding-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 22px;
+      line-height: 1;
+      color: #999;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .onboarding-close:hover { color: #000; }
+    .onboarding-close.hidden { display: none; }
+
     .onboarding-content {
       text-align: center;
       max-width: 420px;
@@ -1665,7 +1710,8 @@
     body.guess-mode #search-bar,
     body.guess-mode #add-btn,
     body.guess-mode #geo-float,
-    body.guess-mode .site-header #admin-btn {
+    body.guess-mode .site-header #admin-btn,
+    body.guess-mode .site-header #help-btn {
       pointer-events: none;
       opacity: 0.4;
     }
@@ -1846,6 +1892,7 @@
 
 <body>
   <div id="onboarding" class="onboarding">
+    <button id="onboarding-close" class="onboarding-close hidden" title="Закрыть" aria-label="Закрыть">×</button>
     <div class="onboarding-content">
       <div id="lottie-container" style="width: 98px; height: 30px; margin: 0 auto 24px;"></div>
       <div class="onboarding-dots">
@@ -1891,6 +1938,7 @@
         ⚙ Админ<span id="pending-badge" class="badge hidden">0</span>
       </button>
      <button id="toggle-guess-mode" class="header-btn" style="display:none;">▶ Играть</button>
+      <button id="help-btn" class="header-btn header-btn-help" title="Как это работает" aria-label="Как это работает">?</button>
     </div>
   </div>
 
@@ -1918,6 +1966,7 @@
         <span id="panel-counter" class="panel-counter"></span>
       </div>
       <div class="panel-toolbar-right">
+        <button id="share-detail" class="nav-btn" title="Поделиться ссылкой" aria-label="Поделиться ссылкой">↗</button>
         <button id="close-panel" class="close-btn">×</button>
       </div>
     </div>
