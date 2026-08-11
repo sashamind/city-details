@@ -573,6 +573,57 @@
       display: block;
     }
 
+    /* Пока новое фото не загрузилось, прячем картинку: иначе в <img> висит
+       предыдущий снимок и точка какое-то время показывает чужое фото. */
+    .photo-slider.photo-loading #detail-photo,
+    .photo-slider.photo-failed #detail-photo {
+      visibility: hidden;
+    }
+
+    .photo-loader {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      pointer-events: none;
+    }
+
+    .photo-slider.photo-loading .photo-loader,
+    .photo-slider.photo-failed .photo-loader {
+      display: flex;
+    }
+
+    .photo-loader-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .photo-loader-dots span {
+      width: 5px;
+      height: 5px;
+      background: #000;
+      border-radius: 50%;
+      animation: onbDot 1.4s ease infinite;
+    }
+
+    .photo-loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .photo-loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    .photo-loader-error {
+      display: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: #999;
+      text-align: center;
+      padding: 0 16px;
+    }
+
+    .photo-slider.photo-failed .photo-loader-dots { display: none; }
+    .photo-slider.photo-failed .photo-loader-error { display: block; }
+
     .photo-nav {
       position: absolute;
       top: 50%;
@@ -1284,6 +1335,48 @@
       color: #666;
     }
 
+    /* Все шаги живут в одном гриде: строка под текст, строка под кнопку, строка
+       под условия. Обёртки шагов прозрачны для раскладки (display: contents),
+       поэтому высота каждой строки считается по самому длинному шагу сразу для
+       всех. Так при переключении не двигаются ни логотип, ни кнопка — раньше
+       блок был просто отцентрован и ездил вслед за длиной текста. */
+    .onboarding-steps {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .onboarding-step {
+      display: contents;
+    }
+
+    .onboarding-step > * {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .onboarding-step.active > * {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .onboarding-step .onboarding-desc {
+      grid-area: 1 / 1;
+      align-self: center;
+    }
+
+    /* Одинаковая ширина, иначе более длинное «Исследовать» на последнем шаге
+       раздвигает края кнопки относительно «Далее». */
+    .onboarding-step .onboarding-enter {
+      grid-area: 2 / 1;
+      justify-self: center;
+      min-width: 190px;
+    }
+
+    .onboarding-step .onboarding-terms {
+      grid-area: 3 / 1;
+    }
+
     .onboarding-desc {
       font-family: 'Source Serif 4', Georgia, serif;
       font-size: 16px;
@@ -1935,17 +2028,18 @@
       </div>
       <h1 class="onboarding-title"><span>— детали города</span></h1>
 
-      <div id="step-1">
+      <div class="onboarding-steps">
+      <div id="step-1" class="onboarding-step active">
         <p class="onboarding-desc">Проект визуального исследования города через детали. Фактуры стен, старинные вывески, узоры решёток — переплетение того, мимо чего мы проходим каждый день.</p>
         <button id="btn-next" class="onboarding-enter">Далее &rarr;</button>
       </div>
 
-      <div id="step-2" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+      <div id="step-2" class="onboarding-step">
         <p class="onboarding-desc">Что-то останется, что-то исчезнет. Самое время это зафиксировать.</p>
         <button id="btn-next2" class="onboarding-enter">Далее &rarr;</button>
       </div>
 
-      <div id="step-3" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+      <div id="step-3" class="onboarding-step">
         <p class="onboarding-desc">Изучай детали города и добавляй свои визуальные находки <span class="plus-icon">+</span>. Скоро они появятся на карте!</p>
         <button id="btn-finish" class="onboarding-enter">Исследовать</button>
         <p class="onboarding-terms">
@@ -1954,6 +2048,7 @@
           и
           <a href="privacy.html" target="_blank" class="terms-link">политику конфиденциальности</a>
         </p>
+      </div>
       </div>
 
       <p class="onboarding-hint">или нажмите любую клавишу</p>
@@ -2007,6 +2102,10 @@
     <div class="panel-content">
       <div id="photo-slider" class="photo-slider">
         <img id="detail-photo" src="" alt="">
+        <div class="photo-loader" aria-hidden="true">
+          <div class="photo-loader-dots"><span></span><span></span><span></span></div>
+          <div class="photo-loader-error">фото не загрузилось</div>
+        </div>
         <button id="photo-prev" class="photo-nav photo-nav-prev" aria-label="Предыдущее фото">‹</button>
         <button id="photo-next" class="photo-nav photo-nav-next" aria-label="Следующее фото">›</button>
         <div id="photo-counter" class="photo-counter"></div>

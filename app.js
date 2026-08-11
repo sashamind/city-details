@@ -607,6 +607,44 @@ function rebuildSlides(focusId) {
   renderPhotoSlider();
 }
 
+// Показ фото с ожиданием загрузки. Токен нужен, чтобы медленно приехавшее
+// старое фото не перебило уже открытую другую точку.
+var photoLoadToken = 0;
+
+function showPhoto(sliderEl, img, url) {
+  var token = ++photoLoadToken;
+  var alreadyShown = img.getAttribute('src') === url && img.complete && img.naturalWidth > 0;
+
+  sliderEl.classList.remove('photo-failed');
+  img.onload = null;
+  img.onerror = null;
+
+  if (alreadyShown) {
+    sliderEl.classList.remove('photo-loading');
+    return;
+  }
+
+  sliderEl.classList.add('photo-loading');
+
+  img.onload = function () {
+    if (token !== photoLoadToken) return;
+    sliderEl.classList.remove('photo-loading');
+  };
+
+  img.onerror = function () {
+    if (token !== photoLoadToken) return;
+    sliderEl.classList.remove('photo-loading');
+    sliderEl.classList.add('photo-failed');
+  };
+
+  img.src = url;
+
+  // фото из кэша может быть готово ещё до подписки на onload
+  if (img.complete && img.naturalWidth > 0) {
+    sliderEl.classList.remove('photo-loading');
+  }
+}
+
 function renderPhotoSlider() {
   var sliderEl = document.getElementById('photo-slider');
   var img = document.getElementById('detail-photo');
@@ -619,18 +657,19 @@ function renderPhotoSlider() {
   if (photoIndex >= photoSlides.length) photoIndex = Math.max(0, photoSlides.length - 1);
 
   if (photoSlides.length === 0) {
+    photoLoadToken++;
     img.style.display = 'none';
-    img.src = '';
+    img.removeAttribute('src');
     counter.textContent = '';
     caption.innerHTML = '';
     bar.innerHTML = '';
-    sliderEl.classList.remove('has-many');
+    sliderEl.classList.remove('has-many', 'photo-loading', 'photo-failed');
     return;
   }
 
   var s = photoSlides[photoIndex];
   img.style.display = '';
-  img.src = s.url;
+  showPhoto(sliderEl, img, s.url);
   sliderEl.classList.toggle('has-many', photoSlides.length > 1);
   counter.textContent = (photoIndex + 1) + '/' + photoSlides.length;
 
@@ -1808,20 +1847,21 @@ function dismissOnboarding() {
   }, 500);
 }
 
+var onboardingStep = 1;
+
+function goToOnboardingStep(step) {
+  onboardingStep = step;
+  for (var i = 1; i <= 3; i++) {
+    document.getElementById('step-' + i).classList.toggle('active', i === step);
+  }
+}
+
 // повторный показ онбординга по кнопке «?» — приложение при этом уже работает
 function showOnboarding() {
   var onb = document.getElementById('onboarding');
   if (!onb.classList.contains('hidden')) return;
 
-  var step1 = document.getElementById('step-1');
-  var step2 = document.getElementById('step-2');
-  var step3 = document.getElementById('step-3');
-  step1.style.display = 'block';
-  step2.style.display = 'none';
-  step2.style.opacity = '0';
-  step3.style.display = 'none';
-  step3.style.opacity = '0';
-
+  goToOnboardingStep(1);
   document.getElementById('onboarding-close').classList.remove('hidden');
   initOnboardingLottie();
 
@@ -1835,9 +1875,6 @@ function showOnboarding() {
 }
 
 function initOnboarding() {
-  var step1 = document.getElementById('step-1');
-  var step2 = document.getElementById('step-2');
-  var step3 = document.getElementById('step-3');
   var btnNext = document.getElementById('btn-next');
   var btnNext2 = document.getElementById('btn-next2');
   var btnFinish = document.getElementById('btn-finish');
@@ -1851,17 +1888,8 @@ function initOnboarding() {
     });
   }
 
-  btnNext.addEventListener('click', () => {
-    step1.style.display = 'none';
-    step2.style.display = 'block';
-    setTimeout(() => { step2.style.opacity = '1'; }, 50);
-  });
-
-  btnNext2.addEventListener('click', () => {
-    step2.style.display = 'none';
-    step3.style.display = 'block';
-    setTimeout(() => { step3.style.opacity = '1'; }, 50);
-  });
+  btnNext.addEventListener('click', () => goToOnboardingStep(2));
+  btnNext2.addEventListener('click', () => goToOnboardingStep(3));
 
   btnFinish.addEventListener('click', dismissOnboarding);
 
@@ -1877,11 +1905,27 @@ function initOnboarding() {
       }
       return;
     }
-    // листаем шаги только по Enter/пробелу, чтобы Tab не закрывал онбординг
-    if (e.key !== 'Enter' && e.key !== ' ') return;
+    // Подсказка обещает «или нажмите любую клавишу» — значит, листаем по любой
+    // осмысленной: буквы, цифры, знаки (у них key длиной 1), Enter, пробел и
+    // стрелки. Tab оставляем навигации по фокусу, модификаторы и сочетания вроде
+    // Cmd+R не трогаем, F1–F12 тоже.
+    var navKeys = ['Enter', ' ', 'ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Backspace'];
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key.length !== 1 && navKeys.indexOf(e.key) === -1) return;
+
+    // пока открыты «условия», клавиши относятся к модалке, а не к онбордингу
+    if (document.getElementById('terms-modal').classList.contains('open')) return;
+
     e.preventDefault();
-    if (step1.style.display !== 'none') btnNext.click();
-    else if (step2.style.display !== 'none') btnNext2.click();
+
+    // стрелками влево/вверх листаем назад, на первом шаге дальше некуда
+    if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].indexOf(e.key) !== -1) {
+      if (onboardingStep > 1) goToOnboardingStep(onboardingStep - 1);
+      return;
+    }
+
+    if (onboardingStep === 1) btnNext.click();
+    else if (onboardingStep === 2) btnNext2.click();
     else dismissOnboarding();
   });
 }
