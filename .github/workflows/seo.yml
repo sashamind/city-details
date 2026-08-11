@@ -1,0 +1,41 @@
+# Пересобирает страницы находок и карту сайта, чтобы новые одобренные точки
+# попадали в поиск без ручных действий. Можно запустить и кнопкой во вкладке
+# Actions, а локально — через `npm run seo`.
+name: Обновить SEO-страницы
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # каждый день в 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Собрать страницы
+        run: npm run seo
+
+      - name: Закоммитить, если что-то изменилось
+        run: |
+          if [ -z "$(git status --porcelain d sitemap.xml)" ]; then
+            echo "Изменений нет"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add d sitemap.xml
+          git commit -m "Regenerate detail pages and sitemap"
+          git push

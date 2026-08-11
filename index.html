@@ -19,6 +19,10 @@
   <meta property="og:image" content="https://textula.ru/og-image.png">
   <meta property="og:url" content="https://textula.ru">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="textula — детали города">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -27,6 +31,25 @@
   <meta name="twitter:image" content="https://textula.ru/og-image.png">
 
   <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Разметка для поисковиков: сама карта рисуется JS, поэтому что это за
+       проект и где он находится, объясняем данными. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "textula — детали города",
+    "alternateName": "textula",
+    "url": "https://textula.ru/",
+    "inLanguage": "ru-RU",
+    "description": "Карта визуальных находок Тулы: фактуры стен, старинные вывески, узоры решёток.",
+    "about": {
+      "@type": "Place",
+      "name": "Тула",
+      "geo": { "@type": "GeoCoordinates", "latitude": 54.1935, "longitude": 37.618 }
+    }
+  }
+  </script>
   <!-- Библиотеки и шрифты лежат в репозитории: сайт не должен зависеть от того,
        доступны ли unpkg, cdnjs и fonts.googleapis.com у конкретного человека. -->
   <link rel="stylesheet" href="vendor/fonts/fonts.css">
@@ -1891,6 +1914,16 @@
 </head>
 
 <body>
+  <!-- Без JS карта не работает: даём человеку и поисковику обычный список
+       находок, из которого доступна каждая страница. -->
+  <noscript>
+    <div style="padding:20px;font-family:Georgia,serif;">
+      <h1 style="font-size:20px;">textula — детали города</h1>
+      <p style="margin:8px 0;">Карта требует JavaScript.
+        <a href="/d/">Откройте список всех находок</a> — он работает без него.</p>
+    </div>
+  </noscript>
+
   <div id="onboarding" class="onboarding">
     <button id="onboarding-close" class="onboarding-close hidden" title="Закрыть" aria-label="Закрыть">×</button>
     <div class="onboarding-content">

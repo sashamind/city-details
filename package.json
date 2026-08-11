@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "seo": "node scripts/build-seo.mjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4"
