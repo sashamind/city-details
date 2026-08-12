@@ -53,7 +53,8 @@ var EMAILJS_TEMPLATE_ID = 'template_0d0q9ed';
 var guessModeActive = false;
 var guessPoints = [];
 var guessCurrentIndex = 0;
-var guessTotalRounds = 5;
+var guessTotalRounds = 10;
+var GUESS_MAX_DISTANCE_M = 50000; // дальше от центра города точки в игру не берём
 var guessScore = 0;
 var guessMarkers = [];
 var guessCorrectMarker = null;
@@ -607,41 +608,63 @@ function rebuildSlides(focusId) {
   renderPhotoSlider();
 }
 
-// Показ фото с ожиданием загрузки. Токен нужен, чтобы медленно приехавшее
-// старое фото не перебило уже открытую другую точку.
-var photoLoadToken = 0;
+// Показ фото с ожиданием загрузки: пока новое не приехало, старое не видно.
+// Токен у каждой картинки свой — медленно догрузившийся прошлый снимок не
+// должен перебить уже показанный следующий.
+var photoLoadTokens = new WeakMap();
 
-function showPhoto(sliderEl, img, url) {
-  var token = ++photoLoadToken;
+function nextPhotoToken(img) {
+  var token = (photoLoadTokens.get(img) || 0) + 1;
+  photoLoadTokens.set(img, token);
+  return token;
+}
+
+function showPhoto(container, img, url) {
+  var token = nextPhotoToken(img);
   var alreadyShown = img.getAttribute('src') === url && img.complete && img.naturalWidth > 0;
 
-  sliderEl.classList.remove('photo-failed');
+  container.classList.remove('photo-failed');
   img.onload = null;
   img.onerror = null;
 
   if (alreadyShown) {
-    sliderEl.classList.remove('photo-loading');
+    container.classList.remove('photo-loading');
     return;
   }
 
-  sliderEl.classList.add('photo-loading');
+  container.classList.add('photo-loading');
 
   img.onload = function () {
-    if (token !== photoLoadToken) return;
-    sliderEl.classList.remove('photo-loading');
+    if (photoLoadTokens.get(img) !== token) return;
+    container.classList.remove('photo-loading');
   };
 
+  // Фото у нас тяжёлые (в среднем больше мегабайта), и на плохой связи загрузка
+  // иногда обрывается. Одна повторная попытка спасает раунд игры или карточку
+  // от пустого места.
+  var retried = false;
+
   img.onerror = function () {
-    if (token !== photoLoadToken) return;
-    sliderEl.classList.remove('photo-loading');
-    sliderEl.classList.add('photo-failed');
+    if (photoLoadTokens.get(img) !== token) return;
+
+    if (!retried) {
+      retried = true;
+      setTimeout(function () {
+        if (photoLoadTokens.get(img) !== token) return;
+        img.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'retry=1';
+      }, 1200);
+      return;
+    }
+
+    container.classList.remove('photo-loading');
+    container.classList.add('photo-failed');
   };
 
   img.src = url;
 
   // фото из кэша может быть готово ещё до подписки на onload
   if (img.complete && img.naturalWidth > 0) {
-    sliderEl.classList.remove('photo-loading');
+    container.classList.remove('photo-loading');
   }
 }
 
@@ -657,7 +680,7 @@ function renderPhotoSlider() {
   if (photoIndex >= photoSlides.length) photoIndex = Math.max(0, photoSlides.length - 1);
 
   if (photoSlides.length === 0) {
-    photoLoadToken++;
+    nextPhotoToken(img); // отменяем ожидание фото прошлой точки
     img.style.display = 'none';
     img.removeAttribute('src');
     counter.textContent = '';
@@ -2003,24 +2026,18 @@ function initGuessElements() {
 
   if (!guessPanel || !guessImage || !guessCurrentEl || !guessScoreEl || !guessNextBtn || !guessExitBtn || !guessResult || !guessBtn) return;
 
-  if (!guessTimerEl) {
-    guessTimerEl = document.createElement('div');
-    guessTimerEl.id = 'guess-timer';
-    guessTimerEl.style.textAlign = 'center';
-    guessTimerEl.style.fontFamily = "'IBM Plex Mono', monospace";
-    guessTimerEl.style.fontSize = '14px';
-    guessTimerEl.style.margin = '10px 0 14px';
-    guessTimerEl.style.fontWeight = '600';
-
-    var container = document.getElementById('guess-mode');
-    if (container) {
-      container.insertBefore(guessTimerEl, guessResult);
-    }
-  }
+  // Таймер уже есть в разметке, в строке со счётом. Раньше рядом создавался
+  // второй такой же div с тем же id — на экране висели два «Время: 60 с»,
+  // причём верхнее навсегда застывало на 60.
+  guessTimerEl = document.getElementById('guess-timer');
 
   if (guessCenterBtn) {
     guessCenterBtn.style.display = 'block';
   }
+
+  // число раундов живёт в одном месте — в guessTotalRounds
+  var totalEl = document.getElementById('guess-total');
+  if (totalEl) totalEl.textContent = guessTotalRounds;
 
   guessBtn.addEventListener('click', () => {
     if (guessModeActive) {
@@ -2138,7 +2155,13 @@ function shareGuessResult() {
 }
 
 function startGuessMode() {
-  var pool = details.filter(d => d.status === 'approved' && d.photo);
+  // Только находки в пределах города: одна точка из другого города растягивала
+  // обзор раунда на пол-страны, а угадать её на городской карте невозможно.
+  var pool = details.filter(function (d) {
+    if (d.status !== 'approved' || !d.photo) return false;
+    return haversineDistance(d.lat, d.lng, MAP_CENTER[0], MAP_CENTER[1]) <= GUESS_MAX_DISTANCE_M;
+  });
+
   if (pool.length < guessTotalRounds) {
     showToast('Недостаточно точек с фото для игры', 'error');
     return;
@@ -2205,11 +2228,16 @@ function endGuessMode() {
 
   clearGuessTimer();
   map.off('click', onMapGuessClick);
+
+  // не оставляем висеть ожидание фото последнего раунда
+  nextPhotoToken(guessImage);
+  guessImage.removeAttribute('src');
+  document.getElementById('guess-image-container').classList.remove('photo-loading', 'photo-failed');
 }
 
 function renderCurrentGuess() {
   var point = guessPoints[guessCurrentIndex];
-  guessImage.src = point.photo;
+  showPhoto(document.getElementById('guess-image-container'), guessImage, point.photo);
   guessCurrentEl.textContent = (guessCurrentIndex + 1);
   guessResult.textContent = '';
   guessNextBtn.disabled = true;
@@ -2222,9 +2250,18 @@ function renderCurrentGuess() {
   guessMarkers.forEach(m => map.removeLayer(m));
   guessMarkers = [];
 
-  // показываем обзор всех точек игры, а не загаданную — иначе ответ виден сразу
+  // Показываем обзор всех точек игры, а не загаданную — иначе ответ виден сразу.
+  // Нижнюю часть карты закрывает панель игры, поэтому её высота идёт в отступ:
+  // без этого обзор уезжал под панель, а кликать приходилось вслепую.
   var bounds = L.latLngBounds(guessPoints.map(p => [p.lat, p.lng]));
-  map.flyToBounds(bounds, { padding: [60, 60], duration: 1 });
+  var panelHeight = guessPanel ? Math.round(guessPanel.getBoundingClientRect().height) : 0;
+
+  map.flyToBounds(bounds, {
+    paddingTopLeft: [40, 40],
+    paddingBottomRight: [40, panelHeight + 40],
+    maxZoom: 16,
+    duration: 1
+  });
   startGuessTimer();
 }
 

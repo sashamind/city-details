@@ -1855,6 +1855,7 @@
 }
 
 .guess-image-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1865,6 +1866,25 @@
   background: #f7f7f7;
   border: 1px solid #000;
 }
+
+/* В игре показать снимок предыдущего раунда особенно вредно: человек будет
+   угадывать локацию не той фотографии. Прячем картинку до загрузки. */
+.guess-image-container.photo-loading .guess-image,
+.guess-image-container.photo-failed .guess-image {
+  visibility: hidden;
+}
+
+.guess-image-container .photo-loader {
+  background: #f7f7f7;
+}
+
+.guess-image-container.photo-loading .photo-loader,
+.guess-image-container.photo-failed .photo-loader {
+  display: flex;
+}
+
+.guess-image-container.photo-failed .photo-loader-dots { display: none; }
+.guess-image-container.photo-failed .photo-loader-error { display: block; }
 
 .guess-image {
   display: block;
@@ -1911,6 +1931,14 @@
   color: #fff;
 }
 .guess-btn-dark:hover { background: #333; }
+
+/* «Следующая» до ответа заблокирована — пусть это будет видно */
+.guess-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.guess-btn-dark:disabled:hover { background: #000; }
 
 .guess-btn-light {
   background: #fff;
@@ -2065,7 +2093,7 @@
       <button id="admin-btn" class="header-btn" style="position:relative;">
         ⚙ Админ<span id="pending-badge" class="badge hidden">0</span>
       </button>
-     <button id="toggle-guess-mode" class="header-btn" style="display:none;">▶ Играть</button>
+     <button id="toggle-guess-mode" class="header-btn">▶ Играть</button>
       <button id="help-btn" class="header-btn header-btn-help" title="Как это работает" aria-label="Как это работает">?</button>
     </div>
   </div>
@@ -2225,11 +2253,15 @@
   <!-- Картинка для угадывания -->
   <div id="guess-image-container" class="guess-image-container">
     <img id="guess-image" src="" alt="Картинка для угадывания" class="guess-image">
+    <div class="photo-loader" aria-hidden="true">
+      <div class="photo-loader-dots"><span></span><span></span><span></span></div>
+      <div class="photo-loader-error">фото не загрузилось</div>
+    </div>
   </div>
 
   <!-- Строка с прогрессом, таймером и очками -->
   <div class="guess-stats">
-    <div>Попытка <span id="guess-current">1</span> из 5</div>
+    <div>Попытка <span id="guess-current">1</span> из <span id="guess-total">10</span></div>
     <div id="guess-timer">Время: 60 с</div>
     <div>Очки: <span id="guess-score">0</span></div>
   </div>
