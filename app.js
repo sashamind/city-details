@@ -2103,11 +2103,42 @@ function initGuessElements() {
   if (guessCenterBtn) {
     guessCenterBtn.addEventListener('click', () => {
       if (!guessModeActive) return;
-      processGuessClick(map.getCenter());
+      processGuessClick(visibleMapCenter());
     });
   }
 
   updateGuessTimerUI();
+}
+
+// Сколько пикселей карты закрыто интерфейсом с каждой стороны: сверху шапка,
+// панель игры — справа на широком экране и снизу на узком.
+function mapVisibleInsets() {
+  var insets = { top: 0, right: 0, bottom: 0 };
+  if (!map) return insets;
+
+  var header = document.querySelector('.site-header');
+  if (header) insets.top = Math.round(header.getBoundingClientRect().height);
+
+  if (guessPanel && !guessPanel.classList.contains('hidden')) {
+    var rect = guessPanel.getBoundingClientRect();
+    var size = map.getSize();
+
+    if (rect.width < size.x - 1) insets.right = Math.max(0, Math.round(size.x - rect.left));
+    else insets.bottom = Math.max(0, Math.round(size.y - rect.top));
+  }
+
+  return insets;
+}
+
+// Центр видимой части карты, а не всего контейнера: иначе кнопка «угадать в
+// центре» ставила точку под панелью.
+function visibleMapCenter() {
+  var insets = mapVisibleInsets();
+  var size = map.getSize();
+  return map.containerPointToLatLng([
+    (size.x - insets.right) / 2,
+    insets.top + (size.y - insets.top - insets.bottom) / 2
+  ]);
 }
 
 function startGuessTimer() {
@@ -2285,14 +2316,15 @@ function renderCurrentGuess() {
   guessMarkers = [];
 
   // Показываем обзор всех точек игры, а не загаданную — иначе ответ виден сразу.
-  // Нижнюю часть карты закрывает панель игры, поэтому её высота идёт в отступ:
-  // без этого обзор уезжал под панель, а кликать приходилось вслепую.
+  // Часть карты закрыта: сверху шапкой, а панелью игры — справа на широком
+  // экране или снизу на узком. Отдаём это в отступы, чтобы обзор целиком попал
+  // в видимую часть и кликать не приходилось вслепую.
   var bounds = L.latLngBounds(guessPoints.map(p => [p.lat, p.lng]));
-  var panelHeight = guessPanel ? Math.round(guessPanel.getBoundingClientRect().height) : 0;
+  var insets = mapVisibleInsets();
 
   map.flyToBounds(bounds, {
-    paddingTopLeft: [40, 40],
-    paddingBottomRight: [40, panelHeight + 40],
+    paddingTopLeft: [40, insets.top + 40],
+    paddingBottomRight: [insets.right + 40, insets.bottom + 40],
     maxZoom: 16,
     duration: 1
   });

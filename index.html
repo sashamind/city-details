@@ -1832,6 +1832,11 @@
       opacity: 0.4;
     }
 
+    /* Игра прячет поиск и фильтры, но правила для .hidden у них не было, и они
+       так и висели над картой — приглушённые, но на виду. */
+    .search-bar.hidden,
+    .filters-bar.hidden { display: none; }
+
     #guess-mode {
       z-index: 960;
       max-height: 70vh;
@@ -1844,6 +1849,46 @@
       left: 0;
       right: 0;
       font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* На широком экране игра живёт колонкой справа, карта остаётся слева и
+       целиком на виду — так удобнее ставить точку мышью. Панель начинается под
+       шапкой, чтобы кнопка выхода из игры оставалась доступной. */
+    @media (min-width: 769px) {
+      #guess-mode {
+        top: 50px; /* высота шапки: панель выше неё по z-index и иначе её накрывала */
+        bottom: 0;
+        left: auto;
+        right: 0;
+        width: 400px;
+        max-height: none;
+        border-top: none;
+        border-left: 1px solid #000;
+        padding: 20px;
+      }
+
+      .guess-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+
+      .guess-image-container {
+        height: 300px;
+      }
+
+      #guess-image {
+        max-height: 300px;
+      }
+
+      /* В узкой колонке кнопки в строку не помещаются */
+      .guess-actions {
+        flex-direction: column;
+      }
+
+      .guess-stats {
+        gap: 12px;
+        font-size: 13px;
+      }
     }
 
     .guess-title {
