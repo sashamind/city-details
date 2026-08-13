@@ -308,7 +308,7 @@ function indexHtml(details) {
     <ul>
 ${details.map(d => `      <li>
         <a href="/d/${d.id}/">
-          ${d.photo_url ? `<img class="thumb" src="${escapeHtml(d.photo_url)}" alt="${escapeHtml(d.title)}" loading="lazy">` : ''}
+          ${d.photo_url ? `<img class="thumb" src="${escapeHtml(d.thumb_url || d.photo_url)}" alt="${escapeHtml(d.title)}" loading="lazy">` : ''}
           <span class="title">${escapeHtml(d.title)}</span>
           <div class="sub">${escapeHtml(categoryLabels(d.category).join(' · '))}</div>
         </a>
@@ -351,7 +351,7 @@ ${urls.map(u => `  <url>
 }
 
 async function main() {
-  const query = 'details?select=id,title,description,category,lat,lng,photo_url,author,created_at' +
+  const query = 'details?select=id,title,description,category,lat,lng,photo_url,thumb_url,author,created_at' +
     '&status=eq.approved&order=created_at.desc';
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${query}`, {

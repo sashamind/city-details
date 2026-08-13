@@ -117,15 +117,22 @@ const actions: Record<string, (payload: Row) => Promise<unknown>> = {
   async delete_detail(payload) {
     const key = id(payload);
 
-    const details = (await db("details?select=photo_url&id=eq." + key)) as Row[] | null;
-    const photos = (await db("photos?select=id,photo_url&detail_id=eq." + key)) as Row[] | null;
+    const details = (await db("details?select=photo_url,thumb_url&id=eq." + key)) as Row[] | null;
+    const photos = (await db("photos?select=id,photo_url,thumb_url&detail_id=eq." + key)) as Row[] | null;
 
     await db("notes?detail_id=eq." + key, { method: "DELETE", prefer: "return=minimal" });
     await db("photos?detail_id=eq." + key, { method: "DELETE", prefer: "return=minimal" });
     await db("details?id=eq." + key, { method: "DELETE", prefer: "return=minimal" });
 
-    for (const p of photos || []) await removeStorageFile(p.photo_url);
-    for (const d of details || []) await removeStorageFile(d.photo_url);
+    // вместе с оригиналами убираем и превью, иначе они останутся в бакете навсегда
+    for (const p of photos || []) {
+      await removeStorageFile(p.photo_url);
+      await removeStorageFile(p.thumb_url);
+    }
+    for (const d of details || []) {
+      await removeStorageFile(d.photo_url);
+      await removeStorageFile(d.thumb_url);
+    }
 
     return { ok: true };
   },
@@ -165,9 +172,12 @@ const actions: Record<string, (payload: Row) => Promise<unknown>> = {
 
   async delete_photo(payload) {
     const key = id(payload);
-    const rows = (await db("photos?select=photo_url&id=eq." + key)) as Row[] | null;
+    const rows = (await db("photos?select=photo_url,thumb_url&id=eq." + key)) as Row[] | null;
     await db("photos?id=eq." + key, { method: "DELETE", prefer: "return=minimal" });
-    for (const p of rows || []) await removeStorageFile(p.photo_url);
+    for (const p of rows || []) {
+      await removeStorageFile(p.photo_url);
+      await removeStorageFile(p.thumb_url);
+    }
     return { ok: true };
   },
 

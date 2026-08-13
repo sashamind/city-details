@@ -108,11 +108,19 @@ function showToast(message, type) {
   toastTimeout = setTimeout(function () { el.style.opacity = '0'; }, 3500);
 }
 
+// Маленькие картинки берут превью и откатываются на оригинал, если превью ещё
+// нет (старые записи или неудачная генерация).
+function previewSrc(item) {
+  if (!item) return '';
+  return (item.thumb && item.thumb.trim()) || (item.photo && item.photo.trim()) || '';
+}
+
 function createMarkerIcon(detail) {
-  const hasPhoto = detail.photo && detail.photo.trim() !== '';
+  const photo = previewSrc(detail);
+  const hasPhoto = photo !== '';
 
   if (hasPhoto) {
-    const imgHtml = `<img src="${escapeHtml(detail.photo)}" alt="" style="width:20px; height:20px; border-radius:4px;" />`;
+    const imgHtml = `<img src="${escapeHtml(photo)}" alt="" loading="lazy" style="width:20px; height:20px; border-radius:4px;" />`;
     return L.divIcon({
       html: `<div class="dot-marker${detail.status === 'pending' ? ' pending' : ''}" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
         <div class="dot" style="width:20px; height:20px; overflow:hidden;">${imgHtml}</div>
@@ -309,6 +317,7 @@ function mapDetailRow(d) {
     lat: d.lat,
     lng: d.lng,
     photo: d.photo_url || '',
+    thumb: d.thumb_url || '',
     status: d.status,
     author: d.author || '',
     created_at: d.created_at || ''
@@ -386,13 +395,12 @@ function sendEmailNotification(detail) {
   }
 }
 
-function uploadPhoto(file) {
-  var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '') || 'photo.jpg';
-  var fileName = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + safeName;
-  // На некоторых мобильных file.type пустой — без явного типа загрузка падает.
-  var contentType = file.type || 'image/jpeg';
+// Превью: ширина с запасом под ретину для маркеров, поиска и списка находок.
+var THUMB_WIDTH = 480;
+var THUMB_QUALITY = 0.6;
 
-  return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + fileName, {
+function uploadToBucket(path, file, contentType) {
+  return fetch(SUPABASE_URL + '/storage/v1/object/photos/' + path, {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
@@ -401,9 +409,33 @@ function uploadPhoto(file) {
     },
     body: file
   }).then(async function (r) {
-    if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + fileName;
+    if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/photos/' + path;
     var errText = await r.text().catch(function () { return ''; });
     throw new Error('Upload ' + r.status + ': ' + errText.slice(0, 200));
+  });
+}
+
+// Кладём рядом с оригиналом уменьшенную копию: карта показывает фото в маркерах
+// 20×20, и тянуть ради этого мегабайтные снимки незачем. Если превью сделать не
+// удалось, точка всё равно сохранится — клиент подставит оригинал.
+function uploadPhoto(file) {
+  var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '') || 'photo.jpg';
+  var fileName = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + safeName;
+  // На некоторых мобильных file.type пустой — без явного типа загрузка падает.
+  var contentType = file.type || 'image/jpeg';
+
+  return uploadToBucket(fileName, file, contentType).then(function (url) {
+    return compressImage(file, THUMB_WIDTH, THUMB_QUALITY)
+      .then(function (thumb) {
+        // compressImage при ошибке отдаёт оригинал — такой «превью» не нужен
+        if (thumb === file || thumb.size >= file.size) return { url: url, thumbUrl: '' };
+        return uploadToBucket('thumbs/' + fileName, thumb, 'image/jpeg')
+          .then(function (thumbUrl) { return { url: url, thumbUrl: thumbUrl }; });
+      })
+      .catch(function (e) {
+        console.warn('Не удалось сделать превью:', e);
+        return { url: url, thumbUrl: '' };
+      });
   });
 }
 
@@ -761,10 +793,11 @@ function submitPhoto() {
 
   compressImage(fileInput.files[0], 1000, 0.5)
     .then(uploadPhoto)
-    .then(url => {
+    .then(uploaded => {
       var row = {
         detail_id: detailId,
-        photo_url: url,
+        photo_url: uploaded.url,
+        thumb_url: uploaded.thumbUrl,
         author: author,
         status: isAdmin ? 'approved' : 'pending',
         sort_order: nextOrder
@@ -936,7 +969,7 @@ function showPreview(detail, markerEl) {
   var prev = document.getElementById('marker-preview');
   var rect = markerEl.getBoundingClientRect();
   var html = '';
-  if (detail.photo) html += '<img src="' + escapeHtml(detail.photo) + '" alt="">';
+  if (previewSrc(detail)) html += '<img src="' + escapeHtml(previewSrc(detail)) + '" alt="">';
   else html += '<div class="preview-no-photo">нет фото</div>';
   html += '<div class="preview-title">' + escapeHtml(detail.title) + '</div>';
   prev.innerHTML = html;
@@ -1135,7 +1168,7 @@ function doSearch(query) {
     var cat = { label: catLabels.join(' · ') };
 
     html += '<div class="search-result-item" data-id="' + escapeHtml(d.id) + '">';
-    if (d.photo) html += '<img class="search-result-photo" src="' + escapeHtml(d.photo) + '" alt="">';
+    if (previewSrc(d)) html += '<img class="search-result-photo" src="' + escapeHtml(previewSrc(d)) + '" alt="" loading="lazy">';
     else html += '<div class="search-result-nophoto">●</div>';
     html += '<div class="search-result-info"><div class="search-result-title">' + highlighted + '</div>';
     html += '<div class="search-result-meta">' + cat.label + (d.author ? ' · ' + escapeHtml(d.author) : '') + '</div></div></div>';
@@ -1419,14 +1452,15 @@ function submitDetail() {
   btn.disabled = true;
   btn.textContent = 'Отправка...';
 
-  function saveToDb(photoUrl) {
+  function saveToDb(uploaded) {
     var row = {
       title: title,
       description: desc,
       category: cat,
       lat: pendingCoords.lat,
       lng: pendingCoords.lng,
-      photo_url: photoUrl || '',
+      photo_url: (uploaded && uploaded.url) || '',
+      thumb_url: (uploaded && uploaded.thumbUrl) || '',
       status: isAdmin ? 'approved' : 'pending',
       author: author || 'Аноним'
     };
@@ -1466,7 +1500,7 @@ function submitDetail() {
   if (fileInput.files && fileInput.files[0]) {
     compressImage(fileInput.files[0], 1000, 0.5)
       .then(compressed => uploadPhoto(compressed))
-      .then(url => saveToDb(url))
+      .then(uploaded => saveToDb(uploaded))
       .catch(err => {
         // Не сохраняем точку без фото молча — даём пользователю переотправить.
         console.error('Photo upload failed:', err);
@@ -1475,7 +1509,7 @@ function submitDetail() {
         btn.textContent = 'Отправить';
       });
   } else {
-    saveToDb('');
+    saveToDb(null);
   }
 }
 
@@ -1593,7 +1627,7 @@ function renderModList() {
       var catLabels = (d.category || 'other').split(',').map(c => (CATEGORIES[c.trim()] || CATEGORIES.other).label);
       var cat = { label: catLabels.join(' · ') };
       html += '<div class="mod-card">';
-      if (d.photo) html += '<img class="mod-card-photo" src="' + escapeHtml(d.photo) + '" alt="">';
+      if (previewSrc(d)) html += '<img class="mod-card-photo" src="' + escapeHtml(previewSrc(d)) + '" alt="" loading="lazy">';
       html += '<h3>' + escapeHtml(d.title) + '</h3>';
       if (d.description) html += '<p>' + escapeHtml(d.description) + '</p>';
       html += '<div class="mod-card-cat">' + cat.label + ' · ' + escapeHtml(d.author || 'Аноним') + ' · ' + formatDate(d.created_at) + '</div>';
@@ -1619,7 +1653,7 @@ function renderModList() {
       var parentDetail = details.find(d => d.id === p.detail_id);
       var parentTitle = parentDetail ? parentDetail.title : 'Неизвестная точка';
       html += '<div class="mod-card">';
-      html += '<img class="mod-card-photo" src="' + escapeHtml(p.photo_url) + '" alt="">';
+      html += '<img class="mod-card-photo" src="' + escapeHtml(p.thumb_url || p.photo_url) + '" alt="" loading="lazy">';
       html += '<div class="mod-card-cat">К точке: ' + escapeHtml(parentTitle) + ' · ' + escapeHtml(p.author || 'Аноним') + ' · ' + formatDate(p.created_at) + '</div>';
       html += '<div class="mod-card-actions"><button class="mod-btn-approve" onclick="approvePhoto(\'' + p.id + '\')">✓ Одобрить</button><button class="mod-btn-reject" onclick="deletePhoto(\'' + p.id + '\')">✕ Отклонить</button></div></div>';
     });
