@@ -118,6 +118,15 @@
       border-bottom: none !important;
     }
 
+    /* Шапка фиксированная, а её высота зависит от ширины экрана и от того,
+       перенеслось ли название. Всё, что под ней, стоит на fixed-позициях,
+       поэтому фактическую высоту публикует JS (syncHeaderHeight), а значения
+       здесь — только запасные, на случай если скрипт ещё не отработал. */
+    :root {
+      --header-h: 45px;
+      --search-h: 40px;
+    }
+
     .site-header {
       position: fixed;
       top: 0;
@@ -187,7 +196,7 @@
 
     .search-bar {
       position: fixed;
-      top: 45px;
+      top: var(--header-h);
       left: 0;
       right: 0;
       z-index: 890;
@@ -196,7 +205,7 @@
       display: flex;
       align-items: center;
       padding: 0 16px;
-      height: 40px;
+      height: var(--search-h);
     }
 
     .search-icon {
@@ -327,7 +336,7 @@
 
     .filters-bar {
       position: fixed;
-      top: 85px;
+      top: calc(var(--header-h) + var(--search-h));
       left: 0;
       right: 0;
       z-index: 880;
@@ -1856,7 +1865,7 @@
        шапкой, чтобы кнопка выхода из игры оставалась доступной. */
     @media (min-width: 769px) {
       #guess-mode {
-        top: 50px; /* высота шапки: панель выше неё по z-index и иначе её накрывала */
+        top: var(--header-h); /* панель выше шапки по z-index и иначе накрывала бы её */
         bottom: 0;
         left: auto;
         right: 0;
@@ -2069,7 +2078,14 @@
       .marker-preview { display: none !important; }
       .site-header { padding: 10px 16px; }
       .site-header h1 { font-size: 14px; }
-      .search-bar { top: 41px; height: 36px; padding: 0 12px; }
+
+      /* На узкой шапке название с подзаголовком и три кнопки в строку не
+         помещались — заголовок переносился и отъедал у карты целую строку.
+         Подзаголовок здесь декоративный, названия достаточно. */
+      .site-header h1 span { display: none; }
+      .header-right { gap: 12px; }
+      :root { --search-h: 36px; }
+      .search-bar { padding: 0 12px; }
       .search-input { font-size: 16px; }
       .search-results { top: 36px; }
       .filters-bar {

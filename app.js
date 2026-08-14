@@ -1889,6 +1889,30 @@ var appStarted = false;
 var ONBOARDING_DAYS = 7;
 var onboardingSeen = localStorage.getItem('textula_onboarding');
 
+// Строка поиска, фильтры и панель игры стоят под шапкой на fixed-позициях.
+// Высота самой шапки не постоянна: на узком экране название переносится на
+// вторую строку, и раньше строка поиска уезжала под неё. Держим фактическую
+// высоту в переменной --header-h, чтобы всё под шапкой ехало следом.
+function syncHeaderHeight() {
+  var header = document.querySelector('.site-header');
+  if (!header) return;
+
+  var apply = function () {
+    document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+  };
+
+  apply();
+
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(apply).observe(header);
+  } else {
+    window.addEventListener('resize', apply);
+  }
+
+  // шрифты подгружаются позже и меняют высоту строки
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply).catch(function () {});
+}
+
 function startApp() {
   if (appStarted) return;
 
@@ -1900,6 +1924,7 @@ function startApp() {
   }
 
   appStarted = true;
+  syncHeaderHeight();
   initMap();
   initEvents();
   initGuessElements();
