@@ -1952,6 +1952,67 @@
   text-align: center;
 }
 
+.guess-stats.hidden { display: none; }
+.guess-btn.hidden { display: none; }
+.guess-actions.hidden { display: none; }
+.guess-final.hidden { display: none; }
+
+/* Итог игры занимает место фотографии: снимок последнего раунда убирается,
+   рамка уходит — остаётся счёт и фраза. */
+.guess-image-container.finished {
+  height: auto;
+  min-height: 220px;
+  border: none;
+  background: transparent;
+}
+
+.guess-image-container.finished .guess-image,
+.guess-image-container.finished .photo-loader { display: none; }
+
+.guess-final {
+  width: 100%;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.guess-final-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.guess-final-score {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.guess-final-max {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
+
+.guess-final-phrase {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 21px;
+  font-style: italic;
+  line-height: 1.35;
+  margin: 18px 0 12px;
+}
+
+.guess-final-stats {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #666;
+}
+
 .guess-actions {
   display: flex;
   justify-content: center;
@@ -2092,6 +2153,10 @@
       .guess-btn {
         padding: 10px 14px;
       }
+
+      .guess-image-container.finished { min-height: 190px; }
+      .guess-final-score { font-size: 46px; }
+      .guess-final-phrase { font-size: 18px; margin: 14px 0 10px; }
 
     }
   </style>
@@ -2319,6 +2384,15 @@
     <div class="photo-loader" aria-hidden="true">
       <div class="photo-loader-dots"><span></span><span></span><span></span></div>
       <div class="photo-loader-error">фото не загрузилось</div>
+    </div>
+
+    <!-- Итог игры встаёт на место фотографии -->
+    <div id="guess-final" class="guess-final hidden">
+      <div class="guess-final-label">Игра окончена</div>
+      <div class="guess-final-score"><span id="guess-final-value">0</span></div>
+      <div class="guess-final-max">из <span id="guess-final-max">1800</span></div>
+      <div class="guess-final-phrase" id="guess-final-phrase"></div>
+      <div class="guess-final-stats" id="guess-final-stats"></div>
     </div>
   </div>
 

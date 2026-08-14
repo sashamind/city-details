@@ -2226,11 +2226,15 @@ function clearGuessTimer() {
   }
 }
 
+// Счёт красится от красного к зелёному по мере приближения к идеальной игре.
+function guessScoreColor(score) {
+  var share = guessMaxScore() > 0 ? Math.min(score / guessMaxScore(), 1) : 0;
+  return 'hsl(' + Math.round(share * 120) + ', 80%, 45%)';
+}
+
 function updateScoreUI() {
   guessScoreEl.textContent = guessScore;
-  var percent = Math.min(guessScore / (guessTotalRounds * 150), 1);
-  var color = 'hsl(' + Math.round(percent * 120) + ', 80%, 45%)';
-  guessScoreEl.style.color = color;
+  guessScoreEl.style.color = guessScoreColor(guessScore);
   guessScoreEl.style.fontWeight = '700';
   guessScoreEl.style.fontSize = '18px';
 }
@@ -2296,6 +2300,7 @@ function startGuessMode() {
 
   guessPanel.classList.remove('hidden');
   document.body.classList.add('guess-mode');
+  resetGuessFinalScreen();
 
   document.getElementById('detail-panel').classList.add('hidden');
   document.getElementById('add-panel').classList.remove('open');
@@ -2330,6 +2335,7 @@ function endGuessMode() {
 
   guessPanel.classList.add('hidden');
   document.body.classList.remove('guess-mode');
+  resetGuessFinalScreen();
 
   document.getElementById('search-bar').classList.remove('hidden');
   document.querySelector('.filters-bar').classList.remove('hidden');
@@ -2436,6 +2442,48 @@ function onMapGuessClick(e) {
   processGuessClick(e.latlng);
 }
 
+// Показать итог вместо фотографии. Прячем и строку раунда с таймером, и
+// «Следующую» — раундов больше нет.
+function showGuessFinalScreen(score, avgScore, games) {
+  var container = document.getElementById('guess-image-container');
+  var final = document.getElementById('guess-final');
+  var stats = document.querySelector('.guess-stats');
+  var value = document.getElementById('guess-final-value');
+
+  if (!container || !final || !value) return;
+
+  value.textContent = score;
+  value.style.color = guessScoreColor(score);
+  document.getElementById('guess-final-max').textContent = guessMaxScore();
+  document.getElementById('guess-final-phrase').textContent = guessEndingFor(score);
+  document.getElementById('guess-final-stats').textContent =
+    'Средний счёт: ' + avgScore + ' · Игр сыграно: ' + games;
+
+  container.classList.add('finished');
+  final.classList.remove('hidden');
+  if (stats) stats.classList.add('hidden');
+  guessNextBtn.classList.add('hidden');
+
+  // Кнопки раунда убираем целиком: свои кнопки итог рисует сам, ниже карточки.
+  var actions = document.querySelector('.guess-actions');
+  if (actions) actions.classList.add('hidden');
+}
+
+// Вернуть панель к обычному раунду: перед новой игрой и при выходе.
+function resetGuessFinalScreen() {
+  var container = document.getElementById('guess-image-container');
+  var final = document.getElementById('guess-final');
+  var stats = document.querySelector('.guess-stats');
+
+  var actions = document.querySelector('.guess-actions');
+
+  if (container) container.classList.remove('finished');
+  if (final) final.classList.add('hidden');
+  if (stats) stats.classList.remove('hidden');
+  if (actions) actions.classList.remove('hidden');
+  if (guessNextBtn) guessNextBtn.classList.remove('hidden');
+}
+
 function finishGuessGame() {
   clearGuessTimer();
   saveGuessStats(guessScore);
@@ -2443,16 +2491,15 @@ function finishGuessGame() {
   var obj = getGuessStats();
   var avgScore = obj.games > 0 ? Math.round(obj.totalScore / obj.games) : 0;
 
+  // Итог встаёт на место фотографии: снимок последнего раунда там уже ни к
+  // чему, а счёт и фраза — то, ради чего играли.
+  showGuessFinalScreen(guessScore, avgScore, obj.games);
+
   guessResult.innerHTML = `
-    <div style="text-align:center; padding: 10px 0;">
-      <div style="font-size:18px; font-weight:700; margin-bottom:8px;">Игра окончена!</div>
-      <div style="margin-bottom:8px;">Ваш итоговый счёт: <strong>${guessScore}</strong> из ${guessMaxScore()}</div>
-      <div style="margin-bottom:12px; font-style:italic;">${escapeHtml(guessEndingFor(guessScore))}</div>
-      <div style="margin-bottom:18px; color:#666;">Средний счёт: ${avgScore} · Игр сыграно: ${obj.games}</div>
-      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-        <button id="guess-restart-btn" style="background:#000;color:#fff;border:none;padding:12px 18px;font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.05em;cursor:pointer;">Сыграть снова</button>
-        <button id="guess-share-btn" style="background:#fff;color:#000;border:1px solid #000;padding:12px 18px;font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.05em;cursor:pointer;">Поделиться</button>
-      </div>
+    <div class="guess-actions">
+      <button id="guess-restart-btn" class="guess-btn guess-btn-dark">Сыграть снова</button>
+      <button id="guess-share-btn" class="guess-btn guess-btn-light">Поделиться</button>
+      <button id="guess-final-exit-btn" class="guess-btn guess-btn-light">Выйти</button>
     </div>
   `;
 
@@ -2461,6 +2508,7 @@ function finishGuessGame() {
   setTimeout(() => {
     var restartBtn = document.getElementById('guess-restart-btn');
     var shareBtn = document.getElementById('guess-share-btn');
+    var exitBtn = document.getElementById('guess-final-exit-btn');
 
     if (restartBtn) {
       restartBtn.addEventListener('click', () => {
@@ -2471,6 +2519,13 @@ function finishGuessGame() {
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
         shareGuessResult();
+      });
+    }
+
+    // Игра уже закончена — спрашивать «точно выйти?» не о чем
+    if (exitBtn) {
+      exitBtn.addEventListener('click', () => {
+        endGuessMode();
       });
     }
   }, 0);
