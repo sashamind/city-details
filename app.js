@@ -60,10 +60,11 @@ var GUESS_MAX_DISTANCE_M = 50000; // дальше от центра города
 // и попасть в район — разный результат, и это должно быть видно по счёту.
 // Первая строка задаёт максимум за раунд, из неё же считается идеальная игра.
 var GUESS_SCORE_STEPS = [
-  { maxDistance: 25, points: 150, label: 'Точно в цель!' },
-  { maxDistance: 50, points: 130, label: 'Почти в точку' },
-  { maxDistance: 100, points: 110, label: 'Очень близко' },
-  { maxDistance: 200, points: 90, label: 'Соседний двор' },
+  { maxDistance: 5, points: 150, label: 'Точно в цель!' },
+  { maxDistance: 20, points: 130, label: 'Почти в точку' },
+  { maxDistance: 50, points: 115, label: 'Очень близко' },
+  { maxDistance: 100, points: 100, label: 'Тот же дом' },
+  { maxDistance: 200, points: 85, label: 'Соседний двор' },
   { maxDistance: 350, points: 70, label: 'Пара минут пешком' },
   { maxDistance: 600, points: 55, label: 'Тот же квартал' },
   { maxDistance: 1000, points: 40, label: 'Район угадан' },
@@ -2368,19 +2369,25 @@ function renderCurrentGuess() {
   guessMarkers.forEach(m => map.removeLayer(m));
   guessMarkers = [];
 
-  // Показываем обзор всех точек игры, а не загаданную — иначе ответ виден сразу.
-  // Часть карты закрыта: сверху шапкой, а панелью игры — справа на широком
-  // экране или снизу на узком. Отдаём это в отступы, чтобы обзор целиком попал
-  // в видимую часть и кликать не приходилось вслепую.
-  var bounds = L.latLngBounds(guessPoints.map(p => [p.lat, p.lng]));
-  var insets = mapVisibleInsets();
+  // Обзор показываем только в начале игры: дальше карта остаётся там, куда её
+  // увёл игрок. Отдалять на каждом раунде — значит каждый раз заново
+  // возвращаться в свой угол города.
+  //
+  // Показываем именно обзор всех точек, а не загаданную, иначе ответ виден
+  // сразу. Часть карты закрыта: сверху шапкой, а панелью игры — справа на
+  // широком экране или снизу на узком; отдаём это в отступы, чтобы обзор
+  // целиком попал в видимую часть.
+  if (guessCurrentIndex === 0) {
+    var bounds = L.latLngBounds(guessPoints.map(p => [p.lat, p.lng]));
+    var insets = mapVisibleInsets();
 
-  map.flyToBounds(bounds, {
-    paddingTopLeft: [40, insets.top + 40],
-    paddingBottomRight: [insets.right + 40, insets.bottom + 40],
-    maxZoom: 16,
-    duration: 1
-  });
+    map.flyToBounds(bounds, {
+      paddingTopLeft: [40, insets.top + 40],
+      paddingBottomRight: [insets.right + 40, insets.bottom + 40],
+      maxZoom: 16,
+      duration: 1
+    });
+  }
   startGuessTimer();
 }
 
