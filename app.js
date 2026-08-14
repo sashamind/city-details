@@ -55,6 +55,33 @@ var guessPoints = [];
 var guessCurrentIndex = 0;
 var guessTotalRounds = 10;
 var GUESS_MAX_DISTANCE_M = 50000; // дальше от центра города точки в игру не берём
+
+// Шкала очков за раунд. Ступеней много и они частые вблизи цели: попасть в дом
+// и попасть в район — разный результат, и это должно быть видно по счёту.
+// Первая строка задаёт максимум за раунд, из неё же считается идеальная игра.
+var GUESS_SCORE_STEPS = [
+  { maxDistance: 25, points: 150, label: 'Точно в цель!' },
+  { maxDistance: 50, points: 130, label: 'Почти в точку' },
+  { maxDistance: 100, points: 110, label: 'Очень близко' },
+  { maxDistance: 200, points: 90, label: 'Соседний двор' },
+  { maxDistance: 350, points: 70, label: 'Пара минут пешком' },
+  { maxDistance: 600, points: 55, label: 'Тот же квартал' },
+  { maxDistance: 1000, points: 40, label: 'Район угадан' },
+  { maxDistance: 2000, points: 25, label: 'Мимо, но в городе' },
+  { maxDistance: 4000, points: 15, label: 'Совсем другой район' },
+  { maxDistance: Infinity, points: 5, label: 'Далеко' }
+];
+
+// Фраза по итогам игры — по доле от максимума.
+var GUESS_ENDINGS = [
+  { minShare: 0.95, text: 'Вы либо выросли в этих дворах, либо подсматривали в геолокацию.' },
+  { minShare: 0.85, text: 'Навигатор нервно сворачивается.' },
+  { minShare: 0.70, text: 'Уверенный горожанин: пара промахов не в счёт.' },
+  { minShare: 0.55, text: 'Дорогу до дома найдёте. За дом — уже спорно.' },
+  { minShare: 0.40, text: 'Где-то в Туле — и то хлеб.' },
+  { minShare: 0.25, text: 'Кажется, вы гуляли по соседнему городу.' },
+  { minShare: 0, text: 'Тыкать пальцем в карту тоже надо уметь. У вас получилось.' }
+];
 var guessScore = 0;
 var guessMarkers = [];
 var guessCorrectMarker = null;
@@ -69,7 +96,6 @@ var guessScoreEl = null;
 var guessNextBtn = null;
 var guessExitBtn = null;
 var guessResult = null;
-var guessCenterBtn = null;
 var guessTimerEl = null;
 
 // ================================
@@ -2056,7 +2082,6 @@ function initGuessElements() {
   guessNextBtn = document.getElementById('guess-next-btn');
   guessExitBtn = document.getElementById('guess-exit-btn');
   guessResult = document.getElementById('guess-result');
-  guessCenterBtn = document.getElementById('guess-guess-center-btn');
 
   if (!guessPanel || !guessImage || !guessCurrentEl || !guessScoreEl || !guessNextBtn || !guessExitBtn || !guessResult || !guessBtn) return;
 
@@ -2064,10 +2089,6 @@ function initGuessElements() {
   // второй такой же div с тем же id — на экране висели два «Время: 60 с»,
   // причём верхнее навсегда застывало на 60.
   guessTimerEl = document.getElementById('guess-timer');
-
-  if (guessCenterBtn) {
-    guessCenterBtn.style.display = 'block';
-  }
 
   // число раундов живёт в одном месте — в guessTotalRounds
   var totalEl = document.getElementById('guess-total');
@@ -2100,14 +2121,31 @@ function initGuessElements() {
     renderCurrentGuess();
   });
 
-  if (guessCenterBtn) {
-    guessCenterBtn.addEventListener('click', () => {
-      if (!guessModeActive) return;
-      processGuessClick(visibleMapCenter());
-    });
-  }
-
   updateGuessTimerUI();
+}
+
+function guessStepFor(distance) {
+  for (var i = 0; i < GUESS_SCORE_STEPS.length; i++) {
+    if (distance <= GUESS_SCORE_STEPS[i].maxDistance) return GUESS_SCORE_STEPS[i];
+  }
+  return GUESS_SCORE_STEPS[GUESS_SCORE_STEPS.length - 1];
+}
+
+function guessMaxScore() {
+  return guessTotalRounds * GUESS_SCORE_STEPS[0].points;
+}
+
+function guessEndingFor(score) {
+  var share = guessMaxScore() > 0 ? score / guessMaxScore() : 0;
+  for (var i = 0; i < GUESS_ENDINGS.length; i++) {
+    if (share >= GUESS_ENDINGS[i].minShare) return GUESS_ENDINGS[i].text;
+  }
+  return GUESS_ENDINGS[GUESS_ENDINGS.length - 1].text;
+}
+
+function formatDistance(meters) {
+  if (meters >= 1000) return (meters / 1000).toFixed(1).replace('.', ',') + ' км';
+  return Math.round(meters) + ' м';
 }
 
 // Сколько пикселей карты закрыто интерфейсом с каждой стороны: сверху шапка,
@@ -2131,17 +2169,6 @@ function mapVisibleInsets() {
   }
 
   return insets;
-}
-
-// Центр видимой части карты, а не всего контейнера: иначе кнопка «угадать в
-// центре» ставила точку под панелью.
-function visibleMapCenter() {
-  var insets = mapVisibleInsets();
-  var size = map.getSize();
-  return map.containerPointToLatLng([
-    (size.x - insets.right) / 2,
-    insets.top + (size.y - insets.top - insets.bottom) / 2
-  ]);
 }
 
 function startGuessTimer() {
@@ -2205,7 +2232,7 @@ function shareGuessResult() {
   var obj = getGuessStats();
   var avgScore = obj.games > 0 ? (obj.totalScore / obj.games).toFixed(0) : '—';
 
-  var shareText = `Я набрал ${guessScore} очков в игре "Угадай локацию" на textula. Средний результат: ${avgScore}. Попробуй сам: https://textula.ru`;
+  var shareText = `Я набрал ${guessScore} из ${guessMaxScore()} очков в игре "Угадай локацию" на textula. ${guessEndingFor(guessScore)} Средний результат: ${avgScore}. Попробуй сам: https://textula.ru`;
 
   if (navigator.share) {
     navigator.share({
@@ -2341,17 +2368,13 @@ function processGuessClick(latlng) {
   var point = guessPoints[guessCurrentIndex];
   var dist = haversineDistance(latlng.lat, latlng.lng, point.lat, point.lng);
 
-  var pointsEarned = 0;
-  if (dist <= 50) pointsEarned = 150;
-  else if (dist <= 150) pointsEarned = 100;
-  else if (dist <= 500) pointsEarned = 75;
-  else if (dist <= 1000) pointsEarned = 50;
-  else pointsEarned = 25;
+  var step = guessStepFor(dist);
 
-  guessScore += pointsEarned;
+  guessScore += step.points;
   updateScoreUI();
 
-  guessResult.innerHTML = 'Вы набрали <strong>' + pointsEarned + '</strong> очков! Расстояние: ' + dist.toFixed(0) + ' м';
+  guessResult.innerHTML = '<strong>' + step.label + '</strong> +' + step.points +
+    ' очк. · промах ' + formatDistance(dist);
   clearGuessTimer();
 
   guessCorrectMarker = L.marker([point.lat, point.lng], {
@@ -2390,7 +2413,8 @@ function finishGuessGame() {
   guessResult.innerHTML = `
     <div style="text-align:center; padding: 10px 0;">
       <div style="font-size:18px; font-weight:700; margin-bottom:8px;">Игра окончена!</div>
-      <div style="margin-bottom:12px;">Ваш итоговый счёт: <strong>${guessScore}</strong></div>
+      <div style="margin-bottom:8px;">Ваш итоговый счёт: <strong>${guessScore}</strong> из ${guessMaxScore()}</div>
+      <div style="margin-bottom:12px; font-style:italic;">${escapeHtml(guessEndingFor(guessScore))}</div>
       <div style="margin-bottom:18px; color:#666;">Средний счёт: ${avgScore} · Игр сыграно: ${obj.games}</div>
       <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
         <button id="guess-restart-btn" style="background:#000;color:#fff;border:none;padding:12px 18px;font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:0.05em;cursor:pointer;">Сыграть снова</button>
