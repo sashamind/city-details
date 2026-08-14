@@ -2059,15 +2059,38 @@
       .onboarding-title { font-size: 24px; }
       .onboarding-desc { font-size: 14px; }
 
+      /* Шторка снизу: раньше панель занимала весь экран и полностью закрывала
+         карту — ткнуть в место находки было некуда, оставалась только кнопка
+         «в центре карты», то есть игра вслепую. Сверху теперь видно карту. */
       #guess-mode {
         max-height: none !important;
-        height: 100vh;
+        height: 58vh;
         overflow-y: auto;
         padding: 16px;
       }
 
+      .guess-title {
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .guess-image-container {
+        height: 150px;
+        margin-bottom: 12px;
+      }
+
       #guess-image {
-        max-height: 40vh;
+        max-height: 150px;
+      }
+
+      .guess-stats {
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
+
+      .guess-btn {
+        padding: 10px 14px;
       }
 
       #guess-guess-center-btn {

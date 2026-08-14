@@ -2117,14 +2117,17 @@ function mapVisibleInsets() {
   if (!map) return insets;
 
   var header = document.querySelector('.site-header');
-  if (header) insets.top = Math.round(header.getBoundingClientRect().height);
+  if (header) insets.top = header.offsetHeight;
 
+  // Панель приезжает через transform, и сразу после показа её реальный
+  // прямоугольник ещё за краем экрана — обзор тогда строился как будто панели
+  // нет, и часть точек оказывалась под ней. Размеры из раскладки от анимации
+  // не зависят, а прижата панель всегда к правому краю или к нижнему.
   if (guessPanel && !guessPanel.classList.contains('hidden')) {
-    var rect = guessPanel.getBoundingClientRect();
     var size = map.getSize();
 
-    if (rect.width < size.x - 1) insets.right = Math.max(0, Math.round(size.x - rect.left));
-    else insets.bottom = Math.max(0, Math.round(size.y - rect.top));
+    if (guessPanel.offsetWidth < size.x - 1) insets.right = Math.min(guessPanel.offsetWidth, size.x);
+    else insets.bottom = Math.min(guessPanel.offsetHeight, size.y);
   }
 
   return insets;
