@@ -2232,11 +2232,10 @@ function guessScoreColor(score) {
   return 'hsl(' + Math.round(share * 120) + ', 80%, 45%)';
 }
 
+// Размер задан в стилях — на телефоне он меньше; отсюда только цвет.
 function updateScoreUI() {
   guessScoreEl.textContent = guessScore;
   guessScoreEl.style.color = guessScoreColor(guessScore);
-  guessScoreEl.style.fontWeight = '700';
-  guessScoreEl.style.fontSize = '18px';
 }
 
 function getGuessStats() {

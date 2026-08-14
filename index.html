@@ -1952,6 +1952,11 @@
   text-align: center;
 }
 
+#guess-score {
+  font-weight: 700;
+  font-size: 18px;
+}
+
 .guess-stats.hidden { display: none; }
 .guess-btn.hidden { display: none; }
 .guess-actions.hidden { display: none; }
@@ -2122,37 +2127,65 @@
 
       /* Шторка снизу: раньше панель занимала весь экран и полностью закрывала
          карту — ткнуть в место находки было некуда, оставалась только кнопка
-         «в центре карты», то есть игра вслепую. Сверху теперь видно карту. */
+         «в центре карты», то есть игра вслепую. Сверху теперь видно карту,
+         и чем её больше, тем точнее можно ткнуть, поэтому содержимое шторки
+         прижато настолько, насколько остаётся читаемым. */
       #guess-mode {
         max-height: none !important;
-        height: 58vh;
+        height: 50vh;
         overflow-y: auto;
-        padding: 16px;
+        padding: 10px 12px 12px;
       }
 
       .guess-title {
-        font-size: 16px;
-        margin-bottom: 12px;
+        font-size: 13px;
+        margin-bottom: 8px;
       }
 
       .guess-image-container {
-        height: 150px;
-        margin-bottom: 12px;
+        height: 128px;
+        margin-bottom: 8px;
       }
 
       #guess-image {
-        max-height: 150px;
+        max-height: 128px;
       }
 
+      /* Попытка, время и очки — одной строкой: перенос съедал ещё строку
+         высоты, а вместе с ней кусок карты. */
       .guess-stats {
-        gap: 12px;
-        margin-bottom: 12px;
-        font-size: 13px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        gap: 10px;
+        margin-bottom: 8px;
+        font-size: 12px;
       }
 
       .guess-btn {
-        padding: 10px 14px;
+        padding: 7px 11px;
+        font-size: 11px;
       }
+
+      .guess-actions {
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .guess-result {
+        margin-top: 8px;
+        font-size: 13px;
+      }
+
+      #guess-score { font-size: 13px; }
+    }
+
+    /* Совсем узкие экраны: строка со статусом должна остаться в одну строку
+       и не выехать за край. */
+    @media (max-width: 360px) {
+      .guess-stats { gap: 8px; font-size: 11px; }
+      #guess-score { font-size: 12px; }
+      .guess-image-container { height: 118px; }
+      #guess-image { max-height: 118px; }
 
       .guess-image-container.finished { min-height: 190px; }
       .guess-final-score { font-size: 46px; }
