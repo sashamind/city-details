@@ -72,6 +72,17 @@ var GUESS_SCORE_STEPS = [
   { maxDistance: Infinity, points: 5, label: 'Далеко' }
 ];
 
+var GUESS_ROUND_SECONDS = 60;
+
+// Премия за скорость. Только вверх: штрафа за медленный ответ нет, иначе игра
+// превращается в гонку, а разглядывать фотографию — это половина удовольствия.
+var GUESS_SPEED_BONUSES = [
+  { maxSeconds: 10, multiplier: 1.2, label: 'молниеносно' },
+  { maxSeconds: 20, multiplier: 1.1, label: 'быстро' },
+  { maxSeconds: 35, multiplier: 1.05, label: 'бодро' },
+  { maxSeconds: Infinity, multiplier: 1, label: '' }
+];
+
 // Фраза по итогам игры — по доле от максимума.
 var GUESS_ENDINGS = [
   { minShare: 0.95, text: 'Вы либо выросли в этих дворах, либо подсматривали в геолокацию.' },
@@ -86,7 +97,7 @@ var guessScore = 0;
 var guessMarkers = [];
 var guessCorrectMarker = null;
 var guessTimer = null;
-var guessTimeLeft = 60;
+var guessTimeLeft = GUESS_ROUND_SECONDS;
 
 var guessBtn = null;
 var guessPanel = null;
@@ -2131,8 +2142,20 @@ function guessStepFor(distance) {
   return GUESS_SCORE_STEPS[GUESS_SCORE_STEPS.length - 1];
 }
 
+function guessSpeedFor(seconds) {
+  for (var i = 0; i < GUESS_SPEED_BONUSES.length; i++) {
+    if (seconds <= GUESS_SPEED_BONUSES[i].maxSeconds) return GUESS_SPEED_BONUSES[i];
+  }
+  return GUESS_SPEED_BONUSES[GUESS_SPEED_BONUSES.length - 1];
+}
+
+// Идеальная игра: точное попадание и самый быстрый ответ в каждом раунде.
 function guessMaxScore() {
-  return guessTotalRounds * GUESS_SCORE_STEPS[0].points;
+  return guessTotalRounds * Math.round(GUESS_SCORE_STEPS[0].points * GUESS_SPEED_BONUSES[0].multiplier);
+}
+
+function formatMultiplier(value) {
+  return String(value).replace('.', ',');
 }
 
 function guessEndingFor(score) {
@@ -2173,7 +2196,7 @@ function mapVisibleInsets() {
 
 function startGuessTimer() {
   clearGuessTimer();
-  guessTimeLeft = 60;
+  guessTimeLeft = GUESS_ROUND_SECONDS;
   updateGuessTimerUI();
 
   guessTimer = setInterval(() => {
@@ -2369,12 +2392,15 @@ function processGuessClick(latlng) {
   var dist = haversineDistance(latlng.lat, latlng.lng, point.lat, point.lng);
 
   var step = guessStepFor(dist);
+  var speed = guessSpeedFor(GUESS_ROUND_SECONDS - guessTimeLeft);
+  var pointsEarned = Math.round(step.points * speed.multiplier);
 
-  guessScore += step.points;
+  guessScore += pointsEarned;
   updateScoreUI();
 
-  guessResult.innerHTML = '<strong>' + step.label + '</strong> +' + step.points +
-    ' очк. · промах ' + formatDistance(dist);
+  guessResult.innerHTML = '<strong>' + step.label + '</strong> +' + pointsEarned + ' очк.' +
+    (speed.multiplier > 1 ? ' <span style="color:#666;">×' + formatMultiplier(speed.multiplier) + ' ' + speed.label + '</span>' : '') +
+    ' · промах ' + formatDistance(dist);
   clearGuessTimer();
 
   guessCorrectMarker = L.marker([point.lat, point.lng], {
