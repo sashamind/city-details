@@ -38,10 +38,28 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+// Разметка Schema.org внутри <script>. JSON.stringify не трогает "</script>",
+// поэтому находка с таким названием разорвала бы блок, и её текст выполнился бы
+// как код на нашей странице. Экранируем "<" — на разбор JSON это не влияет.
+function jsonLdBlock(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+// Дату считаем по Туле, а не по часовому поясу машины. Генератор запускается
+// и локально, и в GitHub Actions по UTC, и раньше находка, добавленная поздно
+// вечером, меняла дату туда-сюда при каждой пересборке.
+const TIMEZONE = 'Europe/Moscow';
+
 function formatDate(iso) {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '';
-  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+
+  const parts = {};
+  for (const p of new Intl.DateTimeFormat('ru-RU', {
+    timeZone: TIMEZONE, day: 'numeric', month: 'numeric', year: 'numeric'
+  }).formatToParts(d)) parts[p.type] = p.value;
+
+  return `${Number(parts.day)} ${MONTHS[Number(parts.month) - 1]} ${parts.year}`;
 }
 
 function categoryLabels(category) {
@@ -121,8 +139,8 @@ function pageHtml(detail) {
 <meta name="twitter:description" content="${escapeHtml(description)}">
 <meta name="twitter:image" content="${escapeHtml(image)}">
 
-<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
-<script type="application/ld+json">${JSON.stringify(breadcrumbs)}</script>
+<script type="application/ld+json">${jsonLdBlock(jsonLd)}</script>
+<script type="application/ld+json">${jsonLdBlock(breadcrumbs)}</script>
 
 <link rel="stylesheet" href="/vendor/fonts/fonts.css">
 <style>
@@ -260,7 +278,7 @@ function indexHtml(details) {
 <meta property="og:image" content="${SITE}/og-image.png">
 <meta property="og:url" content="${url}">
 <meta property="og:locale" content="ru_RU">
-<script type="application/ld+json">${JSON.stringify(itemList)}</script>
+<script type="application/ld+json">${jsonLdBlock(itemList)}</script>
 <link rel="stylesheet" href="/vendor/fonts/fonts.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
