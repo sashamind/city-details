@@ -1,8 +1,9 @@
-const CACHE_NAME = 'city-details-v4';
+const CACHE_NAME = 'city-details-v5';
 const urlsToCache = [
     '/',
     '/index.html',
     '/app.js',
+    '/styles.css',
     '/manifest.json',
     '/favicon.png',
     '/icon-192.png',
@@ -14,6 +15,7 @@ const urlsToCache = [
     '/vendor/markercluster/MarkerCluster.css',
     '/vendor/markercluster/MarkerCluster.Default.css',
     '/vendor/lottie/lottie.min.js',
+    '/vendor/emailjs/email.min.js',
     '/vendor/fonts/fonts.css'
 ];
 
