@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "seo": "node scripts/build-seo.mjs",
-    "thumbs": "node scripts/backfill-thumbs.mjs"
-  },
-  "dependencies": {
-    "leaflet": "^1.9.4"
+    "thumbs": "node scripts/backfill-thumbs.mjs",
+    "test": "node tests/run.mjs"
   },
   "devDependencies": {
     "vite": "^6.0.0"
