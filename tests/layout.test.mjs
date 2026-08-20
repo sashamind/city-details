@@ -22,6 +22,42 @@ const GEOMETRY = `(function(){
 })()`;
 
 export async function run({ page, base, check }) {
+  // Все файлы страницы должны отдаваться: иконки, манифест, стили, анимация.
+  // Переносы файлов ломаются именно так — молча, одним 404.
+  await page.viewport(1440, 900, { mobile: false });
+  page.failed.length = 0;
+  await page.openApp(base);
+  await new Promise((r) => setTimeout(r, 2500));
+  await page.eval(`document.getElementById('help-btn').click()`);
+  await new Promise((r) => setTimeout(r, 1500));
+  await page.eval(`(document.querySelector('.onboarding-close') || { click(){} }).click()`);
+
+  const ownFiles = page.failed.filter((f) => !f.url.includes('/rest/v1/') && !f.url.includes('basemaps'));
+  check('все файлы страницы отдаются', ownFiles.length === 0,
+    ownFiles.map((f) => f.status + ' ' + f.url.split('/').slice(3).join('/')).join(', ') || 'ни одной битой ссылки');
+
+  // Манифест и анимация приходят не как файлы страницы, а запросом из кода:
+  // проверяем, что по их адресам лежит то, что заявлено.
+  const assets = await page.eval(`(async function(){
+    var manifest = document.querySelector('link[rel=manifest]').href;
+    var icons = Array.from(document.querySelectorAll('link[rel=icon], link[rel=apple-touch-icon]')).map(l => l.href);
+    var out = { icons: [], manifest: null, lottie: null };
+    for (var href of icons) {
+      var r = await fetch(href);
+      out.icons.push({ href: href, ok: r.ok && (r.headers.get('content-type') || '').indexOf('image') === 0 });
+    }
+    try { out.manifest = (await (await fetch(manifest)).json()).icons.length; } catch (e) { out.manifest = null; }
+    return out;
+  })()`);
+
+  check('иконки отдаются картинками', assets.icons.every((i) => i.ok),
+    assets.icons.filter((i) => !i.ok).map((i) => i.href).join(', ') || assets.icons.length + ' иконки');
+  check('манифест разбирается и содержит иконки', assets.manifest > 0, assets.manifest + ' иконки');
+  // Кадры появляются только если файл анимации действительно загрузился:
+  // сам объект lottie создаёт в любом случае, даже по битому пути.
+  check('анимация логотипа загрузилась', await page.eval('!!lottieAnim && lottieAnim.totalFrames > 0'),
+    'кадров: ' + await page.eval('lottieAnim ? lottieAnim.totalFrames : "нет анимации"'));
+
   for (const [width, height] of WIDTHS) {
     await page.viewport(width, height);
     await page.openApp(base);

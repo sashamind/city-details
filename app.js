@@ -2076,7 +2076,7 @@ function initOnboardingLottie() {
     renderer: 'svg',
     loop: false,
     autoplay: false,
-    path: 'textula.json'
+    path: 'assets/textula.json'
   });
 
   var lottieDirection = 1;

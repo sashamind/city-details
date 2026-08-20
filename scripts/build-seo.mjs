@@ -84,7 +84,7 @@ function pageHtml(detail) {
   const title = detail.title || 'Деталь города';
   const url = `${SITE}/d/${detail.id}/`;
   const mapUrl = `${SITE}/?d=${encodeURIComponent(detail.id)}`;
-  const image = detail.photo_url || `${SITE}/og-image.png`;
+  const image = detail.photo_url || `${SITE}/assets/og-image.png`;
   const description = metaDescription(detail);
   const cats = categoryLabels(detail.category);
   const date = formatDate(detail.created_at);
@@ -124,7 +124,7 @@ function pageHtml(detail) {
 <title>${escapeHtml(title)} — textula, детали города</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${url}">
-<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/favicon.png" sizes="32x32">
 <meta name="theme-color" content="#ffffff">
 
 <meta property="og:type" content="article">
@@ -271,11 +271,11 @@ function indexHtml(details) {
 <title>Все находки — textula, детали города</title>
 <meta name="description" content="${escapeHtml(description)}">
 <link rel="canonical" href="${url}">
-<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/favicon.png" sizes="32x32">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Все находки — textula">
 <meta property="og:description" content="${escapeHtml(description)}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${SITE}/assets/og-image.png">
 <meta property="og:url" content="${url}">
 <meta property="og:locale" content="ru_RU">
 <script type="application/ld+json">${jsonLdBlock(itemList)}</script>

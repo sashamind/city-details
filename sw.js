@@ -1,12 +1,12 @@
-const CACHE_NAME = 'city-details-v5';
+const CACHE_NAME = 'city-details-v6';
 const urlsToCache = [
     '/',
     '/index.html',
     '/app.js',
     '/styles.css',
     '/manifest.json',
-    '/favicon.png',
-    '/icon-192.png',
+    '/assets/favicon.png',
+    '/assets/icon-192.png',
     // Библиотеки лежат локально, поэтому их можно положить в офлайн-кэш —
     // раньше карта офлайн не работала вовсе, так как Leaflet грузился с CDN.
     '/vendor/leaflet/leaflet.js',

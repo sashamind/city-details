@@ -77,6 +77,7 @@ export async function openPage() {
   const pending = new Map();
   const errors = [];
   const images = [];
+  const failed = [];
 
   ws.addEventListener('message', (e) => {
     const msg = JSON.parse(e.data);
@@ -87,8 +88,17 @@ export async function openPage() {
     if (msg.method === 'Runtime.exceptionThrown') {
       errors.push(msg.params.exceptionDetails?.exception?.description || msg.params.exceptionDetails?.text || '');
     }
-    if (msg.method === 'Network.responseReceived' && msg.params.type === 'Image') {
-      images.push({ url: msg.params.response.url, size: 0 });
+    if (msg.method === 'Network.responseReceived') {
+      const { url, status, mimeType } = msg.params.response;
+      const kind = msg.params.type;
+      if (kind === 'Image') images.push({ url, size: 0 });
+
+      // Битая ссылка на файл выглядит по-разному: на боевом сервере это 404,
+      // а vite на несуществующий путь отдаёт 200 с разметкой страницы. Второе
+      // ловим по типу содержимого: картинка не может быть text/html.
+      const wrongType = ['Image', 'Stylesheet', 'Script', 'Font'].includes(kind) &&
+        String(mimeType).startsWith('text/html');
+      if (status >= 400 || wrongType) failed.push({ url, status, kind, mimeType });
     }
     if (msg.method === 'Network.loadingFinished') {
       const last = images[images.length - 1];
@@ -109,6 +119,7 @@ export async function openPage() {
   const page = {
     errors,
     images,
+    failed,
     send,
 
     // Выполнить выражение на странице и вернуть результат.
