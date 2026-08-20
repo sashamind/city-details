@@ -182,12 +182,28 @@ function createMarkerIcon(detail) {
   }
 }
 
+// Дату считаем по Туле, а не по часовому поясу читателя: находка добавлена в
+// городе, и на странице находки (её собирает scripts/build-seo.mjs) стоит та же
+// дата — иначе у читателя из другого пояса числа расходились бы на день.
+var CITY_TIMEZONE = 'Europe/Moscow';
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   var d = new Date(dateStr);
   if (isNaN(d.getTime())) return '';
+
   var months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  var parts = {};
+
+  try {
+    new Intl.DateTimeFormat('ru-RU', {
+      timeZone: CITY_TIMEZONE, day: 'numeric', month: 'numeric', year: 'numeric'
+    }).formatToParts(d).forEach(function (p) { parts[p.type] = p.value; });
+  } catch (e) {
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  return Number(parts.day) + ' ' + months[Number(parts.month) - 1] + ' ' + parts.year;
 }
 
 function isReservedName(name) {
