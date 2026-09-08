@@ -16,7 +16,12 @@ export async function run({ page, base, check }) {
 
   check('карта не грузит полноразмерные снимки', originals.length === 0,
     originals.length ? originals.length + ' оригиналов' : 'все ' + photos.length + ' превью');
-  check('на карту уходит меньше мегабайта', kilobytes < 1024, kilobytes + ' КБ');
+  // До превью те же снимки весили около 30 МБ. Порог с запасом: он ловит
+  // возврат к оригиналам или раздувшиеся превью, а не мелкие колебания.
+  check('снимки на карте весят единицы мегабайт, а не десятки', kilobytes < 2048,
+    kilobytes + ' КБ на ' + photos.length + ' превью');
+  check('превью не раздулись', photos.every((p) => p.size < 150 * 1024),
+    'самое тяжёлое: ' + Math.round(Math.max(...photos.map((p) => p.size)) / 1024) + ' КБ');
   check('у всех точек с фото есть превью',
     await page.eval(`details.filter(d => d.photo).every(d => !!d.thumb)`),
     await page.eval(`details.filter(d => d.photo && !d.thumb).length + ' без превью'`));

@@ -78,6 +78,7 @@ export async function openPage() {
   const errors = [];
   const images = [];
   const failed = [];
+  const byRequest = new Map();
 
   ws.addEventListener('message', (e) => {
     const msg = JSON.parse(e.data);
@@ -91,7 +92,14 @@ export async function openPage() {
     if (msg.method === 'Network.responseReceived') {
       const { url, status, mimeType } = msg.params.response;
       const kind = msg.params.type;
-      if (kind === 'Image') images.push({ url, size: 0 });
+      // Размер приходит отдельным событием, поэтому запоминаем запрос по его
+      // идентификатору: картинки грузятся параллельно, и «последняя в списке»
+      // — не та, о которой рассказывает loadingFinished.
+      if (kind === 'Image') {
+        const image = { url, size: 0 };
+        images.push(image);
+        byRequest.set(msg.params.requestId, image);
+      }
 
       // Битая ссылка на файл выглядит по-разному: на боевом сервере это 404,
       // а vite на несуществующий путь отдаёт 200 с разметкой страницы. Второе
@@ -101,8 +109,11 @@ export async function openPage() {
       if (status >= 400 || wrongType) failed.push({ url, status, kind, mimeType });
     }
     if (msg.method === 'Network.loadingFinished') {
-      const last = images[images.length - 1];
-      if (last && !last.size) last.size = msg.params.encodedDataLength;
+      const image = byRequest.get(msg.params.requestId);
+      if (image) {
+        image.size = msg.params.encodedDataLength;
+        byRequest.delete(msg.params.requestId);
+      }
     }
   });
 

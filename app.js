@@ -4,6 +4,12 @@
 
 var SUPABASE_URL = 'https://yzvigrtnwmkwkpmqmdzh.supabase.co';
 var SUPABASE_KEY = 'sb_publishable__AIRJSDqAYUK_vxwYhXmRA_4-QzSKkR'; // поменяй на актуальный, если нужно
+
+// Подложка карты. CARTO с 2026 года отдаёт тайлы без ключа с надписью
+// «API KEY REQUIRED» поперёк картинки. Ключ бесплатный (5 млн тайлов в месяц,
+// некоммерческое использование) и привязан к доменам textula.ru и localhost,
+// поэтому лежит прямо здесь — как и ключ Supabase, он публичный по устройству.
+var CARTO_KEY = 'cb1_31p9_1_27029714443ac82f616b9f90';
 var ADMIN_LOGIN_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-login';
 var ADMIN_ACTION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/admin-action';
 var ADMIN_TOKEN_KEY = 'textula_admin_token';
@@ -1068,8 +1074,9 @@ function initMap() {
   map = L.map('map', { center: MAP_CENTER, zoom: MAP_ZOOM, zoomControl: false });
   L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=' + CARTO_KEY, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
+      '&copy; <a href="https://carto.com/attributions">CARTO</a>',
     maxZoom: 19
   }).on('tileerror', function (e) {
     console.warn('Ошибка загрузки тайла карты', e);

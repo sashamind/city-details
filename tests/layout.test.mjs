@@ -50,6 +50,15 @@ export async function run({ page, base, check }) {
     return out;
   })()`);
 
+  // Подложка карты: без ключа CARTO рисует поперёк тайлов «API KEY REQUIRED».
+  // Саму надпись из картинки не вычитать, поэтому проверяем, что ключ вообще
+  // уходит в запросе и тайлы приходят.
+  const tiles = page.images.filter((i) => i.url.includes('cartocdn.com'));
+  check('тайлы карты загружаются', tiles.length > 0, tiles.length + ' тайлов');
+  check('тайлы запрашиваются с ключом CARTO', tiles.every((t) => /[?&]key=.+/.test(t.url)),
+    tiles.filter((t) => !/[?&]key=/.test(t.url)).length + ' без ключа');
+  check('подложка не отдала пустых ответов', tiles.every((t) => t.size > 0));
+
   check('иконки отдаются картинками', assets.icons.every((i) => i.ok),
     assets.icons.filter((i) => !i.ok).map((i) => i.href).join(', ') || assets.icons.length + ' иконки');
   check('манифест разбирается и содержит иконки', assets.manifest > 0, assets.manifest + ' иконки');
