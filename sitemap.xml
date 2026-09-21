@@ -2,15 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://textula.ru/</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://textula.ru/d/</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://textula.ru/d/65054677-e6d4-4e60-92e8-3ac72bad25b8/</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://textula.ru/d/0044bab3-d846-49ec-924c-ec9c21c13243/</loc>
@@ -380,7 +386,7 @@
   </url>
   <url>
     <loc>https://textula.ru/privacy.html</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
