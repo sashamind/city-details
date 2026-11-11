@@ -7,6 +7,8 @@ $('letter-size').value=layout==='mobile'?40:100;
 $('letter-gap').value=layout==='mobile'?3:5;
 let quality={},qualityAvailable=false;
 let manifest=[],byId=new Map(),groups=new Map(),tiles=[],phrase='',pickerIndex=-1,ready=false,loading=false,loadedRevision=null;
+let pendingShuffle=null,shuffleBusy=false;
+const imageCache=new Map();
 const node=(tag,className,text)=>{const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;};
 function keyFor(ch){const upper=ch.toUpperCase();return /^\p{Script=Cyrillic}$/u.test(ch)?`cyrillic:${upper}`:/^\p{Script=Latin}$/u.test(ch)?`latin:${upper}`:null;}
 function optionsFor(ch){return groups.get(keyFor(ch))||[];}
@@ -27,7 +29,7 @@ function fitTextarea(){
  if(!window.matchMedia('(max-width: 650px)').matches){input.style.height='';return;}
  input.style.height='0px';input.style.height=`${input.scrollHeight}px`;
 }
-function render(){
+function render(preloadedImages=[]){
  fitTextarea();
  const stage=$('word-stage');stage.replaceChildren();stage.style.setProperty('--letter-size',`${$('letter-size').value}px`);stage.style.setProperty('--letter-gap',`${$('letter-gap').value}px`);stage.setAttribute('aria-label',phrase||'Пустая надпись');$('size-value').textContent=$('letter-size').value;$('gap-value').textContent=$('letter-gap').value;for(const id of ['letter-size','letter-gap']){const range=$(id);range.style.setProperty('--range-fill',`${(Number(range.value)-Number(range.min))/(Number(range.max)-Number(range.min))*100}%`);}$('blank-hint').hidden=!!phrase.trim();
  let word=null;const createWord=()=>{word=node('span','word');stage.append(word);};
@@ -35,17 +37,58 @@ function render(){
   if(tile.char==='\n'){stage.append(node('span','word-break'));word=null;return;}
   if(/\s/u.test(tile.char)){stage.append(node('span','word-space'));word=null;return;}
   if(!word)createWord();const m=byId.get(tile.id);
-  if(m){const button=node('button','glyph');const cropWidth=m.box[2]-m.box[0],cropHeight=m.box[3]-m.box[1];button.style.width=`${Number($('letter-size').value)*cropWidth/cropHeight}px`;button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=node('img');img.width=cropWidth;img.height=cropHeight;img.src=m.file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
+  if(m){const button=node('button','glyph');const cropWidth=m.box[2]-m.box[0],cropHeight=m.box[3]-m.box[1];button.style.width=`${Number($('letter-size').value)*cropWidth/cropHeight}px`;button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=preloadedImages[index]||node('img');img.width=cropWidth;img.height=cropHeight;if(img.getAttribute('src')!==m.file)img.src=m.file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
   else if(/^\p{L}$/u.test(tile.char)){const missing=node('button','glyph missing',tile.char);missing.title=`Для «${tile.char}» ${$('sharp-only').checked?'нет чёткого варианта':'пока нет вариантов в коллекции'}`;missing.setAttribute('aria-label',`${tile.char}: нет вариантов`);missing.onclick=()=>openPicker(index);word.append(missing);}
   else word.append(node('span','literal',tile.char));
  });
- $('shuffle').disabled=!ready||!tiles.some(t=>optionsFor(t.char).length>1);
+ updateShuffleButton();
+ prepareShuffle();
 }
 function status(message,error=false){$('play-status').textContent=message;$('play-status').classList.toggle('error',error);}
 function describe(){const missing=[...new Set(tiles.filter(t=>/^\p{L}$/u.test(t.char)&&!t.id).map(t=>t.char.toUpperCase()))];return missing.length?`${$('sharp-only').checked?'Среди чётких вариантов нет букв':'Пока нет букв'}: ${missing.join(', ')}. Для остальных можно выбирать варианты.`:'Нажми на букву в надписи, чтобы сменить вариант или посмотреть источник.';}
-function shuffle(){
- let changed=0;tiles=tiles.map(t=>{const id=pick(optionsFor(t.char),t.id);if(id!==t.id)changed++;return {...t,id};});render();savePlay();status(changed?`Надпись та же — заменено вариантов: ${changed}. ${describe()}`:'Для этих букв пока нет других вариантов.');
+function shuffleKey(){return JSON.stringify([phrase,$('sharp-only').checked,tiles.map(t=>[t.char,t.id,byId.get(t.id)?.file])]);}
+function updateShuffleButton(){
+ $('shuffle').disabled=shuffleBusy||!ready||!tiles.some(t=>optionsFor(t.char).length>1);
+ $('shuffle').textContent=shuffleBusy?'Загружаем…':'Перемешать ↻';
+ $('word-stage').setAttribute('aria-busy',String(shuffleBusy));
 }
+function loadImage(file){
+ if(!imageCache.has(file)){
+  const image=new Image();image.decoding='async';image.fetchPriority='low';
+  const promise=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Image timeout')),20000);image.onload=async()=>{try{if(image.decode)await image.decode();clearTimeout(timer);resolve(image);}catch(e){clearTimeout(timer);reject(e);}};image.onerror=()=>{clearTimeout(timer);reject(Error('Image unavailable'));};image.src=file;});
+  imageCache.set(file,promise);promise.catch(()=>{if(imageCache.get(file)===promise)imageCache.delete(file);});
+  if(imageCache.size>128)imageCache.delete(imageCache.keys().next().value);
+ }
+ return imageCache.get(file);
+}
+async function loadTileImages(next){
+ return Promise.all(next.map(async tile=>{
+  const m=byId.get(tile.id);if(!m)return null;
+  const cached=await loadImage(m.file),image=cached.cloneNode(false);
+  if(image.decode)await image.decode();return image;
+ }));
+}
+function prepareShuffle(){
+ const key=shuffleKey();if(pendingShuffle?.key===key)return pendingShuffle;
+ if(pendingShuffle?.timer)clearTimeout(pendingShuffle.timer);
+ if(!ready||!tiles.some(t=>optionsFor(t.char).length>1)){pendingShuffle=null;return null;}
+ const next=tiles.map(t=>({...t,id:pick(optionsFor(t.char),t.id)}));
+ const entry={key,next,promise:null,timer:null};
+ entry.start=()=>{if(entry.timer){clearTimeout(entry.timer);entry.timer=null;}if(!entry.promise)entry.promise=loadTileImages(next).then(images=>({images}),error=>({error}));return entry.promise;};
+ entry.timer=setTimeout(entry.start,150);pendingShuffle=entry;return entry;
+}
+async function shuffle(){
+ if(shuffleBusy)return;const entry=prepareShuffle();if(!entry)return;
+ shuffleBusy=true;updateShuffleButton();
+ try{
+  const result=await entry.start();
+  if(shuffleKey()!==entry.key)return;
+  if(result.error){pendingShuffle=null;status('Не удалось загрузить новые буквы. Прежняя надпись сохранена — попробуй ещё раз.',true);return;}
+  const changed=entry.next.filter((t,i)=>t.id!==tiles[i].id).length;
+  tiles=entry.next;render(result.images);savePlay();status(`Надпись та же — заменено вариантов: ${changed}. ${describe()}`);
+ }finally{shuffleBusy=false;updateShuffleButton();}
+}
+
 function showSource(m,expand=true){
  $('origin-title').textContent=`${m.character} · ${m.source_title}`;$('origin-image').src=m.source_file;$('origin-image').alt=m.source_title;$('origin-link').href=`https://textula.ru/d/${m.source_id}/`;
  const [w,h]=m.source_size,[x,y,r,b]=m.box;Object.assign($('origin-outline').style,{left:`${x/w*100}%`,top:`${y/h*100}%`,width:`${(r-x)/w*100}%`,height:`${(b-y)/h*100}%`});$('source-details').hidden=false;$('source-details').open=expand;
