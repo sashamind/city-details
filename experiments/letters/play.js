@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 const STORAGE_KEY='textula-letter-play-v1';
 const layout=window.matchMedia('(max-width: 650px)').matches?'mobile':'desktop';
 let settingsByLayout={};
-$('letter-size').value=layout==='mobile'?50:100;
+$('letter-size').value=layout==='mobile'?40:100;
 $('letter-gap').value=layout==='mobile'?3:5;
 let quality={},qualityAvailable=false;
 let manifest=[],byId=new Map(),groups=new Map(),tiles=[],phrase='',pickerIndex=-1,ready=false,loading=false,loadedRevision=null;
@@ -17,12 +17,18 @@ function rebuildGroups(){
  $('collection-info').textContent=`${eligible.length} ${$('sharp-only').checked?'чётких вариантов':'вариантов'} · актуальная коллекция`;
 }
 function pick(options,previous){const candidates=options.filter(m=>m.id!==previous);const pool=candidates.length?candidates:options;return pool.length?pool[Math.floor(Math.random()*pool.length)].id:null;}
-function savePlay(){try{settingsByLayout[layout]={size:Number($('letter-size').value),gap:Number($('letter-gap').value)};localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),settingsByLayout}));}catch{}}
+function savePlay(){try{settingsByLayout[layout]={size:Number($('letter-size').value),gap:Number($('letter-gap').value),defaultsVersion:2};localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),settingsByLayout}));}catch{}}
 function reconcile(text,previous=tiles){
  const chars=[...text.normalize('NFC')];
  return chars.map((char,index)=>{const old=previous[index],options=optionsFor(char);return {char,id:old?.char===char&&options.some(m=>m.id===old.id)?old.id:pick(options,null)};});
 }
+function fitTextarea(){
+ const input=$('phrase');
+ if(!window.matchMedia('(max-width: 650px)').matches){input.style.height='';return;}
+ input.style.height='0px';input.style.height=`${input.scrollHeight}px`;
+}
 function render(){
+ fitTextarea();
  const stage=$('word-stage');stage.replaceChildren();stage.style.setProperty('--letter-size',`${$('letter-size').value}px`);stage.style.setProperty('--letter-gap',`${$('letter-gap').value}px`);stage.setAttribute('aria-label',phrase||'Пустая надпись');$('size-value').textContent=$('letter-size').value;$('gap-value').textContent=$('letter-gap').value;for(const id of ['letter-size','letter-gap']){const range=$(id);range.style.setProperty('--range-fill',`${(Number(range.value)-Number(range.min))/(Number(range.max)-Number(range.min))*100}%`);}$('blank-hint').hidden=!!phrase.trim();
  let word=null;const createWord=()=>{word=node('span','word');stage.append(word);};
  tiles.forEach((tile,index)=>{
@@ -65,18 +71,19 @@ async function loadCollection(initial=false,quiet=false){
   if(quiet&&ready&&revision!==null&&revision===loadedRevision)return;
   manifest=rows.filter(m=>!m.hidden);rebuildGroups();
   let previous=tiles;
-  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;settingsByLayout=saved.settingsByLayout&&typeof saved.settingsByLayout==='object'?saved.settingsByLayout:{};const preferences=settingsByLayout[layout]||(layout==='desktop'?saved:{});if(Number.isFinite(preferences.size))$('letter-size').value=Math.min(180,Math.max(40,preferences.size));if(Number.isFinite(preferences.gap))$('letter-gap').value=Math.min(24,Math.max(0,preferences.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
+  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;settingsByLayout=saved.settingsByLayout&&typeof saved.settingsByLayout==='object'?saved.settingsByLayout:{};const preferences=settingsByLayout[layout]||(layout==='desktop'?saved:{});if(Number.isFinite(preferences.size))$('letter-size').value=layout==='mobile'&&preferences.defaultsVersion!==2&&preferences.size===50?40:Math.min(180,Math.max(40,preferences.size));if(Number.isFinite(preferences.gap))$('letter-gap').value=Math.min(24,Math.max(0,preferences.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
   tiles=reconcile(phrase,previous);loadedRevision=revision;ready=true;render();savePlay();
   if($('variant-picker').open)openPicker(pickerIndex);
   status(quiet?'Коллекция обновлена с учётом сохранённых правок. '+describe():describe());
  }catch(e){status('Не удалось обновить буквы. '+(ready?'Надпись сохранена, попробуй обновить ещё раз.':'Открой страницу через локальный сервер и попробуй снова.'),true);console.error(e);}
  finally{loading=false;}
 }
-$('phrase').addEventListener('input',()=>{phrase=$('phrase').value;if(!ready)return;tiles=reconcile(phrase);render();savePlay();status(describe());});
+$('phrase').addEventListener('input',()=>{fitTextarea();phrase=$('phrase').value;if(!ready)return;tiles=reconcile(phrase);render();savePlay();status(describe());});
 $('shuffle').onclick=shuffle;
 $('sharp-only').onchange=()=>{rebuildGroups();tiles=reconcile(phrase);render();savePlay();if($('variant-picker').open)openPicker(pickerIndex);status(describe());};
 for(const id of ['letter-size','letter-gap'])$(id).oninput=()=>{render();savePlay();};
 $('close-picker').onclick=()=>$('variant-picker').close();
 $('variant-picker').addEventListener('click',e=>{if(e.target===$('variant-picker')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
 window.addEventListener('focus',()=>{if(ready)loadCollection(false,true);});
-phrase=$('phrase').value;loadCollection(true);
+window.addEventListener('resize',fitTextarea);
+phrase=$('phrase').value;fitTextarea();loadCollection(true);

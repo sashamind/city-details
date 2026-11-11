@@ -90,7 +90,7 @@ dialog > h2 { font: 500 36px/1.15 'Source Serif 4', Georgia, serif; letter-spaci
  .eyebrow { margin-bottom: 8px; }
  h1 { margin-bottom: 12px; }
  .play-intro { font-size: 14px; line-height: 1.5; margin-bottom: 18px; }
- .composer textarea { font-size: 20px; line-height: 1.35; min-height: 74px; height: 74px; padding: 10px 12px; }
+ .composer textarea { font-size: 20px; line-height: 1.35; min-height: 46px; height: 46px; max-height: none; padding: 8px 12px; resize: none; overflow: hidden; }
  .compose-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
  .compose-controls > .primary { grid-column: 1 / -1; width: 100%; border-bottom: 1px solid #000; min-height: 42px; padding: 10px 16px; }
  .compose-controls > label { min-width: 0; white-space: nowrap; justify-content: space-between; padding: 7px 8px; gap: 6px; font-size: 10px; }
@@ -98,7 +98,7 @@ dialog > h2 { font: 500 36px/1.15 'Source Serif 4', Georgia, serif; letter-spaci
  .compose-controls > label:nth-of-type(2) { border-right: 0; }
  .compose-controls input[type="range"] { flex: 1 1 0; width: 0; min-width: 20px; }
  .play-status { margin-top: 14px; }
- .paper { padding: 30px 14px; min-height: 250px; }
+ .paper { padding: 18px 14px; min-height: 80px; }
  .play-note { font-size: 12px; }
  .paper-caption { font-size: 8px; }
  dialog { padding: 24px 16px; width: 94vw; max-height: 90vh; }
