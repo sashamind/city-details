@@ -29,7 +29,7 @@ function render(){
   if(tile.char==='\n'){stage.append(node('span','word-break'));word=null;return;}
   if(/\s/u.test(tile.char)){stage.append(node('span','word-space'));word=null;return;}
   if(!word)createWord();const m=byId.get(tile.id);
-  if(m){const button=node('button','glyph');button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=node('img');img.src=m.file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
+  if(m){const button=node('button','glyph');const cropWidth=m.box[2]-m.box[0],cropHeight=m.box[3]-m.box[1];button.style.width=`${Number($('letter-size').value)*cropWidth/cropHeight}px`;button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=node('img');img.width=cropWidth;img.height=cropHeight;img.src=m.file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
   else if(/^\p{L}$/u.test(tile.char)){const missing=node('button','glyph missing',tile.char);missing.title=`Для «${tile.char}» ${$('sharp-only').checked?'нет чёткого варианта':'пока нет вариантов в коллекции'}`;missing.setAttribute('aria-label',`${tile.char}: нет вариантов`);missing.onclick=()=>openPicker(index);word.append(missing);}
   else word.append(node('span','literal',tile.char));
  });

@@ -42,9 +42,10 @@ h1 em { font-weight: 400; }
 .play-status.error { color: #000; }
 .paper { min-height: 320px; padding: 40px 30px; display: flex; align-items: center; overflow: hidden; border: 1px solid #000; background: #fff; }
 .word-stage { --letter-size: 100px; --letter-gap: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 0; width: 100%; }
-.word { display: inline-flex; align-items: center; gap: var(--letter-gap); flex-wrap: wrap; max-width: 100%; row-gap: 10px; }
-.glyph { position: relative; border: 0; background: transparent; border-radius: 0; display: block; padding: 0; flex-shrink: 0; line-height: 0; height: var(--letter-size); min-width: 7px; transition: transform .14s; }
-.glyph img { display: block; height: 100%; width: auto; max-width: 80vw; object-fit: contain; }
+.word { display: inline-flex; align-items: center; gap: 0; flex-wrap: wrap; max-width: 100%; row-gap: 10px; }
+.word > * + * { margin-left: var(--letter-gap); }
+.glyph { position: relative; border: 0; background: transparent; border-radius: 0; display: block; padding: 0; flex: 0 0 auto; line-height: 0; height: var(--letter-size); min-width: 7px; max-width: calc(100vw - 96px); overflow: hidden; transition: transform .14s; }
+.glyph img { display: block; height: 100%; width: 100%; max-width: none; object-fit: contain; }
 .glyph:hover { transform: translateY(-3px); outline: 1px solid #000; outline-offset: 4px; z-index: 1; }
 .glyph:focus-visible { outline-offset: 4px; }
 .glyph.missing { font: calc(var(--letter-size)*.7)/1 'Source Serif 4', Georgia, serif; border: 1px dashed #aaa; min-width: calc(var(--letter-size)*.55); padding: 4px 8px; color: #999; display: flex; align-items: center; justify-content: center; }
