@@ -43,7 +43,7 @@ function openPicker(index){
  if(!$('variant-picker').open)$('variant-picker').showModal();
 }
 async function loadCollection(initial=false,quiet=false){
- if(loading)return;loading=true;$('refresh-letters').disabled=true;
+ if(loading)return;loading=true;
  try{
   const response=await fetch('manifest-all.json',{cache:'no-store'});if(!response.ok)throw Error('Не удалось прочитать коллекцию.');
   const rows=await response.json();
@@ -57,12 +57,11 @@ async function loadCollection(initial=false,quiet=false){
   if($('variant-picker').open)openPicker(pickerIndex);
   status(quiet?'Коллекция обновлена с учётом сохранённых правок. '+describe():describe());
  }catch(e){status('Не удалось обновить буквы. '+(ready?'Надпись сохранена, попробуй обновить ещё раз.':'Открой страницу через локальный сервер и попробуй снова.'),true);console.error(e);}
- finally{loading=false;$('refresh-letters').disabled=false;}
+ finally{loading=false;}
 }
 $('phrase').addEventListener('input',()=>{phrase=$('phrase').value;if(!ready)return;tiles=reconcile(phrase);render();savePlay();status(describe());});
 $('shuffle').onclick=shuffle;
 for(const id of ['letter-size','letter-gap'])$(id).oninput=()=>{render();savePlay();};
-$('refresh-letters').onclick=()=>loadCollection();
 $('close-picker').onclick=()=>$('variant-picker').close();
 $('variant-picker').addEventListener('click',e=>{if(e.target===$('variant-picker')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
 window.addEventListener('focus',()=>{if(ready)loadCollection(false,true);});
