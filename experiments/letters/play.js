@@ -1,18 +1,22 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const STORAGE_KEY='textula-letter-play-v1';
+const layout=window.matchMedia('(max-width: 650px)').matches?'mobile':'desktop';
+let settingsByLayout={};
+$('letter-size').value=layout==='mobile'?50:100;
+$('letter-gap').value=layout==='mobile'?3:5;
 let manifest=[],byId=new Map(),groups=new Map(),tiles=[],phrase='',pickerIndex=-1,ready=false,loading=false,loadedRevision=null;
 const node=(tag,className,text)=>{const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;};
 function keyFor(ch){const upper=ch.toUpperCase();return /^\p{Script=Cyrillic}$/u.test(ch)?`cyrillic:${upper}`:/^\p{Script=Latin}$/u.test(ch)?`latin:${upper}`:null;}
 function optionsFor(ch){return groups.get(keyFor(ch))||[];}
 function pick(options,previous){const candidates=options.filter(m=>m.id!==previous);const pool=candidates.length?candidates:options;return pool.length?pool[Math.floor(Math.random()*pool.length)].id:null;}
-function savePlay(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),size:Number($('letter-size').value),gap:Number($('letter-gap').value)}));}catch{}}
+function savePlay(){try{settingsByLayout[layout]={size:Number($('letter-size').value),gap:Number($('letter-gap').value)};localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),settingsByLayout}));}catch{}}
 function reconcile(text,previous=tiles){
  const chars=[...text.normalize('NFC')];
  return chars.map((char,index)=>{const old=previous[index],options=optionsFor(char);return {char,id:old?.char===char&&options.some(m=>m.id===old.id)?old.id:pick(options,null)};});
 }
 function render(){
- const stage=$('word-stage');stage.replaceChildren();stage.style.setProperty('--letter-size',`${$('letter-size').value}px`);stage.style.setProperty('--letter-gap',`${$('letter-gap').value}px`);stage.setAttribute('aria-label',phrase||'Пустая надпись');$('size-value').textContent=$('letter-size').value;$('gap-value').textContent=$('letter-gap').value;$('blank-hint').hidden=!!phrase.trim();
+ const stage=$('word-stage');stage.replaceChildren();stage.style.setProperty('--letter-size',`${$('letter-size').value}px`);stage.style.setProperty('--letter-gap',`${$('letter-gap').value}px`);stage.setAttribute('aria-label',phrase||'Пустая надпись');$('size-value').textContent=$('letter-size').value;$('gap-value').textContent=$('letter-gap').value;for(const id of ['letter-size','letter-gap']){const range=$(id);range.style.setProperty('--range-fill',`${(Number(range.value)-Number(range.min))/(Number(range.max)-Number(range.min))*100}%`);}$('blank-hint').hidden=!!phrase.trim();
  let word=null;const createWord=()=>{word=node('span','word');stage.append(word);};
  tiles.forEach((tile,index)=>{
   if(tile.char==='\n'){stage.append(node('span','word-break'));word=null;return;}
@@ -52,7 +56,7 @@ async function loadCollection(initial=false,quiet=false){
   if(quiet&&ready&&revision!==null&&revision===loadedRevision)return;
   manifest=rows.filter(m=>!m.hidden);byId=new Map(manifest.map(m=>[m.id,m]));groups=new Map();for(const m of manifest){const key=`${m.alphabet}:${m.letter}`;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(m);}
   let previous=tiles;
-  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;if(Number.isFinite(saved.size))$('letter-size').value=Math.min(180,Math.max(40,saved.size));if(Number.isFinite(saved.gap))$('letter-gap').value=Math.min(24,Math.max(0,saved.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
+  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;settingsByLayout=saved.settingsByLayout&&typeof saved.settingsByLayout==='object'?saved.settingsByLayout:{};const preferences=settingsByLayout[layout]||(layout==='desktop'?saved:{});if(Number.isFinite(preferences.size))$('letter-size').value=Math.min(180,Math.max(40,preferences.size));if(Number.isFinite(preferences.gap))$('letter-gap').value=Math.min(24,Math.max(0,preferences.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
   tiles=reconcile(phrase,previous);loadedRevision=revision;ready=true;render();savePlay();$('collection-info').textContent=`${manifest.length} вариантов · актуальная коллекция`;
   if($('variant-picker').open)openPicker(pickerIndex);
   status(quiet?'Коллекция обновлена с учётом сохранённых правок. '+describe():describe());
