@@ -5,10 +5,13 @@ const layout=window.matchMedia('(max-width: 650px)').matches?'mobile':'desktop';
 let settingsByLayout={};
 $('letter-size').value=layout==='mobile'?40:100;
 $('letter-gap').value=layout==='mobile'?3:5;
-let quality={},qualityAvailable=false;
+let quality={},qualityAvailable=false,previewFiles={};
 let manifest=[],byId=new Map(),groups=new Map(),tiles=[],phrase='',pickerIndex=-1,ready=false,loading=false,loadedRevision=null;
 let pendingShuffle=null,shuffleBusy=false;
 const imageCache=new Map();
+const warmedFiles=new Set(),warmInFlight=new Set(),failedWarmFiles=new Set();
+let warmQueue=[],warmTimer=null,lastInteraction=performance.now(),priorityLoads=0,visibleImagesReady=false,visibleEpoch=0,visibleReadyPromise=Promise.resolve();
+function displayFile(m){return previewFiles[m.file]||m.file;}
 const node=(tag,className,text)=>{const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;};
 function keyFor(ch){const upper=ch.toUpperCase();return /^\p{Script=Cyrillic}$/u.test(ch)?`cyrillic:${upper}`:/^\p{Script=Latin}$/u.test(ch)?`latin:${upper}`:null;}
 function optionsFor(ch){return groups.get(keyFor(ch))||[];}
@@ -37,56 +40,96 @@ function render(preloadedImages=[]){
   if(tile.char==='\n'){stage.append(node('span','word-break'));word=null;return;}
   if(/\s/u.test(tile.char)){stage.append(node('span','word-space'));word=null;return;}
   if(!word)createWord();const m=byId.get(tile.id);
-  if(m){const button=node('button','glyph');const cropWidth=m.box[2]-m.box[0],cropHeight=m.box[3]-m.box[1];button.style.width=`${Number($('letter-size').value)*cropWidth/cropHeight}px`;button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=preloadedImages[index]||node('img');img.width=cropWidth;img.height=cropHeight;if(img.getAttribute('src')!==m.file)img.src=m.file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
+  if(m){const button=node('button','glyph');const cropWidth=m.box[2]-m.box[0],cropHeight=m.box[3]-m.box[1];button.style.width=`${Number($('letter-size').value)*cropWidth/cropHeight}px`;button.dataset.index=index;button.dataset.variant=m.id;button.title=`${tile.char} · ${m.source_title} · выбрать вариант`;button.setAttribute('aria-label',`${tile.char}, позиция ${index+1}, ${m.source_title}. Выбрать вариант`);const img=preloadedImages[index]||node('img');img.width=cropWidth;img.height=cropHeight;img.fetchPriority='high';const file=displayFile(m);if(img.getAttribute('src')!==file)img.src=file;img.alt=tile.char;img.draggable=false;button.append(img);button.onclick=()=>openPicker(index);word.append(button);}
   else if(/^\p{L}$/u.test(tile.char)){const missing=node('button','glyph missing',tile.char);missing.title=`Для «${tile.char}» ${$('sharp-only').checked?'нет чёткого варианта':'пока нет вариантов в коллекции'}`;missing.setAttribute('aria-label',`${tile.char}: нет вариантов`);missing.onclick=()=>openPicker(index);word.append(missing);}
   else word.append(node('span','literal',tile.char));
  });
  updateShuffleButton();
+ watchVisibleImages();
  prepareShuffle();
 }
 function status(message,error=false){$('play-status').textContent=message;$('play-status').classList.toggle('error',error);}
 function describe(){const missing=[...new Set(tiles.filter(t=>/^\p{L}$/u.test(t.char)&&!t.id).map(t=>t.char.toUpperCase()))];return missing.length?`${$('sharp-only').checked?'Среди чётких вариантов нет букв':'Пока нет букв'}: ${missing.join(', ')}. Для остальных можно выбирать варианты.`:'Нажми на букву в надписи, чтобы сменить вариант или посмотреть источник.';}
-function shuffleKey(){return JSON.stringify([phrase,$('sharp-only').checked,tiles.map(t=>[t.char,t.id,byId.get(t.id)?.file])]);}
+function shuffleKey(){return JSON.stringify([phrase,$('sharp-only').checked,tiles.map(t=>[t.char,t.id,byId.get(t.id)?displayFile(byId.get(t.id)):null])]);}
 function updateShuffleButton(){
  $('shuffle').disabled=shuffleBusy||!ready||!tiles.some(t=>optionsFor(t.char).length>1);
  $('shuffle').textContent=shuffleBusy?'Загружаем…':'Перемешать ↻';
  $('word-stage').setAttribute('aria-busy',String(shuffleBusy));
 }
-function loadImage(file){
+function loadImage(file,priority='auto'){
  if(!imageCache.has(file)){
-  const image=new Image();image.decoding='async';image.fetchPriority='low';
-  const promise=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Image timeout')),20000);image.onload=async()=>{try{if(image.decode)await image.decode();clearTimeout(timer);resolve(image);}catch(e){clearTimeout(timer);reject(e);}};image.onerror=()=>{clearTimeout(timer);reject(Error('Image unavailable'));};image.src=file;});
+  const image=new Image();image.decoding='async';image.fetchPriority=priority;
+  const promise=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Image timeout')),20000);image.onload=async()=>{try{if(image.decode)await image.decode();clearTimeout(timer);warmedFiles.add(file);resolve(image);}catch(e){clearTimeout(timer);reject(e);}};image.onerror=()=>{clearTimeout(timer);reject(Error('Image unavailable'));};image.src=file;});
   imageCache.set(file,promise);promise.catch(()=>{if(imageCache.get(file)===promise)imageCache.delete(file);});
   if(imageCache.size>128)imageCache.delete(imageCache.keys().next().value);
  }
  return imageCache.get(file);
 }
-async function loadTileImages(next){
- return Promise.all(next.map(async tile=>{
+async function loadTileImages(next,priority='auto'){
+ priorityLoads++;
+ try{return await Promise.all(next.map(async tile=>{
   const m=byId.get(tile.id);if(!m)return null;
-  const cached=await loadImage(m.file),image=cached.cloneNode(false);
+  const cached=await loadImage(displayFile(m),priority),image=cached.cloneNode(false);
   if(image.decode)await image.decode();return image;
- }));
+ }));}finally{priorityLoads--;scheduleBackgroundWarm();}
 }
+function watchVisibleImages(){
+ const epoch=++visibleEpoch,images=Array.from($('word-stage').querySelectorAll('img'));visibleImagesReady=false;
+ visibleReadyPromise=Promise.all(images.map(image=>{
+  if(image.decode)return image.decode().catch(()=>{});
+  if(image.complete)return Promise.resolve();
+  return new Promise(resolve=>{image.addEventListener('load',resolve,{once:true});image.addEventListener('error',resolve,{once:true});});
+ })).then(()=>{
+  if(epoch!==visibleEpoch)return;visibleImagesReady=true;
+  for(const image of images)if(image.complete&&image.naturalWidth)warmedFiles.add(image.getAttribute('src'));
+  refillWarmQueue();scheduleBackgroundWarm();
+ });
+}
+function refillWarmQueue(){
+ const currentOptions=tiles.flatMap(t=>optionsFor(t.char));
+ warmQueue=[...new Set([...currentOptions,...manifest].map(displayFile))].filter(file=>!warmedFiles.has(file)&&!warmInFlight.has(file)&&!failedWarmFiles.has(file));
+}
+function scheduleBackgroundWarm(){
+ if(warmTimer){clearTimeout(warmTimer);warmTimer=null;}
+ if(document.hidden||!visibleImagesReady||priorityLoads||shuffleBusy||loading||navigator.onLine===false)return;
+ warmTimer=setTimeout(warmRemaining,Math.max(0,800-(performance.now()-lastInteraction)));
+}
+function warmRemaining(){
+ warmTimer=null;
+ if(document.hidden||!visibleImagesReady||priorityLoads||shuffleBusy||loading||navigator.onLine===false||performance.now()-lastInteraction<800){scheduleBackgroundWarm();return;}
+ while(warmInFlight.size<2&&warmQueue.length){
+  const file=warmQueue.shift();if(warmedFiles.has(file)||failedWarmFiles.has(file))continue;
+  warmInFlight.add(file);const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
+  fetch(file,{cache:'force-cache',priority:'low',signal:controller.signal}).then(async response=>{
+   if(!response.ok||!response.headers.get('Content-Type')?.startsWith('image/'))throw Error('Preview unavailable');
+   await response.arrayBuffer();warmedFiles.add(file);
+  }).catch(()=>failedWarmFiles.add(file)).finally(()=>{clearTimeout(timeout);warmInFlight.delete(file);scheduleBackgroundWarm();});
+ }
+}
+function noteInteraction(){lastInteraction=performance.now();scheduleBackgroundWarm();}
+for(const event of ['pointerdown','keydown','input','scroll'])document.addEventListener(event,noteInteraction,{passive:true,capture:true});
+document.addEventListener('visibilitychange',scheduleBackgroundWarm);
+window.addEventListener('online',()=>{failedWarmFiles.clear();refillWarmQueue();scheduleBackgroundWarm();});
+
 function prepareShuffle(){
  const key=shuffleKey();if(pendingShuffle?.key===key)return pendingShuffle;
  if(pendingShuffle?.timer)clearTimeout(pendingShuffle.timer);
  if(!ready||!tiles.some(t=>optionsFor(t.char).length>1)){pendingShuffle=null;return null;}
  const next=tiles.map(t=>({...t,id:pick(optionsFor(t.char),t.id)}));
  const entry={key,next,promise:null,timer:null};
- entry.start=()=>{if(entry.timer){clearTimeout(entry.timer);entry.timer=null;}if(!entry.promise)entry.promise=loadTileImages(next).then(images=>({images}),error=>({error}));return entry.promise;};
- entry.timer=setTimeout(entry.start,150);pendingShuffle=entry;return entry;
+ entry.start=(foreground=false)=>{if(entry.timer){clearTimeout(entry.timer);entry.timer=null;}if(!entry.promise)entry.promise=loadTileImages(next,foreground?'high':'low').then(images=>({images}),error=>({error}));return entry.promise;};
+ entry.timer=setTimeout(()=>{visibleReadyPromise.then(()=>{if(pendingShuffle===entry&&!document.hidden)entry.start();});},150);pendingShuffle=entry;return entry;
 }
 async function shuffle(){
  if(shuffleBusy)return;const entry=prepareShuffle();if(!entry)return;
  shuffleBusy=true;updateShuffleButton();
  try{
-  const result=await entry.start();
+  const result=await entry.start(true);
   if(shuffleKey()!==entry.key)return;
   if(result.error){pendingShuffle=null;status('Не удалось загрузить новые буквы. Прежняя надпись сохранена — попробуй ещё раз.',true);return;}
   const changed=entry.next.filter((t,i)=>t.id!==tiles[i].id).length;
   tiles=entry.next;render(result.images);savePlay();status(`Надпись та же — заменено вариантов: ${changed}. ${describe()}`);
- }finally{shuffleBusy=false;updateShuffleButton();}
+ }finally{shuffleBusy=false;updateShuffleButton();scheduleBackgroundWarm();}
 }
 
 function showSource(m,expand=true){
@@ -97,7 +140,7 @@ function openPicker(index){
  pickerIndex=index;const tile=tiles[index];if(!tile)return;const options=optionsFor(tile.char);$('picker-title').textContent=`Буква ${tile.char}`;$('picker-info').textContent=options.length?`${options.length} ${$('sharp-only').checked?'чётких вариантов':'вариантов'} · позиция ${index+1} в надписи. Выбор меняет только эту букву.`:($('sharp-only').checked?'Для этой буквы нет чётких вариантов. Сними галочку, чтобы использовать всю коллекцию.':'Этой буквы пока нет среди нескрытых вариантов коллекции.');$('variant-options').replaceChildren();$('source-details').hidden=!options.length;$('source-details').open=false;
  const current=byId.get(tile.id);if(current)showSource(current,false);
  for(const m of [...options].sort((a,b)=>(b.box[3]-b.box[1])-(a.box[3]-a.box[1]))){
-  const article=node('article',`variant-option${tile.id===m.id?' chosen':''}`);article.dataset.id=m.id;const select=node('button','variant-choice');select.title=`Выбрать ${m.source_title}`;select.setAttribute('aria-label',`Выбрать вариант: ${m.source_title}`);const well=node('span','image-well'),img=node('img');img.src=m.file;img.alt=m.character;img.loading='lazy';well.append(img);select.append(well,node('span','option-title',m.source_title),node('span','option-state',tile.id===m.id?'Выбран сейчас':'Выбрать этот вариант'));select.onclick=()=>{tiles[pickerIndex]={char:tiles[pickerIndex].char,id:m.id};render();savePlay();$('variant-picker').close();status(`Для «${tile.char}» выбран вариант: ${m.source_title}.`);const button=$('word-stage').querySelector(`[data-index="${pickerIndex}"]`);button?.focus();};
+  const article=node('article',`variant-option${tile.id===m.id?' chosen':''}`);article.dataset.id=m.id;const select=node('button','variant-choice');select.title=`Выбрать ${m.source_title}`;select.setAttribute('aria-label',`Выбрать вариант: ${m.source_title}`);const well=node('span','image-well'),img=node('img');img.src=displayFile(m);img.alt=m.character;img.loading='lazy';well.append(img);select.append(well,node('span','option-title',m.source_title),node('span','option-state',tile.id===m.id?'Выбран сейчас':'Выбрать этот вариант'));select.onclick=()=>{tiles[pickerIndex]={char:tiles[pickerIndex].char,id:m.id};render();savePlay();$('variant-picker').close();status(`Для «${tile.char}» выбран вариант: ${m.source_title}.`);const button=$('word-stage').querySelector(`[data-index="${pickerIndex}"]`);button?.focus();};
   const source=node('button','origin-button','Откуда эта буква ↗');source.onclick=()=>{showSource(m);$('source-details').scrollIntoView({block:'nearest'});};article.append(select,source);$('variant-options').append(article);
  }
  if(!$('variant-picker').open)$('variant-picker').showModal();
@@ -105,11 +148,11 @@ function openPicker(index){
 async function loadCollection(initial=false,quiet=false){
  if(loading)return;loading=true;
  try{
-  const [response,qualityResponse]=await Promise.all([fetch('manifest-all.json',{cache:'no-store'}),fetch('letter-quality.json',{cache:'no-store'}).catch(()=>null)]);if(!response.ok)throw Error('Не удалось прочитать коллекцию.');
+  const [response,qualityResponse,previewResponse]=await Promise.all([fetch('manifest-all.json',{cache:'no-store'}),fetch('letter-quality.json',{cache:'no-store'}).catch(()=>null),fetch('letter-previews.json',{cache:'no-store'}).catch(()=>null)]);if(!response.ok)throw Error('Не удалось прочитать коллекцию.');
   const rows=await response.json();const qualityData=qualityResponse?.ok?await qualityResponse.json():null;
-  qualityAvailable=!!qualityData?.variants;quality=qualityData?.variants||{};
+  qualityAvailable=!!qualityData?.variants;quality=qualityData?.variants||{};previewFiles=previewResponse?.ok?(await previewResponse.json()).files||{}:{};
   $('sharp-only').disabled=!qualityAvailable;if(!qualityAvailable)$('sharp-only').checked=false;
-  const revision=JSON.stringify([rows.map(m=>[m.id,m.character,m.alphabet,m.file,m.hidden]),quality]);
+  const revision=JSON.stringify([rows.map(m=>[m.id,m.character,m.alphabet,m.file,m.hidden]),quality,previewFiles]);
   if(!Array.isArray(rows))throw Error('Некорректный список букв.');
   if(quiet&&ready&&revision!==null&&revision===loadedRevision)return;
   manifest=rows.filter(m=>!m.hidden);rebuildGroups();
@@ -119,7 +162,7 @@ async function loadCollection(initial=false,quiet=false){
   if($('variant-picker').open)openPicker(pickerIndex);
   status(quiet?'Коллекция обновлена с учётом сохранённых правок. '+describe():describe());
  }catch(e){status('Не удалось обновить буквы. '+(ready?'Надпись сохранена, попробуй обновить ещё раз.':'Открой страницу через локальный сервер и попробуй снова.'),true);console.error(e);}
- finally{loading=false;}
+ finally{loading=false;scheduleBackgroundWarm();}
 }
 $('phrase').addEventListener('input',()=>{fitTextarea();phrase=$('phrase').value;if(!ready)return;tiles=reconcile(phrase);render();savePlay();status(describe());});
 $('shuffle').onclick=shuffle;
