@@ -36,7 +36,12 @@ def build(root=ROOT):
             and m.get('word') in SOFT_MUSEUM_WORDS
         ):
             reason = 'visually_soft'
-        quality[m['id']] = {'file': m['file'], 'clear': reason == 'clear',
+        automatic_clear = reason == 'clear'
+        override = m.get('clear_override')
+        if type(override) is bool:
+            reason = 'manual_clear' if override else 'manual_soft'
+        quality[m['id']] = {'file': m['file'], 'clear': override if type(override) is bool else automatic_clear,
+                            'automatic_clear': automatic_clear,
                             'height': h, 'focus': round(focus, 4), 'reason': reason}
     result = {'schema_version': 1, 'method': 'resolution_and_edges_with_visual_exclusions',
               'min_height': 60, 'min_focus': .16, 'variants': quality}

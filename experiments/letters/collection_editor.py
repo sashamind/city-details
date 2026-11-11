@@ -34,12 +34,17 @@ class CollectionEditor:
         return json.loads((self.root / 'editor-edits.json').read_text())
 
     def state(self):
+        quality = self.root / 'letter-quality.json'
         return {'document': self.document(), 'original': self.original(),
+                'quality': json.loads(quality.read_text()) if quality.exists() else {'variants': {}},
                 'manifest': json.loads((self.root / 'manifest-all.json').read_text())}
 
     def validate(self, original, patch):
-        if not isinstance(patch, dict) or set(patch) != {'character', 'alphabet', 'box', 'hidden'}:
+        required = {'character', 'alphabet', 'box', 'hidden'}
+        if not isinstance(patch, dict) or not required.issubset(patch) or set(patch) - required - {'clear_override'}:
             raise ValueError('Нужны поля character, alphabet, box, hidden.')
+        if patch.get('clear_override') is not None and type(patch['clear_override']) is not bool:
+            raise ValueError('Ручная оценка чёткости должна быть true, false или null (автоматически).')
         ch, alphabet, box = patch['character'], patch['alphabet'], patch['box']
         if not isinstance(ch, str) or len(ch) != 1 or not ch.isalpha():
             raise ValueError('Укажите ровно одну букву.')
@@ -66,6 +71,9 @@ class CollectionEditor:
             original = next((m for m in self.original() if m['id'] == crop_id), None)
             if original is None:
                 raise ValueError('Вариант не найден.')
+            # An older open tab must not erase an existing manual quality mark.
+            if isinstance(patch, dict) and 'clear_override' not in patch:
+                patch = {**patch, 'clear_override': document['edits'].get(crop_id, {}).get('clear_override')}
             self.validate(original, patch)
             updated = copy.deepcopy(document)
             updated['revision'] += 1
@@ -88,8 +96,10 @@ class CollectionEditor:
             m = copy.deepcopy(original)
             patch = document['edits'].get(m['id'])
             m['hidden'] = False
+            m['clear_override'] = None
             if patch:
-                self.validate(original, {k: patch[k] for k in ('character', 'alphabet', 'box', 'hidden')})
+                self.validate(original, {**{k: patch[k] for k in ('character', 'alphabet', 'box', 'hidden')}, 'clear_override': patch.get('clear_override')})
+                m['clear_override'] = patch.get('clear_override')
                 for k in ('character', 'alphabet', 'box', 'hidden'):
                     m[k] = patch[k]
                 m['letter'] = m['character'].upper()

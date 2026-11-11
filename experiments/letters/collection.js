@@ -4,10 +4,11 @@ const standardLetters = {cyrillic: [...'АБВГДЕЁЖЗИЙКЛМНОПРСТ
 let alphabet='cyrillic', chosen='', data=[], sources=[], originals=[], revision=0, edits={}, canSave=false;
 let currentId='', draft=null, saved=null, sourceImage=null, dragging=null, busy=false, loadToken=0;
 const imageCache=new Map();
-let editorAdminToken='';
+let editorAdminToken='',qualityMap={};
 const element=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
 const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
-const patchOf=m=>({character:m.character,alphabet:m.alphabet,box:[...m.box],hidden:!!m.hidden});
+const patchOf=m=>({character:m.character,alphabet:m.alphabet,box:[...m.box],hidden:!!m.hidden,clear_override:typeof m.clear_override==='boolean'?m.clear_override:null});
+function effectiveClear(m){const q=qualityMap[m.id];return typeof m.clear_override==='boolean'?m.clear_override:!!(q?.clear&&q.file===m.file);}
 function isDirty(){return !!draft&&JSON.stringify(draft)!==JSON.stringify(saved);}
 function plural(n){return n%10===1&&n%100!==11?'вариант':n%10>=2&&n%10<=4&&!(n%100>=12&&n%100<=14)?'варианта':'вариантов';}
 function allLetters(){return [...new Set([...standardLetters[alphabet],...data.filter(m=>m.alphabet===alphabet).map(m=>m.letter)])];}
@@ -26,7 +27,7 @@ function render(){
  const items=filtered();$('collection').replaceChildren();$('empty').hidden=!!items.length;$('result-count').textContent=`${items.length} ${plural(items.length)} · ${new Set(items.map(m=>m.source_id)).size} источников`;
  for(const ch of allLetters()){const group=items.filter(m=>m.letter===ch);if(!group.length)continue;group.sort((a,b)=>(b.box[3]-b.box[1])-(a.box[3]-a.box[1]));
   const section=element('section','letter-group');const title=element('div','group-title');title.append(element('h2','',ch),element('span','',`${group.length} ${plural(group.length)}`));section.append(title);const cards=element('div','cards');
-  for(const m of group){const card=element('button',`card${m.hidden?' hidden-variant':''}`);card.dataset.id=m.id;card.setAttribute('aria-label',`${m.character}: ${m.source_title}, редактировать`);const well=element('div','image-well');const img=element('img');img.src=m.file;img.alt=m.character;img.loading='lazy';well.append(img);const line=element('span','card-letter',m.character);line.append(element('small','',`${m.box[2]-m.box[0]} × ${m.box[3]-m.box[1]}`));card.append(well,element('span','card-name',m.source_title),line);if(m.hidden)card.append(element('span','variant-state','Скрыт · можно вернуть'));else if(edits[m.id])card.append(element('span','variant-state','Исправлен'));card.onclick=()=>openDetail(m);cards.append(card);}
+  for(const m of group){const card=element('button',`card${m.hidden?' hidden-variant':''}`);card.dataset.id=m.id;card.setAttribute('aria-label',`${m.character}: ${m.source_title}, редактировать`);const well=element('div','image-well');const img=element('img');img.src=m.file;img.alt=m.character;img.loading='lazy';well.append(img);const line=element('span','card-letter',m.character);line.append(element('small','',`${m.box[2]-m.box[0]} × ${m.box[3]-m.box[1]}`));card.append(well,element('span','card-name',m.source_title),line);card.append(element('span','quality-badge',`${effectiveClear(m)?'Чёткая':'Нечёткая'}${typeof m.clear_override==='boolean'?' · вручную':' · авто'}`));if(m.hidden)card.append(element('span','variant-state','Скрыт · можно вернуть'));else if(edits[m.id])card.append(element('span','variant-state','Исправлен'));card.onclick=()=>openDetail(m);cards.append(card);}
   section.append(cards);$('collection').append(section);
  }
  updateStats();
@@ -46,6 +47,10 @@ async function openDetail(m){
 function syncForm(){
  if(!draft)return;const [x,y,r,b]=draft.box;
  $('edit-character').value=draft.character;$('edit-alphabet').value=draft.alphabet;
+ const automatic=qualityMap[currentId]?.automatic_clear ?? qualityMap[currentId]?.clear ?? false;
+ $('edit-clear').checked=typeof draft.clear_override==='boolean'?draft.clear_override:automatic;
+ $('quality-note').textContent=typeof draft.clear_override==='boolean'?'Твоя отметка — приоритетнее автоматической.':`Автооценка: ${automatic?'чёткая':'нечёткая'}. Можно изменить вручную.`;
+ $('quality-auto').disabled=draft.clear_override===null;
  for(const [id,value] of [['crop-x',x],['crop-y',y],['crop-width',r-x],['crop-height',b-y]])$(id).value=value;
  $('detail-letter').textContent=draft.character;$('detail-alphabet').textContent=draft.alphabet==='cyrillic'?'Кириллица':'Латиница';$('detail-size').textContent=`${r-x} × ${b-y} px${draft.hidden?' · скрыт из коллекции':''}`;
  $('toggle-hidden').textContent=draft.hidden?'Вернуть в коллекцию':'Скрыть вариант';$('toggle-hidden').classList.toggle('will-hide',!draft.hidden);
@@ -99,6 +104,8 @@ for(const id of ['crop-x','crop-y','crop-width','crop-height'])$(id).onchange=()
  if(!sourceImage)return;let x=Number($('crop-x').value),y=Number($('crop-y').value),w=Number($('crop-width').value),h=Number($('crop-height').value);if(![x,y,w,h].every(Number.isInteger))return;
  x=clamp(x,0,sourceImage.naturalWidth-1);y=clamp(y,0,sourceImage.naturalHeight-1);draft.box=[x,y,x+clamp(w,1,sourceImage.naturalWidth-x),y+clamp(h,1,sourceImage.naturalHeight-y)];changed();
 };
+$('edit-clear').onchange=()=>{draft.clear_override=$('edit-clear').checked;changed();};
+$('quality-auto').onclick=()=>{draft.clear_override=null;changed();};
 $('toggle-hidden').onclick=()=>{draft.hidden=!draft.hidden;changed();};
 $('cancel-edit').onclick=()=>{draft=structuredClone(saved);changed();};
 $('restore-original').onclick=()=>{draft=patchOf(originals.find(m=>m.id===currentId));changed();};
@@ -111,7 +118,7 @@ $('edit-form').onsubmit=async e=>{
  }catch(e){$('save-status').textContent=e.message;}
  finally{busy=false;$('edit-fields').disabled=!canSave;syncForm();}
 };
-function adoptState(state){data=state.manifest;originals=state.original;revision=state.document.revision;edits=state.document.edits;}
+function adoptState(state){qualityMap=state.quality?.variants||qualityMap;data=state.manifest;originals=state.original;revision=state.document.revision;edits=state.document.edits;}
 function requestClose(){if(busy){$('save-status').textContent='Дождись завершения сохранения.';return;}if(isDirty()&&!confirm('Закрыть без сохранения изменений?'))return;$('detail').close();++loadToken;}
 $('detail').querySelector('.close').onclick=requestClose;
 $('detail').addEventListener('cancel',e=>{e.preventDefault();requestClose();});
@@ -126,6 +133,7 @@ async function init(){
   if(!verify.ok){$('editor-access-message').textContent='Сессия недействительна или истекла. Войди в админку на главной странице.';return;}
   document.body.removeAttribute('data-editor-locked');
   const responses=await Promise.all(['manifest-all.json','review.json'].map(p=>fetch(p,{cache:'no-store'})));for(const r of responses)if(!r.ok)throw Error(r.status);[data,sources]=await Promise.all(responses.map(r=>r.json()));originals=structuredClone(data);
+  try{const q=await fetch('letter-quality.json',{cache:'no-store'});if(q.ok)qualityMap=(await q.json()).variants||{};}catch{}
   try{const response=await fetch('api/state',{cache:'no-store',headers:{'X-Textula-Admin':editorAdminToken}});if(response.ok){adoptState(await response.json());canSave=true;}}catch{}
   for(const s of sources.filter(s=>data.some(m=>m.source_id===s.id)).sort((a,b)=>a.title.localeCompare(b.title,'ru'))){const o=element('option','',s.title);o.value=s.id;$('source').append(o);}
   $('audit-count').textContent=`(${sources.length})`;for(const s of sources){const card=element('article','audit-card');const a=element('a');a.href=`sources/${s.id}.jpg`;a.target='_blank';a.rel='noopener';const img=element('img');img.src=`thumbnails/${s.id}.jpg`;img.alt=s.title;img.loading='lazy';a.append(img);card.append(a,element('h3','',s.title),element('span','badge',s.crop_count?`${s.crop_count} кропов`:s.status==='ambiguous'?'Неоднозначный фрагмент':'Нет читаемых букв'),element('p','',s.note));$('audit').append(card);}
