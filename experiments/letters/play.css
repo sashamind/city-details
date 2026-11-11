@@ -104,3 +104,7 @@ dialog > h2 { font: 500 36px/1.15 'Source Serif 4', Georgia, serif; letter-spaci
  .variant-options { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)); }
 }
 @media (prefers-reduced-motion: reduce) { .glyph { transition: none; } }
+.compose-controls > .sharp-toggle { white-space: nowrap; border-right: 0; gap: 8px; cursor: pointer; }
+#sharp-only { -webkit-appearance: none; appearance: none; flex: none; width: 15px; height: 15px; margin: 0; border: 1px solid #000; border-radius: 0; background: #fff; cursor: pointer; }
+#sharp-only:checked { background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='m3 7 3 3 5-6' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E") center/13px no-repeat; }
+@media(max-width:650px) { .compose-controls > .sharp-toggle { grid-column: 1 / -1; justify-content: flex-start; border-top: 1px solid #ddd; padding: 10px; } }

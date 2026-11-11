@@ -137,6 +137,8 @@ class CollectionEditor:
         write_json(self.root / 'manifest-all.json', manifest)
         write_json(self.root / 'summary.json', summary)
         write_json(self.root / 'review.json', reviews)
+        from build_letter_quality import build as build_quality
+        build_quality(self.root)
         if baseline is not None:
             write_json(self.root / 'manifest-base.json', baseline)
         return manifest
