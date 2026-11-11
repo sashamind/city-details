@@ -6,3 +6,14 @@ dist/
 .claude/settings.local.json
 .vscode/settings.local.json
 supabase/.temp/
+
+# Python environment for the local letter editor
+experiments/letters/.editor-venv/
+
+# Local letter-editor backups and visual review artifacts
+experiments/letters/editor-snapshots/
+experiments/letters/__pycache__/
+experiments/letters/qa-*.jpg
+experiments/letters/contact-*.jpg
+experiments/letters/catalog-*.png
+experiments/letters/sources-preview.jpg
