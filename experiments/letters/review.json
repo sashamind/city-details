@@ -1,0 +1,742 @@
+[
+  {
+    "id": "64a5c859-c784-4b76-9f77-07001849aad5",
+    "title": "Птица-витраж",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1776628322714_IMG_0149.jpg",
+    "index": 0,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "c3d58b1d-a85f-4d5d-82ae-ce81deb22e27",
+    "title": "Лого Салденс (кириллический)",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771495936731_IMG_9707.jpeg",
+    "index": 1,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 14,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "cac8b272-9344-44b4-bb72-2188dfeab0f7",
+    "title": "Развалюха",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907941907_IMG_9654.jpeg",
+    "index": 2,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "6bf6e154-523c-4cb9-a4a7-164d4657985b",
+    "title": "Дверь",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770893470476_IMG_9643.jpeg",
+    "index": 3,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 9,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "34d203f7-4404-42f5-a189-c0251a1cabb1",
+    "title": "домик с наличниками",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907435360_IMG_9650.jpeg",
+    "index": 4,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "9f63834e-42b1-4525-944e-630ae3d22da7",
+    "title": "Люк",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283389299_IMG_9681.jpeg",
+    "index": 5,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 7,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "6f292f9a-1456-444c-99a1-387ecbae93a4",
+    "title": "Мурал Продолжай движение",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771407699185_IMG_5035.jpeg",
+    "index": 6,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 17,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "fd9e4ac2-08b7-4329-b979-2a6f328c3009",
+    "title": "Кресло",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770980858372_IMG_9662.jpeg",
+    "index": 7,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Отражённые и обрезанные надписи на стекле; целые буквы уверенно не читаются."
+  },
+  {
+    "id": "70ec7dc1-ef52-4883-86c0-8aaa4f22f952",
+    "title": "тележка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771335457631_IMG_9695.jpeg",
+    "index": 8,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "8490ae57-e81a-431f-8cec-b0d1dc07bba2",
+    "title": "лого Surf",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771496223284_IMG_9708.jpeg",
+    "index": 9,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 14,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "6a6fd1a2-3b45-43f3-a03b-6c67232241ea",
+    "title": "Вывеска Победа",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786536873949_gh0gf7_IMG_0935.jpg",
+    "index": 10,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 6,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "6e4e1c26-0638-475c-9535-d60e94c9927b",
+    "title": "Ворота",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907120594_IMG_9646.jpeg",
+    "index": 11,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Неразборчивые граффити: символам нельзя уверенно назначить букву."
+  },
+  {
+    "id": "103fefe6-8dc0-45f5-a9c7-61f87a777a45",
+    "title": "Лого Нуар Дом",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786554056443_dwqz8c_IMG_0931.jpg",
+    "index": 12,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 7,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "c3045ce0-509f-4742-8156-130e2e4f71da",
+    "title": "динозавр",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786515242474_kmbfu8_IMG_0850.jpg",
+    "index": 13,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "5b8edb70-8fd6-4ab0-b345-fd4b6e16d2de",
+    "title": "между",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771410342943_inbound7688223524784488386.jpg",
+    "index": 14,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 5,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "89f9ef01-4f44-43b1-8322-5445ac121d8c",
+    "title": "домик с наличниками 2",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907483279_IMG_9651.jpeg",
+    "index": 15,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "7e5f38e1-bb77-438a-b6fc-b3d776213abf",
+    "title": "Остатки ушедшей цивилизации",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874290800_tt6oue_RNI-Films-IMG-8751816D-B7D2-49E5-AE64-9799E91E6414.jpg",
+    "index": 16,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "c636c28b-d9fd-4162-b3fb-d345a52e20bc",
+    "title": "Дорожный знак",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771506919530_IMG_7004.jpeg",
+    "index": 17,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "5841f5c0-a782-415a-9d20-0cb2cc65f6a5",
+    "title": "Узор барельеф",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1775638439096_IMG_0070.jpg",
+    "index": 18,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "702023fc-0c83-46b5-8960-3e56cc7493c7",
+    "title": "Окошки на старой водоразборной будке",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874562211_36501h_IMG_5187.jpg",
+    "index": 19,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Следы стёртой надписи и тегов; целые буквы не определяются."
+  },
+  {
+    "id": "9ce1c944-403f-4747-a437-0d6f92692c32",
+    "title": "барельеф",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771061104046_IMG_9668.jpeg",
+    "index": 20,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "d21d9b82-8390-4eea-958a-35b4b8f32774",
+    "title": "дерево",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770925761500_IMG_9658.jpeg",
+    "index": 21,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "9190eed4-1e9d-446e-88fc-4dc079fe487e",
+    "title": "Текстурка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770908318035_IMG_9656.jpeg",
+    "index": 22,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Переплетённые рукописные теги, неоднозначная расшифровка."
+  },
+  {
+    "id": "5a505563-e7d1-4bff-8820-84e3b731d13a",
+    "title": "дверь",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1777919584053_IMG_0254.jpg",
+    "index": 23,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Неразборчивые теги на фасаде."
+  },
+  {
+    "id": "11f10d2d-e929-480b-8c0f-8617f3248a7c",
+    "title": "Стикер",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771338300907_IMG_9696.jpeg",
+    "index": 24,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 20,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "7fac2c7a-3886-4b0e-bd76-9fc21d34e6cf",
+    "title": "Chop chop лого",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771506567985_IMG_9709.jpeg",
+    "index": 25,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 8,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "36d4f130-2728-4b64-8257-f9b3bfa0dd12",
+    "title": "Замёрзший малыш",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771417812040_IMG_0030.jpeg",
+    "index": 26,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "1c95a776-0581-4519-a468-40c3f7a6ae39",
+    "title": "Шрифт",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283761381_IMG_9683.jpeg",
+    "index": 27,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 18,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "2a496a2e-1b1d-480b-bc8f-84f3403dc765",
+    "title": "Тульский древний монстрик",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1774447244919_IMG_9937.jpg",
+    "index": 28,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 39,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "819046ab-f412-4518-8a0f-30312e448299",
+    "title": "Надпись на полу",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771340813290_IMG_9697.jpeg",
+    "index": 29,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 9,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "e9fcb43c-75f9-4511-8782-6245a38bc47c",
+    "title": "Ворота",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283062215_IMG_9679.jpeg",
+    "index": 30,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 16,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "eeff4c27-91af-4105-aa90-422b5223c210",
+    "title": "ТИАМ",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770893277433_IMG_9642.jpeg",
+    "index": 31,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 4,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "4cd29b70-a3a0-412a-a317-6213feb99fc6",
+    "title": "Лого Entree",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786554249857_ie5ilr_IMG_0929.jpg",
+    "index": 32,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 17,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "64d11826-0057-4724-9f75-73e5417ef90e",
+    "title": "Арт про Тулу и Левшу",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
+    "index": 33,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 25,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "db135812-a00f-4691-86b8-210a23fef4f2",
+    "title": "Пиксель-арт. Часы.",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1776628404915_IMG_0150.jpg",
+    "index": 34,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "c8d7ee59-a4ae-407e-a5eb-a713641b3277",
+    "title": "Арт",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907684508_IMG_9653.jpeg",
+    "index": 35,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 8,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
+    "title": "Ошибка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
+    "index": 36,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 14,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "dc465b75-97de-4a5c-9e4e-33afeffe40dd",
+    "title": "Граффити Очень больно",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771404151345_IMG_5036.jpeg",
+    "index": 37,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 11,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "006dd26a-fa4c-4eb4-8e43-606f712d1916",
+    "title": "тележка-купальщица",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1772310641740_IMG_4019.jpg",
+    "index": 38,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "44ab38b5-489b-4d40-83ca-98386f5b0999",
+    "title": "тележка-беглянка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1772310778957_IMG_4022.jpg",
+    "index": 39,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "81cfdf4a-85a4-4bfc-a315-1a57cf86620d",
+    "title": "Пиксель-арт",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771327914492_IMG_9692.jpeg",
+    "index": 40,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "df45a97c-5ec0-47db-a241-f90c824fecea",
+    "title": "Наличник",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283610463_IMG_9682.jpeg",
+    "index": 41,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "4798bd33-22c0-4f6a-83e0-66c706f4594e",
+    "title": "X",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1774107668872_IMG_9888.jpg",
+    "index": 42,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Знак в рамке может быть рисунком; не присвоен кириллице или латинице."
+  },
+  {
+    "id": "eff60ced-2ced-410b-b342-f7cf96258f60",
+    "title": "Заборчик",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1775908823716_IMG_9820.jpg",
+    "index": 43,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "f0f547cd-f4c3-4d3f-9206-b011cc0b66fd",
+    "title": "Елка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771328065197_IMG_9693.jpeg",
+    "index": 44,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "6aae75aa-252c-4750-910d-f5eefaa52eb4",
+    "title": "Кот",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1787292632986_exzdhh_313A4F7F-5570-4B0D-B305-DDC2D0659BC1.jpg",
+    "index": 45,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "34b7d1d6-82ee-4aa6-ad09-07290516affe",
+    "title": "Ворота и надписи",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1776628466032_IMG_0148.jpg",
+    "index": 46,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 2,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "bf7b8a56-811f-4ce4-b1d0-70df3de8ca49",
+    "title": "Лицо",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1777731437014_IMG_0249.jpg",
+    "index": 47,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "0044bab3-d846-49ec-924c-ec9c21c13243",
+    "title": "Лого Автошкола",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1787298461989_xmhyln_IMG_0927.jpg",
+    "index": 48,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 9,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "c4e54c9a-1b9b-46f7-8543-00c57e364690",
+    "title": "Забор",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770997203290_IMG_9663.jpeg",
+    "index": 49,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "90b513ab-7c4e-4e53-9c05-e19e59c1810b",
+    "title": "Дверь",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1776495792004_IMG_0130.jpg",
+    "index": 50,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 8,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "46df6308-0aa2-4689-968f-b7842fdacbd1",
+    "title": "Арт про Тулу и пряничный кремль",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1787173472172_mxo3vv_IMG_8042.jpg",
+    "index": 51,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 21,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "bb1cccf1-397e-4c83-86b9-ea6f2e8fb119",
+    "title": "Дверь",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770907082516_IMG_9647.jpeg",
+    "index": 52,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "69982893-0efd-4168-9f25-68bf17c6784c",
+    "title": "Оружейная 11",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1781255706896_4evrzt_IMG_0372.jpg",
+    "index": 53,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 27,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "20d83521-af1b-4217-a48d-4d9d236ecceb",
+    "title": "Домик",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770980721101_IMG_9661.jpeg",
+    "index": 54,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "cc67f731-1898-45a9-9b42-d66a8454a516",
+    "title": "Горгаз арт",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283907149_IMG_9684.jpeg",
+    "index": 55,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 38,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "cf3cb4a4-4dbe-48a6-bba0-f32e130323ce",
+    "title": "Развалина",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771284160901_IMG_9685.jpeg",
+    "index": 56,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Мелкие повреждённые теги."
+  },
+  {
+    "id": "cf8b7291-ab34-4f97-a635-5abecd23c631",
+    "title": "Стена",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1770925664738_IMG_9659.jpeg",
+    "index": 57,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Нечитаемые следы надписей за стеклом."
+  },
+  {
+    "id": "62fa52b4-5be1-46fd-9cdb-c78df3170b29",
+    "title": "вспышка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1772310951865_2026-02-2823.23.35.jpg",
+    "index": 58,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "b2c95fd8-5b71-4680-966f-215bca5d511f",
+    "title": "Grp лого",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771335097847_IMG_9694.jpeg",
+    "index": 59,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 20,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "5948ff26-9a8d-4944-b32b-cab7b87878b3",
+    "title": "лицо",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1775342634881_IMG_0052.jpg",
+    "index": 60,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "65054677-e6d4-4e60-92e8-3ac72bad25b8",
+    "title": "вывеска",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1789971799380_281893_IMG_1150.jpg",
+    "index": 61,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 18,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "7e8318d5-d7da-4914-a154-8f3ec3246aa5",
+    "title": "Вывеска Интим",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1792777246712_2486iy_IMG_1427.jpg",
+    "index": 62,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 17,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "92c799ca-3368-4ab6-92f8-34ffec2de652",
+    "title": "Образцовый дом",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790640133_8p260o_IMG_0339.jpg",
+    "index": 63,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 27,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "46620caf-3505-4f8b-96f0-ad550d91de8e",
+    "title": "Стикер Толстой",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793886609474_o2vips_IMG_1496.jpg",
+    "index": 64,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Стикер с рисунком; читаемой отдельной надписи нет."
+  },
+  {
+    "id": "1a54ed51-a538-4f18-8232-f3c84aba5cbd",
+    "title": "Вывеска Технолаб",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1794078320802_xq6lb5_610.jpg",
+    "index": 65,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 8,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "a15dcfc9-e7bf-426e-b03c-e21b6ec935ae",
+    "title": "Скан дома",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790400506_8f27o7_IMG_0379.jpg",
+    "index": 66,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "5b32285e-4b4c-4d3d-9fe2-b82b1a56716b",
+    "title": "Облупившаяся краска",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790783563_qu72ui_IMG_0363.jpg",
+    "index": 67,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "856a270f-c969-4b71-97b3-4ff51631f8a7",
+    "title": "стикеры",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793886652442_93q3qc_IMG_1495.jpg",
+    "index": 68,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Рисунки на стикерах без читаемых букв."
+  },
+  {
+    "id": "22950eb8-e34e-426d-aae9-1eee5f6dd1ef",
+    "title": "Лого Твоя полка",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1794332530418_phmsj5_IMG_1517.jpg",
+    "index": 69,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 9,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "67ff84da-c092-4274-aa12-7d4ba98b34a1",
+    "title": "Логотип Союз (бар)",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1790070748966_6fslzi_IMG_1166.jpg",
+    "index": 70,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 12,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  },
+  {
+    "id": "87d29502-6bf9-4801-81b6-d84d71282363",
+    "title": "Скан стены дома",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790512655_26j8a1_IMG_0380.jpg",
+    "index": 71,
+    "reviewed": true,
+    "status": "no_readable_letters",
+    "crop_count": 0,
+    "note": "Читаемых букв на фотографии не найдено."
+  },
+  {
+    "id": "165514e3-3a44-4321-9eaf-5848a44f38ff",
+    "title": "Идеальная симметрия",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790879439_ghx9w5_IMG_0586.jpg",
+    "index": 72,
+    "reviewed": true,
+    "status": "ambiguous",
+    "crop_count": 0,
+    "note": "Крошечный обрезанный фрагмент надписи внизу снимка."
+  },
+  {
+    "id": "ec7794a2-46e4-4e9b-bf4c-8e0c82660186",
+    "title": "Дверь",
+    "url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793886706854_zi3rmd_IMG_1497.jpg",
+    "index": 73,
+    "reviewed": true,
+    "status": "extracted",
+    "crop_count": 12,
+    "note": "Вырезаны читаемые буквы; мелкий текст, обрезанные и неоднозначные символы пропущены."
+  }
+]

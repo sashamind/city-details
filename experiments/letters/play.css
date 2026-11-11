@@ -1,0 +1,97 @@
+/* Typography and monochrome controls follow the main textula site. */
+* { box-sizing: border-box; }
+:root { --ink: #000; --muted: #666; --line: #ddd; }
+body { margin: 0; background: #fff; color: #000; font: 16px/1.6 'Source Serif 4', Georgia, serif; }
+a { color: inherit; text-underline-offset: 4px; }
+button, textarea, input { color: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .4; cursor: default; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
+.play-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding: 10px 20px; border-bottom: 1px solid #000; background: #fff; }
+.brand { font-weight: 700; font-size: 16px; letter-spacing: -.02em; text-decoration: none; white-space: nowrap; }
+.brand span { font-weight: 400; font-style: italic; color: #666; }
+.play-header nav { display: flex; align-items: center; gap: 20px; }
+.play-header nav a { font: 12px/1.6 'IBM Plex Mono', monospace; text-decoration: none; border-bottom: 1px solid transparent; }
+.play-header nav a:hover { border-bottom-color: #000; }
+.play-main { max-width: 1160px; margin: 0 auto; padding: 40px 30px 50px; }
+.eyebrow { font: 10px/1.6 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: #888; margin: 0 0 12px; }
+h1 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.12; letter-spacing: -.035em; font-weight: 600; margin: 0 0 16px; }
+h1 em { font-weight: 400; }
+.play-intro { max-width: 620px; margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #666; }
+.composer { border: 1px solid #000; }
+.composer > label { display: block; padding: 9px 14px; border-bottom: 1px solid #000; font: 10px/1.6 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .05em; }
+.composer textarea { display: block; resize: vertical; width: 100%; min-height: 88px; max-height: 240px; margin: 0; padding: 16px; border: 0; border-radius: 0; background: #fff; font: 24px/1.4 'Source Serif 4', Georgia, serif; }
+.composer textarea::placeholder { color: #aaa; }
+.composer textarea:focus { outline: 1px solid #000; outline-offset: -4px; }
+.compose-controls { display: flex; align-items: stretch; flex-wrap: wrap; border-top: 1px solid #000; }
+.primary { border: 1px solid #000; border-radius: 0; padding: 13px 20px; background: #000; color: #fff; font: 12px/1.5 'IBM Plex Mono', monospace; text-decoration: none; }
+.primary:hover:not(:disabled) { background: #333; }
+.compose-controls > .primary { border: 0; min-height: 46px; }
+.compose-controls > label { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-right: 1px solid #ddd; color: #666; font: 11px/1.5 'IBM Plex Mono', monospace; }
+.compose-controls input { width: 86px; accent-color: #000; }
+.compose-controls output { min-width: 26px; font-variant-numeric: tabular-nums; color: #000; }
+.text-button { padding: 10px 16px; border: 0; border-radius: 0; background: none; font: 11px/1.5 'IBM Plex Mono', monospace; text-decoration: none; }
+.text-button:hover { background: #f5f5f5; }
+#refresh-letters { margin-left: auto; }
+.play-status { min-height: 19px; margin: 19px 0 10px; color: #888; font: 10px/1.6 'IBM Plex Mono', monospace; }
+.play-status.error { color: #000; }
+.paper { min-height: 320px; padding: 40px 30px; display: flex; align-items: center; overflow: hidden; border: 1px solid #000; background: #fff; }
+.word-stage { --letter-size: 100px; --letter-gap: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 0; width: 100%; }
+.word { display: inline-flex; align-items: center; gap: var(--letter-gap); flex-wrap: wrap; max-width: 100%; row-gap: 10px; }
+.glyph { position: relative; border: 0; background: transparent; border-radius: 0; display: block; padding: 0; flex-shrink: 0; line-height: 0; height: var(--letter-size); min-width: 7px; transition: transform .14s; }
+.glyph img { display: block; height: 100%; width: auto; max-width: 80vw; object-fit: contain; }
+.glyph:hover { transform: translateY(-3px); outline: 1px solid #000; outline-offset: 4px; z-index: 1; }
+.glyph:focus-visible { outline-offset: 4px; }
+.glyph.missing { font: calc(var(--letter-size)*.7)/1 'Source Serif 4', Georgia, serif; border: 1px dashed #aaa; min-width: calc(var(--letter-size)*.55); padding: 4px 8px; color: #999; display: flex; align-items: center; justify-content: center; }
+.literal { height: var(--letter-size); font: calc(var(--letter-size)*.8)/1 'Source Serif 4', Georgia, serif; display: flex; align-items: center; padding: 0 3px; color: #000; }
+.word-space { width: calc(var(--letter-size)*.32); height: 1px; flex-shrink: 0; }
+.word-break { flex-basis: 100%; height: 0; }
+.paper-caption { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 10px; color: #888; font: 9px/1.6 'IBM Plex Mono', monospace; }
+.play-note { max-width: 750px; margin: 25px 0 0; font-size: 13px; line-height: 1.8; color: #666; }
+.back-to-editor { border-top: 1px solid #000; padding-top: 18px; margin-top: 32px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font: 11px/1.8 'IBM Plex Mono', monospace; }
+.back-to-editor span { color: #888; font-size: 10px; }
+#blank-hint { color: #999; margin: auto; font-size: 16px; }
+dialog { position: fixed; width: min(1050px, 92vw); max-height: 88vh; margin: auto; overflow: auto; border: 1px solid #000; border-radius: 0; padding: 28px; background: #fff; color: #000; }
+dialog::backdrop { background: rgba(0,0,0,.5); }
+.close { position: absolute; top: 10px; right: 12px; width: 28px; height: 28px; padding: 0; border: 1px solid transparent; background: #fff; font: 24px/1 'IBM Plex Mono', monospace; }
+.close:hover { border-color: #000; }
+dialog > h2 { font: 500 36px/1.15 'Source Serif 4', Georgia, serif; letter-spacing: -.02em; margin: 12px 0; }
+#picker-info { color: #666; font: 11px/1.7 'IBM Plex Mono', monospace; margin-bottom: 20px; }
+.variant-options { display: grid; grid-template-columns: repeat(auto-fill,minmax(125px,1fr)); gap: 12px; margin-top: 24px; }
+.variant-option { position: relative; background: #fff; border: 1px solid #ddd; border-radius: 0; min-width: 0; padding: 9px; }
+.variant-option:hover { border-color: #000; }
+.variant-option.chosen { border: 2px solid #000; padding: 8px; }
+.variant-choice { width: 100%; border: 0; background: none; padding: 0; text-align: left; display: block; }
+.variant-choice .image-well { display: flex; align-items: center; justify-content: center; height: 92px; }
+.variant-choice img { max-height: 92px; max-width: 100%; display: block; margin: auto; }
+.variant-choice .option-title { display: block; margin-top: 10px; font: 10px/1.5 'IBM Plex Mono', monospace; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #666; }
+.option-state { display: block; min-height: 16px; margin: 6px 0; color: #000; font: 9px/1.5 'IBM Plex Mono', monospace; }
+.origin-button { background: none; border: 0; padding: 6px 0; text-decoration: underline; text-underline-offset: 3px; color: #666; font: 9px/1.6 'IBM Plex Mono', monospace; }
+.picker-source { border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 12px 0; background: #fff; }
+.picker-source summary { cursor: pointer; font: 11px/1.7 'IBM Plex Mono', monospace; }
+.picker-source h3 { font-size: 16px; font-weight: 500; margin: 14px 0; }
+.origin-wrap { position: relative; display: table; margin: auto; max-width: 100%; }
+.origin-wrap img { display: block; max-width: 100%; max-height: 340px; width: auto; height: auto; }
+.origin-wrap span { position: absolute; border: 2px solid #000; outline: 1px solid #fff; pointer-events: none; }
+.picker-source p { font: 10px/1.7 'IBM Plex Mono', monospace; margin: 14px 0 0; }
+@media (max-width: 650px) {
+ .play-header { align-items: center; padding: 10px 14px; gap: 12px; }
+ .brand { font-size: 15px; }
+ .brand span { display: block; font-size: 12px; }
+ .play-header nav { gap: 12px; }
+ .play-header nav a { font-size: 10px; }
+ .play-main { padding: 28px 16px 35px; }
+ .play-intro { font-size: 14px; margin-bottom: 24px; }
+ .composer textarea { font-size: 21px; padding: 14px; }
+ .compose-controls > .primary { width: 100%; border-bottom: 1px solid #000; min-height: 44px; }
+ .compose-controls > label { flex: 1; justify-content: space-between; padding: 12px 10px; gap: 6px; font-size: 10px; }
+ .compose-controls > label:nth-of-type(2) { border-right: 0; }
+ .compose-controls input { width: 65px; }
+ #refresh-letters { width: 100%; border-top: 1px solid #ddd; margin: 0; text-align: left; }
+ .paper { padding: 30px 14px; min-height: 250px; }
+ .play-note { font-size: 12px; }
+ .paper-caption { font-size: 8px; }
+ dialog { padding: 24px 16px; width: 94vw; max-height: 90vh; }
+ .variant-options { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .glyph { transition: none; } }
