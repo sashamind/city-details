@@ -7,7 +7,8 @@ $('letter-size').value=layout==='mobile'?40:100;
 $('letter-gap').value=layout==='mobile'?3:5;
 let quality={},qualityAvailable=false,previewFiles={};
 let manifest=[],byId=new Map(),groups=new Map(),tiles=[],phrase='',pickerIndex=-1,ready=false,loading=false,loadedRevision=null;
-let pendingShuffle=null,shuffleBusy=false;
+let pendingShuffle=null,shuffleBusy=false,exportBusy=false;
+let baseGroups=new Map(),selectedSignId='';
 const imageCache=new Map();
 const warmedFiles=new Set(),warmInFlight=new Set(),failedWarmFiles=new Set();
 let warmQueue=[],warmTimer=null,lastInteraction=performance.now(),priorityLoads=0,visibleImagesReady=false,visibleEpoch=0,visibleReadyPromise=Promise.resolve();
@@ -16,13 +17,39 @@ const node=(tag,className,text)=>{const el=document.createElement(tag);if(classN
 function keyFor(ch){const upper=ch.toUpperCase();return /^\p{Script=Cyrillic}$/u.test(ch)?`cyrillic:${upper}`:/^\p{Script=Latin}$/u.test(ch)?`latin:${upper}`:null;}
 function optionsFor(ch){return groups.get(keyFor(ch))||[];}
 function isClear(m){const q=quality[m.id];return q?.clear===true&&q.file===m.file;}
-function rebuildGroups(){
- const eligible=manifest.filter(m=>!$('sharp-only').checked||isClear(m));byId=new Map(eligible.map(m=>[m.id,m]));groups=new Map();
- for(const m of eligible){const key=`${m.alphabet}:${m.letter}`;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(m);}
- $('collection-info').textContent=`${eligible.length} ${$('sharp-only').checked?'чётких вариантов':'вариантов'} · актуальная коллекция`;
+function populateSignSources(){
+ const previous=$('sign-source').value,all=new Map(manifest.map(m=>[m.source_id,m.source_title]));
+ $('sign-source').replaceChildren(node('option','','Подобрать по тексту'));$('sign-source').firstChild.value='';
+ for(const [id,title] of [...all].sort((a,b)=>a[1].localeCompare(b[1],'ru'))){const option=node('option','',title);option.value=id;$('sign-source').append(option);}
+ if(all.has(previous))$('sign-source').value=previous;
 }
+function rebuildGroups(){
+ const eligible=manifest.filter(m=>!$('sharp-only').checked||isClear(m));baseGroups=new Map();
+ for(const m of eligible){const key=`${m.alphabet}:${m.letter}`;if(!baseGroups.has(key))baseGroups.set(key,[]);baseGroups.get(key).push(m);}
+ const single=$('letter-mode').value==='single';selectedSignId='';
+ if(single){
+  selectedSignId=$('sign-source').value;
+  if(!selectedSignId){
+   const wanted=[...phrase.normalize('NFC')].map(keyFor).filter(Boolean),scores=new Map();
+   for(const m of eligible)if(!scores.has(m.source_id))scores.set(m.source_id,{keys:new Set(),count:0});
+   for(const m of eligible){scores.get(m.source_id).keys.add(`${m.alphabet}:${m.letter}`);scores.get(m.source_id).count++;}
+   let best=-1;for(const [id,s] of scores){const score=wanted.filter(k=>s.keys.has(k)).length*1000+s.keys.size+s.count/1000;if(score>best){best=score;selectedSignId=id;}}
+  }
+ }
+ groups=new Map();for(const [key,options] of baseGroups){const local=single?options.filter(m=>m.source_id===selectedSignId):options;groups.set(key,local.length?local:(single&&$('sign-fallback').checked?options:[]));}
+ byId=new Map([...groups.values()].flat().map(m=>[m.id,m]));
+ for(const id of ['sign-source-label','sign-fallback-label','sign-summary'])$(id).hidden=!single;
+ $('collection-info').textContent=`${byId.size} ${$('sharp-only').checked?'чётких вариантов':'вариантов'} · актуальная коллекция`;
+}
+function updateSignSummary(){
+ if($('letter-mode').value!=='single')return;
+ const title=manifest.find(m=>m.source_id===selectedSignId)?.source_title||'Нет подходящей вывески';
+ const borrowed=tiles.filter(t=>t.id&&byId.get(t.id)?.source_id!==selectedSignId).length;
+ $('sign-summary').textContent=`${title}${borrowed?` · из других источников: ${borrowed}`:''}`;
+}
+
 function pick(options,previous){const candidates=options.filter(m=>m.id!==previous);const pool=candidates.length?candidates:options;return pool.length?pool[Math.floor(Math.random()*pool.length)].id:null;}
-function savePlay(){try{settingsByLayout[layout]={size:Number($('letter-size').value),gap:Number($('letter-gap').value),defaultsVersion:2};localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),settingsByLayout}));}catch{}}
+function savePlay(){try{settingsByLayout[layout]={size:Number($('letter-size').value),gap:Number($('letter-gap').value),defaultsVersion:2};localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,phrase,tiles:tiles.map(t=>({char:t.char,id:t.id})),settingsByLayout,signMode:$('letter-mode').value,signSourceId:$('sign-source').value,signFallback:$('sign-fallback').checked}));}catch{}}
 function reconcile(text,previous=tiles){
  const chars=[...text.normalize('NFC')];
  return chars.map((char,index)=>{const old=previous[index],options=optionsFor(char);return {char,id:old?.char===char&&options.some(m=>m.id===old.id)?old.id:pick(options,null)};});
@@ -45,16 +72,17 @@ function render(preloadedImages=[]){
   else word.append(node('span','literal',tile.char));
  });
  updateShuffleButton();
+ updateExportButtons();updateSignSummary();
  watchVisibleImages();
  prepareShuffle();
 }
 function status(message,error=false){$('play-status').textContent=message;$('play-status').classList.toggle('error',error);}
-function describe(){const missing=[...new Set(tiles.filter(t=>/^\p{L}$/u.test(t.char)&&!t.id).map(t=>t.char.toUpperCase()))];return missing.length?`${$('sharp-only').checked?'Среди чётких вариантов нет букв':'Пока нет букв'}: ${missing.join(', ')}. Для остальных можно выбирать варианты.`:'Нажми на букву в надписи, чтобы сменить вариант или посмотреть источник.';}
-function shuffleKey(){return JSON.stringify([phrase,$('sharp-only').checked,tiles.map(t=>[t.char,t.id,byId.get(t.id)?displayFile(byId.get(t.id)):null])]);}
+function describe(){const missing=[...new Set(tiles.filter(t=>/^\p{L}$/u.test(t.char)&&!t.id).map(t=>t.char.toUpperCase()))];return missing.length?`${$('letter-mode').value==='single'&&!$('sign-fallback').checked?'В этой вывеске нет букв':$('sharp-only').checked?'Среди чётких вариантов нет букв':'Пока нет букв'}: ${missing.join(', ')}. Для остальных можно выбирать варианты.`:'Нажми на букву в надписи, чтобы сменить вариант или посмотреть источник.';}
+function shuffleKey(){return JSON.stringify([phrase,$('sharp-only').checked,$('letter-mode').value,selectedSignId,$('sign-fallback').checked,tiles.map(t=>[t.char,t.id,byId.get(t.id)?displayFile(byId.get(t.id)):null])]);}
 function updateShuffleButton(){
  $('shuffle').disabled=shuffleBusy||!ready||!tiles.some(t=>optionsFor(t.char).length>1);
  $('shuffle').textContent=shuffleBusy?'Загружаем…':'Перемешать ↻';
- $('word-stage').setAttribute('aria-busy',String(shuffleBusy));
+ $('word-stage').setAttribute('aria-busy',String(shuffleBusy));updateExportButtons();
 }
 function loadImage(file,priority='auto'){
  if(!imageCache.has(file)){
@@ -132,6 +160,45 @@ async function shuffle(){
  }finally{shuffleBusy=false;updateShuffleButton();scheduleBackgroundWarm();}
 }
 
+function updateExportButtons(){
+ $('download-word').disabled=exportBusy||shuffleBusy||!ready||!phrase.trim();
+ $('download-letters').disabled=exportBusy||shuffleBusy||!ready||!tiles.some(t=>t.id&&byId.has(t.id));
+}
+let lastDownloadUrl=null;
+function offerDownload(blob,filename){
+ if(lastDownloadUrl)URL.revokeObjectURL(lastDownloadUrl);lastDownloadUrl=URL.createObjectURL(blob);
+ const link=$('download-result');link.href=lastDownloadUrl;link.textContent=filename.endsWith('.zip')?'Открыть архив ↗':'Открыть картинку ↗';link.hidden=false;
+ const anchor=document.createElement('a');anchor.href=lastDownloadUrl;anchor.download=filename;document.body.append(anchor);anchor.click();anchor.remove();
+}
+function exportSnapshot(){
+ const stage=$('word-stage');stage.classList.add('exporting');
+ try{return Array.from(stage.querySelectorAll('.glyph,.literal')).map(el=>{const r=el.getBoundingClientRect(),style=getComputedStyle(el),m=byId.get(el.dataset.variant);return {x:r.left,y:r.top,w:r.width,h:r.height,m,text:el.textContent,font:`${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`,color:style.color,missing:el.classList.contains('missing')};});}
+ finally{stage.classList.remove('exporting');}
+}
+async function buildInscriptionPng(atoms,size){
+ if(!atoms.length)throw Error('Напиши текст для скачивания.');
+ const left=Math.min(...atoms.map(a=>a.x)),top=Math.min(...atoms.map(a=>a.y)),right=Math.max(...atoms.map(a=>a.x+a.w)),bottom=Math.max(...atoms.map(a=>a.y+a.h)),padding=16;
+ const w=Math.ceil(right-left+padding*2),h=Math.ceil(bottom-top+padding*2),scale=Math.min(Math.max(2,Math.min(4,160/size)),4096/w,4096/h,Math.sqrt(8000000/(w*h)));
+ const images=await Promise.all(atoms.map(a=>a.m?loadImage(a.m.file,'high'):null));if(document.fonts)await document.fonts.ready;
+ const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.ceil(w*scale));canvas.height=Math.max(1,Math.ceil(h*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.scale(scale,scale);
+ atoms.forEach((a,i)=>{const x=a.x-left+padding,y=a.y-top+padding;if(images[i]){ctx.drawImage(images[i],x,y,a.w,a.h);}else{ctx.fillStyle=a.color;ctx.font=a.font;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.text,x+a.w/2,y+a.h/2);if(a.missing){ctx.strokeStyle='#aaa';ctx.setLineDash([3,3]);ctx.strokeRect(x,y,a.w,a.h);ctx.setLineDash([]);}}});
+ return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('Не удалось создать PNG.')),'image/png'));
+}
+async function buildLetterArchive(snapshot,text){
+ const letters=snapshot.map((t,index)=>({t,index,m:byId.get(t.id)})).filter(x=>x.m),files=[],metadata=[];
+ await Promise.all(letters.map(x=>loadImage(x.m.file,'high')));
+ for(const {t,index,m} of letters){const response=await fetch(m.file,{cache:'force-cache'});if(!response.ok)throw Error('Не удалось загрузить исходную букву.');const name=`${String(index+1).padStart(3,'0')}-${t.char}.png`;files.push({name,bytes:new Uint8Array(await response.arrayBuffer())});metadata.push({position:index+1,character:t.char,file:name,variant_id:m.id,source_id:m.source_id,source_title:m.source_title,source_url:m.source_url,box:m.box});}
+ files.push({name:'letters.json',bytes:new TextEncoder().encode(JSON.stringify({text,letters:metadata,missing:snapshot.map((t,index)=>({position:index+1,character:t.char,id:t.id})).filter(t=>!t.id&&/^\p{L}$/u.test(t.character)).map(({position,character})=>({position,character}))},null,2))});return createLetterZip(files);
+}
+async function downloadInscription(kind){
+ if(exportBusy||shuffleBusy||!ready)return;const text=phrase,snapshot=tiles.map(t=>({...t})),atoms=kind==='word'?exportSnapshot():null,size=Number($('letter-size').value);
+ exportBusy=true;priorityLoads++;updateExportButtons();status(kind==='word'?'Готовим надпись в PNG…':'Собираем исходные буквы в ZIP…');
+ try{const blob=kind==='word'?await buildInscriptionPng(atoms,size):await buildLetterArchive(snapshot,text);offerDownload(blob,kind==='word'?'textula-inscription.png':'textula-letters.zip');if(phrase===text)status(kind==='word'?'Надпись готова. На iPhone файл можно открыть по ссылке рядом с кнопками.':'Архив готов: отдельные PNG и файл с порядком букв и источниками.');}
+ catch(e){status(e.message||'Не удалось подготовить файл. Попробуй ещё раз.',true);}
+ finally{exportBusy=false;priorityLoads--;updateExportButtons();scheduleBackgroundWarm();}
+}
+$('download-word').onclick=()=>downloadInscription('word');$('download-letters').onclick=()=>downloadInscription('letters');
+
 function showSource(m,expand=true){
  $('origin-title').textContent=`${m.character} · ${m.source_title}`;$('origin-image').src=m.source_file;$('origin-image').alt=m.source_title;$('origin-link').href=`https://textula.ru/d/${m.source_id}/`;
  const [w,h]=m.source_size,[x,y,r,b]=m.box;Object.assign($('origin-outline').style,{left:`${x/w*100}%`,top:`${y/h*100}%`,width:`${(r-x)/w*100}%`,height:`${(b-y)/h*100}%`});$('source-details').hidden=false;$('source-details').open=expand;
@@ -155,17 +222,18 @@ async function loadCollection(initial=false,quiet=false){
   const revision=JSON.stringify([rows.map(m=>[m.id,m.character,m.alphabet,m.file,m.hidden]),quality,previewFiles]);
   if(!Array.isArray(rows))throw Error('Некорректный список букв.');
   if(quiet&&ready&&revision!==null&&revision===loadedRevision)return;
-  manifest=rows.filter(m=>!m.hidden);rebuildGroups();
+  manifest=rows.filter(m=>!m.hidden);populateSignSources();
   let previous=tiles;
-  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;settingsByLayout=saved.settingsByLayout&&typeof saved.settingsByLayout==='object'?saved.settingsByLayout:{};const preferences=settingsByLayout[layout]||(layout==='desktop'?saved:{});if(Number.isFinite(preferences.size))$('letter-size').value=layout==='mobile'&&preferences.defaultsVersion!==2&&preferences.size===50?40:Math.min(180,Math.max(40,preferences.size));if(Number.isFinite(preferences.gap))$('letter-gap').value=Math.min(24,Math.max(0,preferences.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
-  tiles=reconcile(phrase,previous);loadedRevision=revision;ready=true;render();savePlay();
+  if(initial){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.version===1&&typeof saved.phrase==='string'&&Array.isArray(saved.tiles)){phrase=saved.phrase.slice(0,200);previous=saved.tiles;$('phrase').value=phrase;$('letter-mode').value=saved.signMode==='single'?'single':'all';if(Array.from($('sign-source').options).some(o=>o.value===saved.signSourceId))$('sign-source').value=saved.signSourceId;if(typeof saved.signFallback==='boolean')$('sign-fallback').checked=saved.signFallback;settingsByLayout=saved.settingsByLayout&&typeof saved.settingsByLayout==='object'?saved.settingsByLayout:{};const preferences=settingsByLayout[layout]||(layout==='desktop'?saved:{});if(Number.isFinite(preferences.size))$('letter-size').value=layout==='mobile'&&preferences.defaultsVersion!==2&&preferences.size===50?40:Math.min(180,Math.max(40,preferences.size));if(Number.isFinite(preferences.gap))$('letter-gap').value=Math.min(24,Math.max(0,preferences.gap));}}catch{}if(!phrase)phrase=$('phrase').value;}
+  rebuildGroups();tiles=reconcile(phrase,previous);loadedRevision=revision;ready=true;render();savePlay();
   if($('variant-picker').open)openPicker(pickerIndex);
   status(quiet?'Коллекция обновлена с учётом сохранённых правок. '+describe():describe());
  }catch(e){status('Не удалось обновить буквы. '+(ready?'Надпись сохранена, попробуй обновить ещё раз.':'Открой страницу через локальный сервер и попробуй снова.'),true);console.error(e);}
  finally{loading=false;scheduleBackgroundWarm();}
 }
-$('phrase').addEventListener('input',()=>{fitTextarea();phrase=$('phrase').value;if(!ready)return;tiles=reconcile(phrase);render();savePlay();status(describe());});
+$('phrase').addEventListener('input',()=>{fitTextarea();phrase=$('phrase').value;if(!ready)return;rebuildGroups();tiles=reconcile(phrase);render();savePlay();status(describe());});
 $('shuffle').onclick=shuffle;
+for(const id of ['letter-mode','sign-source','sign-fallback'])$(id).onchange=()=>{rebuildGroups();tiles=reconcile(phrase);render();savePlay();if($('variant-picker').open)openPicker(pickerIndex);status(describe());};
 $('sharp-only').onchange=()=>{rebuildGroups();tiles=reconcile(phrase);render();savePlay();if($('variant-picker').open)openPicker(pickerIndex);status(describe());};
 for(const id of ['letter-size','letter-gap'])$(id).oninput=()=>{render();savePlay();};
 $('close-picker').onclick=()=>$('variant-picker').close();
