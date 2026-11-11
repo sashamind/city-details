@@ -119,17 +119,6 @@
 
   <div class="site-header">
     <h1>textula <span>— детали города</span></h1>
-    <div class="header-right">
-      <button id="menu-toggle" class="header-btn menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Открыть меню"><span></span><span></span><span></span></button>
-      <nav id="site-menu" class="site-menu" aria-label="Меню сайта" hidden>
-        <a href="/experiments/letters/play.html" class="header-btn">Написать городом ↗</a>
-        <button id="toggle-guess-mode" class="header-btn">▶ Играть</button>
-        <button id="help-btn" class="header-btn">Как это работает</button>
-        <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
-      </nav>
-    </div>
-  </div>
-
   <div id="search-bar" class="search-bar">
     <span class="search-icon">⌕</span>
     <input type="text" id="search-input" class="search-input" placeholder="Найти деталь...">
@@ -145,6 +134,18 @@
     <button class="filter-btn" data-filter="detail">Детали</button>
     <button class="filter-btn" data-filter="other">Другое</button>
   </div>
+
+    <div class="header-right">
+      <button id="menu-toggle" class="header-btn menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Открыть меню"><span></span><span></span><span></span></button>
+      <nav id="site-menu" class="site-menu" aria-label="Меню сайта" hidden>
+        <a href="/experiments/letters/play.html" class="header-btn">Написать городом ↗</a>
+        <button id="toggle-guess-mode" class="header-btn">▶ Играть</button>
+        <button id="help-btn" class="header-btn">Как это работает</button>
+        <button id="admin-btn" class="header-btn" style="position:relative;">⚙ Админ<span id="pending-badge" class="badge hidden">0</span></button>
+      </nav>
+    </div>
+  </div>
+
 
   <div id="detail-panel" class="panel hidden">
     <div class="panel-toolbar">

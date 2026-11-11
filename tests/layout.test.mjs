@@ -14,6 +14,9 @@ const GEOMETRY = `(function(){
   var filters = document.querySelector('.filters-bar').getBoundingClientRect();
   return {
     headerHeight: Math.round(header.height),
+    inlineToolbar: window.innerWidth >= 1100,
+    searchInsideHeader: search.top >= header.top && search.bottom <= header.bottom,
+    filtersInsideHeader: filters.top >= header.top && filters.bottom <= header.bottom,
     searchGap: Math.round(search.top - header.bottom),
     filtersAtBottom: window.innerHeight - filters.bottom < 40,
     filtersGap: Math.round(filters.top - search.bottom),
@@ -74,12 +77,12 @@ export async function run({ page, base, check }) {
     const g = await page.eval(GEOMETRY);
     const where = width + 'px';
 
-    check(`${where}: строка поиска вплотную под шапкой`, g.searchGap === 0, 'зазор ' + g.searchGap);
+    check(`${where}: поиск на своём месте`, g.inlineToolbar ? g.searchInsideHeader : g.searchGap === 0, g.inlineToolbar ? 'внутри шапки' : 'зазор ' + g.searchGap);
     check(`${where}: --header-h совпадает с высотой шапки`,
       g.cssVariable === g.headerHeight + 'px', g.cssVariable + ' против ' + g.headerHeight + 'px');
     check(`${where}: фильтры на своём месте`,
-      g.filtersAtBottom || g.filtersGap === 0,
-      g.filtersAtBottom ? 'внизу экрана' : 'зазор ' + g.filtersGap);
+      g.inlineToolbar ? g.filtersInsideHeader : (g.filtersAtBottom || g.filtersGap === 0),
+      g.inlineToolbar ? 'внутри шапки' : (g.filtersAtBottom ? 'внизу экрана' : 'зазор ' + g.filtersGap));
   }
 
   // Шапка перенеслась — полосы должны переехать следом, без перезагрузки.
