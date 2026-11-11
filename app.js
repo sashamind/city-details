@@ -1636,8 +1636,7 @@ async function toggleAdmin() {
 
 async function enterAdminMode() {
   isAdmin = true;
-  document.body.classList.add('admin-mode');
-  document.getElementById('admin-btn').classList.add('active');
+  // Show admin navigation only after the server accepts the session.
 
   try {
     await loadAllForAdmin();
@@ -1649,6 +1648,8 @@ async function enterAdminMode() {
     return;
   }
 
+  document.body.classList.add('admin-mode');
+  document.getElementById('admin-btn').classList.add('active');
   renderMarkers();
   updateBadge();
   if (getPendingCount() > 0) openModPanel();
@@ -2616,3 +2617,35 @@ function deleteDetail() {
   if (!confirm('Удалить деталь?')) return;
   rejectDetail(currentDetailId);
 }
+
+// Compact header menu; existing action handlers keep their original buttons.
+(function initSiteMenu() {
+  var toggle = document.getElementById('menu-toggle');
+  var menu = document.getElementById('site-menu');
+  function closeMenu(restoreFocus) {
+    menu.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Открыть меню');
+    if (restoreFocus) toggle.focus();
+  }
+  toggle.addEventListener('click', function () {
+    var opening = menu.hidden;
+    menu.hidden = !opening;
+    toggle.setAttribute('aria-expanded', String(opening));
+    toggle.setAttribute('aria-label', opening ? 'Закрыть меню' : 'Открыть меню');
+  });
+  menu.addEventListener('click', function (event) {
+    if (event.target.closest('a, button')) closeMenu(false);
+  });
+  document.addEventListener('click', function (event) {
+    if (!menu.hidden && !event.target.closest('.header-right')) closeMenu(false);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !menu.hidden) { event.preventDefault(); closeMenu(true); }
+  });
+  menu.addEventListener('focusout', function () {
+    setTimeout(function () {
+      if (!document.activeElement.closest('.header-right')) closeMenu(false);
+    }, 0);
+  });
+})();
