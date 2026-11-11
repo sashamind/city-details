@@ -21,7 +21,8 @@
     "id": "0044bab3-01-А",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "В",
@@ -45,7 +46,8 @@
     "id": "0044bab3-02-В",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Т",
@@ -69,7 +71,8 @@
     "id": "0044bab3-03-Т",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "О",
@@ -93,7 +96,8 @@
     "id": "0044bab3-04-О",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Ш",
@@ -117,7 +121,8 @@
     "id": "0044bab3-05-Ш",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "К",
@@ -141,7 +146,8 @@
     "id": "0044bab3-06-К",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "О",
@@ -165,7 +171,8 @@
     "id": "0044bab3-07-О",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Л",
@@ -189,7 +196,8 @@
     "id": "0044bab3-08-Л",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "А",
@@ -213,7 +221,8 @@
     "id": "0044bab3-09-А",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "П",
@@ -237,7 +246,8 @@
     "id": "6a6fd1a2-01-П",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "О",
@@ -261,7 +271,8 @@
     "id": "6a6fd1a2-02-О",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Б",
@@ -285,7 +296,8 @@
     "id": "6a6fd1a2-03-Б",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Е",
@@ -309,7 +321,8 @@
     "id": "6a6fd1a2-04-Е",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "Д",
@@ -333,7 +346,8 @@
     "id": "6a6fd1a2-05-Д",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "А",
@@ -358,6 +372,7 @@
     "review": "visual",
     "case": "upper",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:36:26.034427+00:00"
   },
   {
@@ -382,7 +397,8 @@
     "id": "eeff4c27-01-Т",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "И",
@@ -406,7 +422,8 @@
     "id": "eeff4c27-02-И",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "А",
@@ -430,7 +447,8 @@
     "id": "eeff4c27-03-А",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "letter": "М",
@@ -454,7 +472,8 @@
     "id": "eeff4c27-04-М",
     "review": "visual",
     "case": "upper",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-001-U0421",
@@ -479,7 +498,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-002-U0410",
@@ -504,7 +524,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-003-U041B",
@@ -529,7 +550,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-004-U0414",
@@ -554,7 +576,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-005-U0415",
@@ -579,7 +602,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-006-U041D",
@@ -604,7 +628,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-007-U0421",
@@ -629,7 +654,8 @@
     ],
     "word": "САЛДЕНС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-008-U0422",
@@ -654,7 +680,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-009-U0410",
@@ -679,7 +706,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-010-U041F",
@@ -704,7 +732,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-011-U0425",
@@ -729,7 +758,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-012-U0410",
@@ -754,7 +784,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-013-U0423",
@@ -779,7 +810,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c3d58b1d-014-U0421",
@@ -804,7 +836,8 @@
     ],
     "word": "ТАПХАУС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-001-U0414",
@@ -829,7 +862,8 @@
     ],
     "word": "ДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-002-U041E",
@@ -855,6 +889,7 @@
     "word": "ДОМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:13:38.094310+00:00"
   },
   {
@@ -880,7 +915,8 @@
     ],
     "word": "ДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-004-U041A",
@@ -905,7 +941,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-005-U0420",
@@ -930,7 +967,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-006-U0410",
@@ -955,7 +993,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-007-U0424",
@@ -980,7 +1019,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-008-U0422",
@@ -1005,7 +1045,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6bf6e154-009-U0410",
@@ -1030,7 +1071,8 @@
     ],
     "word": "КРАФТА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "9f63834e-001-U0422",
@@ -1056,6 +1098,7 @@
     "word": "ТЕЛЕФОН",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:43:16.679081+00:00"
   },
   {
@@ -1081,7 +1124,8 @@
     ],
     "word": "ТЕЛЕФОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "9f63834e-003-U041B",
@@ -1106,7 +1150,8 @@
     ],
     "word": "ТЕЛЕФОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "9f63834e-004-U0415",
@@ -1131,7 +1176,8 @@
     ],
     "word": "ТЕЛЕФОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "9f63834e-005-U0424",
@@ -1156,7 +1202,8 @@
     ],
     "word": "ТЕЛЕФОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "9f63834e-006-U041E",
@@ -1182,6 +1229,7 @@
     "word": "ТЕЛЕФОН",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:15:45.812572+00:00"
   },
   {
@@ -1207,7 +1255,8 @@
     ],
     "word": "ТЕЛЕФОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-001-U041F",
@@ -1232,7 +1281,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-002-U0420",
@@ -1257,7 +1307,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-003-U041E",
@@ -1282,7 +1333,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-004-U0414",
@@ -1307,7 +1359,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-005-U041E",
@@ -1332,7 +1385,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-006-U041B",
@@ -1357,7 +1411,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-007-U0416",
@@ -1382,7 +1437,8 @@
     ],
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-008-U0410",
@@ -1408,6 +1464,7 @@
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:49:35.861959+00:00"
   },
   {
@@ -1434,6 +1491,7 @@
     "word": "ПРОДОЛЖАЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:06:08.751484+00:00"
   },
   {
@@ -1459,7 +1517,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-011-U0412",
@@ -1484,7 +1543,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-012-U0418",
@@ -1509,7 +1569,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-013-U0416",
@@ -1534,7 +1595,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-014-U0415",
@@ -1559,7 +1621,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-015-U041D",
@@ -1585,6 +1648,7 @@
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:13:06.069756+00:00"
   },
   {
@@ -1610,7 +1674,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "6f292f9a-017-U0415",
@@ -1635,7 +1700,8 @@
     ],
     "word": "ДВИЖЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-001-U0053",
@@ -1660,7 +1726,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-002-U0055",
@@ -1685,7 +1752,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-003-U0052",
@@ -1710,7 +1778,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-004-U0046",
@@ -1735,7 +1804,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-005-U0043",
@@ -1760,7 +1830,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-006-U004F",
@@ -1785,7 +1856,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-007-U0046",
@@ -1810,7 +1882,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-008-U0046",
@@ -1835,7 +1908,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-009-U0045",
@@ -1860,7 +1934,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-010-U0045",
@@ -1885,7 +1960,8 @@
     ],
     "word": "SURFCOFFEE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-011-U004B",
@@ -1910,7 +1986,8 @@
     ],
     "word": "KISS",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-012-U0049",
@@ -1935,7 +2012,8 @@
     ],
     "word": "KISS",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-013-U0053",
@@ -1960,7 +2038,8 @@
     ],
     "word": "KISS",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "8490ae57-014-U0053",
@@ -1985,7 +2064,8 @@
     ],
     "word": "KISS",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "103fefe6-001-U041D",
@@ -2011,6 +2091,7 @@
     "word": "НУАРДОМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:10:58.869680+00:00"
   },
   {
@@ -2036,7 +2117,8 @@
     ],
     "word": "НУАРДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "103fefe6-003-U0410",
@@ -2061,7 +2143,8 @@
     ],
     "word": "НУАРДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "103fefe6-004-U0420",
@@ -2086,7 +2169,8 @@
     ],
     "word": "НУАРДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "103fefe6-005-U0414",
@@ -2112,6 +2196,7 @@
     "word": "НУАРДОМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:55:31.920432+00:00"
   },
   {
@@ -2138,6 +2223,7 @@
     "word": "НУАРДОМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:13:50.813765+00:00"
   },
   {
@@ -2163,7 +2249,8 @@
     ],
     "word": "НУАРДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "5b8edb70-001-U041C",
@@ -2188,7 +2275,8 @@
     ],
     "word": "МЕЖДУ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "5b8edb70-002-U0415",
@@ -2213,7 +2301,8 @@
     ],
     "word": "МЕЖДУ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "5b8edb70-003-U0416",
@@ -2238,7 +2327,8 @@
     ],
     "word": "МЕЖДУ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "5b8edb70-004-U0414",
@@ -2263,7 +2353,8 @@
     ],
     "word": "МЕЖДУ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "5b8edb70-005-U0423",
@@ -2288,7 +2379,8 @@
     ],
     "word": "МЕЖДУ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-001-U0413",
@@ -2313,7 +2405,8 @@
     ],
     "word": "ГУЛЯЮ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-002-U0423",
@@ -2338,7 +2431,8 @@
     ],
     "word": "ГУЛЯЮ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-003-U041B",
@@ -2364,6 +2458,7 @@
     "word": "ГУЛЯЮ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:08:51.235582+00:00"
   },
   {
@@ -2390,6 +2485,7 @@
     "word": "ГУЛЯЮ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:51:26.688956+00:00"
   },
   {
@@ -2416,6 +2512,7 @@
     "word": "ГУЛЯЮ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:50:19.097584+00:00"
   },
   {
@@ -2441,7 +2538,8 @@
     ],
     "word": "ЯТОЖЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-007-U0422",
@@ -2466,7 +2564,8 @@
     ],
     "word": "ЯТОЖЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-008-U041E",
@@ -2492,6 +2591,7 @@
     "word": "ЯТОЖЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:16:18.182451+00:00"
   },
   {
@@ -2517,7 +2617,8 @@
     ],
     "word": "ЯТОЖЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-010-U0415",
@@ -2543,6 +2644,7 @@
     "word": "ЯТОЖЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:00:07.116591+00:00"
   },
   {
@@ -2568,7 +2670,8 @@
     ],
     "word": "ВСЕГДА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-012-U0421",
@@ -2593,7 +2696,8 @@
     ],
     "word": "ВСЕГДА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-013-U0415",
@@ -2618,7 +2722,8 @@
     ],
     "word": "ВСЕГДА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-014-U0413",
@@ -2644,6 +2749,7 @@
     "word": "ВСЕГДА",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:46.532374+00:00"
   },
   {
@@ -2669,7 +2775,8 @@
     ],
     "word": "ВСЕГДА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-016-U0410",
@@ -2694,7 +2801,8 @@
     ],
     "word": "ВСЕГДА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-017-U041E",
@@ -2719,7 +2827,8 @@
     ],
     "word": "ОДИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "11f10d2d-018-U0414",
@@ -2745,6 +2854,7 @@
     "word": "ОДИН",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:56:14.562203+00:00"
   },
   {
@@ -2771,6 +2881,7 @@
     "word": "ОДИН",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:04:38.392321+00:00"
   },
   {
@@ -2796,7 +2907,8 @@
     ],
     "word": "ОДИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-001-U0043",
@@ -2821,7 +2933,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-002-U0048",
@@ -2846,7 +2959,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-003-U004F",
@@ -2871,7 +2985,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-004-U0050",
@@ -2896,7 +3011,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-005-U0043",
@@ -2921,7 +3037,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-006-U0048",
@@ -2946,7 +3063,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-007-U004F",
@@ -2971,7 +3089,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7fac2c7a-008-U0050",
@@ -2996,7 +3115,8 @@
     ],
     "word": "CHOPCHOP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-001-U0413",
@@ -3021,7 +3141,8 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-002-U0410",
@@ -3029,16 +3150,16 @@
     "character": "А",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/1c95a776-002-U0410.png",
+    "file": "edited/1c95a776-002-U0410-2eca010fbb84.png",
     "source_id": "1c95a776-0581-4519-a468-40c3f7a6ae39",
     "source_title": "Шрифт",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283761381_IMG_9683.jpeg",
     "source_file": "sources/1c95a776-0581-4519-a468-40c3f7a6ae39.jpg",
     "box": [
-      197,
-      245,
-      249,
-      304
+      191,
+      256,
+      243,
+      315
     ],
     "source_size": [
       870,
@@ -3046,7 +3167,9 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": true,
+    "edited_at": "2026-11-11T10:28:32.927951+00:00"
   },
   {
     "id": "1c95a776-003-U041B",
@@ -3071,7 +3194,8 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-004-U0410",
@@ -3096,7 +3220,8 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-005-U041D",
@@ -3121,7 +3246,8 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-006-U0422",
@@ -3146,7 +3272,8 @@
     ],
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-007-U0415",
@@ -3172,6 +3299,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:57:59.354825+00:00"
   },
   {
@@ -3198,6 +3326,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:18:23.705058+00:00"
   },
   {
@@ -3224,6 +3353,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:57:48.260803+00:00"
   },
   {
@@ -3250,6 +3380,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:26.698954+00:00"
   },
   {
@@ -3276,6 +3407,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:11:44.237265+00:00"
   },
   {
@@ -3302,6 +3434,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:48:38.478716+00:00"
   },
   {
@@ -3328,6 +3461,7 @@
     "word": "ГАЛАНТЕРЕЙНЫЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:57:23.183458+00:00"
   },
   {
@@ -3353,7 +3487,8 @@
     ],
     "word": "ЕННЫЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-015-U041D",
@@ -3378,7 +3513,8 @@
     ],
     "word": "ЕННЫЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-016-U041D",
@@ -3403,7 +3539,8 @@
     ],
     "word": "ЕННЫЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-017-U042B",
@@ -3428,7 +3565,8 @@
     ],
     "word": "ЕННЫЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1c95a776-018-U042F",
@@ -3453,7 +3591,8 @@
     ],
     "word": "ЕННЫЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-001-U0418",
@@ -3479,6 +3618,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:03:40.467859+00:00"
   },
   {
@@ -3505,6 +3645,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:41:01.369213+00:00"
   },
   {
@@ -3531,6 +3672,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:42:40.269219+00:00"
   },
   {
@@ -3557,6 +3699,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:14:53.687949+00:00"
   },
   {
@@ -3583,6 +3726,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:18:34.285218+00:00"
   },
   {
@@ -3609,6 +3753,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:03:59.217466+00:00"
   },
   {
@@ -3635,6 +3780,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:07:09.091242+00:00"
   },
   {
@@ -3661,6 +3807,7 @@
     "word": "ИСТОРИКО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:15:03.572136+00:00"
   },
   {
@@ -3686,7 +3833,8 @@
     ],
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-010-U0420",
@@ -3711,7 +3859,8 @@
     ],
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-011-U0425",
@@ -3737,6 +3886,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:47:25.817200+00:00"
   },
   {
@@ -3763,6 +3913,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:58:17.550361+00:00"
   },
   {
@@ -3789,6 +3940,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:14:32.222679+00:00"
   },
   {
@@ -3815,6 +3967,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:08:28.042793+00:00"
   },
   {
@@ -3841,6 +3994,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:14:45.242666+00:00"
   },
   {
@@ -3867,6 +4021,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:53:43.739490+00:00"
   },
   {
@@ -3893,6 +4048,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:03:30.982287+00:00"
   },
   {
@@ -3919,6 +4075,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:48:13.936437+00:00"
   },
   {
@@ -3945,6 +4102,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:58:31.510848+00:00"
   },
   {
@@ -3971,6 +4129,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:40:50.671159+00:00"
   },
   {
@@ -3997,6 +4156,7 @@
     "word": "АРХЕОЛОГИЧЕСК",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:06:58.619456+00:00"
   },
   {
@@ -4023,6 +4183,7 @@
     "word": "МУЗЕЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:10:46.673819+00:00"
   },
   {
@@ -4048,7 +4209,8 @@
     ],
     "word": "МУЗЕЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-024-U0417",
@@ -4074,6 +4236,7 @@
     "word": "МУЗЕЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:01:52.177926+00:00"
   },
   {
@@ -4099,7 +4262,8 @@
     ],
     "word": "МУЗЕЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-026-U0419",
@@ -4125,6 +4289,7 @@
     "word": "МУЗЕЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:38.392621+00:00"
   },
   {
@@ -4151,6 +4316,7 @@
     "word": "ТУЛЬСКЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:42:22.172666+00:00"
   },
   {
@@ -4176,7 +4342,8 @@
     ],
     "word": "ТУЛЬСКЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-029-U041B",
@@ -4202,6 +4369,7 @@
     "word": "ТУЛЬСКЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:07:48.247684+00:00"
   },
   {
@@ -4228,6 +4396,7 @@
     "word": "ТУЛЬСКЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:49:15.677275+00:00"
   },
   {
@@ -4253,7 +4422,8 @@
     ],
     "word": "ТУЛЬСКЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-032-U041A",
@@ -4279,6 +4449,7 @@
     "word": "ТУЛЬСКЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:06:43.348136+00:00"
   },
   {
@@ -4305,6 +4476,7 @@
     "word": "ТУЛЬСКЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:56:34.137474+00:00"
   },
   {
@@ -4331,6 +4503,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:55:53.548512+00:00"
   },
   {
@@ -4356,7 +4529,8 @@
     ],
     "word": "ДРЕВНОС",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "2a496a2e-036-U0415",
@@ -4382,6 +4556,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:56:48.540154+00:00"
   },
   {
@@ -4408,6 +4583,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:52:41.468367+00:00"
   },
   {
@@ -4434,6 +4610,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:11:12.744469+00:00"
   },
   {
@@ -4460,6 +4637,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:14:18.797385+00:00"
   },
   {
@@ -4486,6 +4664,7 @@
     "word": "ДРЕВНОС",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:54:09.688424+00:00"
   },
   {
@@ -4511,7 +4690,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-002-U041B",
@@ -4536,7 +4716,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-003-U0415",
@@ -4561,7 +4742,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-004-U041A",
@@ -4586,7 +4768,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-005-U0421",
@@ -4611,7 +4794,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-006-U0410",
@@ -4636,7 +4820,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-007-U041D",
@@ -4662,6 +4847,7 @@
     "word": "АЛЕКСАНДР",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:11:22.705308+00:00"
   },
   {
@@ -4687,7 +4873,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "819046ab-009-U0420",
@@ -4712,7 +4899,8 @@
     ],
     "word": "АЛЕКСАНДР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "e9fcb43c-001-U041D",
@@ -4737,7 +4925,8 @@
     ],
     "word": "НЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "e9fcb43c-002-U0415",
@@ -4763,6 +4952,7 @@
     "word": "НЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:59:36.757042+00:00"
   },
   {
@@ -4789,6 +4979,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:07:34.499997+00:00"
   },
   {
@@ -4815,6 +5006,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:46:28.226645+00:00"
   },
   {
@@ -4841,6 +5033,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:38:54.313985+00:00"
   },
   {
@@ -4867,6 +5060,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:04:48.225640+00:00"
   },
   {
@@ -4893,6 +5087,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:43:07.005429+00:00"
   },
   {
@@ -4919,6 +5114,7 @@
     "word": "КУРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:49:53.573257+00:00"
   },
   {
@@ -4944,7 +5140,8 @@
     ],
     "word": "НЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "e9fcb43c-010-U0415",
@@ -4969,7 +5166,8 @@
     ],
     "word": "НЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "e9fcb43c-011-U0421",
@@ -4994,7 +5192,8 @@
     ],
     "word": "СОРИТЬ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "e9fcb43c-012-U041E",
@@ -5020,6 +5219,7 @@
     "word": "СОРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:15:23.803639+00:00"
   },
   {
@@ -5046,6 +5246,7 @@
     "word": "СОРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:39:29.767030+00:00"
   },
   {
@@ -5072,6 +5273,7 @@
     "word": "СОРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:01.680025+00:00"
   },
   {
@@ -5098,6 +5300,7 @@
     "word": "СОРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:43:40.606718+00:00"
   },
   {
@@ -5124,6 +5327,7 @@
     "word": "СОРИТЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:50:06.289194+00:00"
   },
   {
@@ -5149,7 +5353,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-002-U006E",
@@ -5174,7 +5379,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-003-U0074",
@@ -5199,7 +5405,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-004-U0072",
@@ -5224,7 +5431,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-005-U00E9",
@@ -5249,7 +5457,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-006-U0065",
@@ -5274,7 +5483,8 @@
     ],
     "word": "entrée",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-007-U041A",
@@ -5299,7 +5509,8 @@
     ],
     "word": "КАФЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-008-U0410",
@@ -5324,7 +5535,8 @@
     ],
     "word": "КАФЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-009-U0424",
@@ -5349,7 +5561,8 @@
     ],
     "word": "КАФЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-010-U0415",
@@ -5374,7 +5587,8 @@
     ],
     "word": "КАФЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-011-U041F",
@@ -5399,7 +5613,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-012-U0415",
@@ -5424,7 +5639,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-013-U041A",
@@ -5450,6 +5666,7 @@
     "word": "ПЕКАРНЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:07:19.821951+00:00"
   },
   {
@@ -5475,7 +5692,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-015-U0420",
@@ -5500,7 +5718,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-016-U041D",
@@ -5525,7 +5744,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "4cd29b70-017-U042F",
@@ -5550,7 +5770,8 @@
     ],
     "word": "ПЕКАРНЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-001-U0413",
@@ -5575,7 +5796,8 @@
     ],
     "word": "ГОРОД",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-002-U041E",
@@ -5601,6 +5823,7 @@
     "word": "ГОРОД",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:15:34.819126+00:00"
   },
   {
@@ -5626,7 +5849,8 @@
     ],
     "word": "ГОРОД",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-004-U041E",
@@ -5651,7 +5875,8 @@
     ],
     "word": "ГОРОД",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-005-U0414",
@@ -5677,6 +5902,7 @@
     "word": "ГОРОД",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:37:31.496780+00:00"
   },
   {
@@ -5702,7 +5928,8 @@
     ],
     "word": "МАСТЕРОВ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-007-U0410",
@@ -5728,6 +5955,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:48:15.690426+00:00"
   },
   {
@@ -5754,6 +5982,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:41:31.922585+00:00"
   },
   {
@@ -5780,6 +6009,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:43:29.893639+00:00"
   },
   {
@@ -5806,6 +6036,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:59:56.485397+00:00"
   },
   {
@@ -5832,6 +6063,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:39:12.576238+00:00"
   },
   {
@@ -5858,6 +6090,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:16:00.167345+00:00"
   },
   {
@@ -5884,6 +6117,7 @@
     "word": "МАСТЕРОВ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:53:16.968700+00:00"
   },
   {
@@ -5909,7 +6143,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-015-U0049",
@@ -5934,7 +6169,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-016-U0053",
@@ -5959,7 +6195,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-017-U0049",
@@ -5984,7 +6221,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-018-U0054",
@@ -6009,7 +6247,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-019-U0054",
@@ -6034,7 +6273,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-020-U0055",
@@ -6059,7 +6299,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-021-U004C",
@@ -6084,7 +6325,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-022-U0041",
@@ -6109,7 +6351,8 @@
     ],
     "word": "VISITTULA",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-023-U0043",
@@ -6134,7 +6377,8 @@
     ],
     "word": "COM",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-024-U004F",
@@ -6159,7 +6403,8 @@
     ],
     "word": "COM",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "64d11826-025-U004D",
@@ -6184,7 +6429,8 @@
     ],
     "word": "COM",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "c8d7ee59-001-U0423",
@@ -6210,6 +6456,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:45:48.288741+00:00"
   },
   {
@@ -6236,6 +6483,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:08:16.386807+00:00"
   },
   {
@@ -6262,6 +6510,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:48:47.894452+00:00"
   },
   {
@@ -6288,6 +6537,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:51:35.929690+00:00"
   },
   {
@@ -6314,6 +6564,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:11:59.378776+00:00"
   },
   {
@@ -6340,6 +6591,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:04:13.132682+00:00"
   },
   {
@@ -6366,6 +6618,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:41:12.915822+00:00"
   },
   {
@@ -6392,6 +6645,7 @@
     "word": "УЛЫБНИСЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:49:40.557580+00:00"
   },
   {
@@ -6417,7 +6671,8 @@
     ],
     "word": "ERROR",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-002-U0052",
@@ -6442,7 +6697,8 @@
     ],
     "word": "ERROR",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-003-U0052",
@@ -6467,7 +6723,8 @@
     ],
     "word": "ERROR",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-004-U004F",
@@ -6492,7 +6749,8 @@
     ],
     "word": "ERROR",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-005-U0052",
@@ -6517,7 +6775,8 @@
     ],
     "word": "ERROR",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-006-U004E",
@@ -6542,7 +6801,8 @@
     ],
     "word": "NO",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-007-U004F",
@@ -6567,7 +6827,8 @@
     ],
     "word": "NO",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-008-U0043",
@@ -6592,7 +6853,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-009-U004F",
@@ -6617,7 +6879,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-010-U004E",
@@ -6642,7 +6905,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-011-U0054",
@@ -6667,7 +6931,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-012-U0045",
@@ -6692,7 +6957,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-013-U004E",
@@ -6717,7 +6983,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "3ed09074-014-U0054",
@@ -6742,7 +7009,8 @@
     ],
     "word": "CONTENT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-001-U041E",
@@ -6767,7 +7035,8 @@
     ],
     "word": "ОЧЕНЬ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-002-U0427",
@@ -6793,6 +7062,7 @@
     "word": "ОЧЕНЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:47:58.058922+00:00"
   },
   {
@@ -6819,6 +7089,7 @@
     "word": "ОЧЕНЬ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:57:09.386740+00:00"
   },
   {
@@ -6844,7 +7115,8 @@
     ],
     "word": "ОЧЕНЬ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-005-U042C",
@@ -6869,7 +7141,8 @@
     ],
     "word": "ОЧЕНЬ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-006-U0411",
@@ -6894,7 +7167,8 @@
     ],
     "word": "БОЛЬНО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-007-U041E",
@@ -6919,7 +7193,8 @@
     ],
     "word": "БОЛЬНО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "dc465b75-008-U041B",
@@ -6945,6 +7220,7 @@
     "word": "БОЛЬНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:07:57.067531+00:00"
   },
   {
@@ -6971,6 +7247,7 @@
     "word": "БОЛЬНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:49:31.156086+00:00"
   },
   {
@@ -6997,6 +7274,7 @@
     "word": "БОЛЬНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:11:31.530960+00:00"
   },
   {
@@ -7022,7 +7300,8 @@
     ],
     "word": "БОЛЬНО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "34b7d1d6-001-U0412",
@@ -7047,7 +7326,8 @@
     ],
     "word": "ВКО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "34b7d1d6-002-U041A",
@@ -7072,7 +7352,8 @@
     ],
     "word": "ВКО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "34b7d1d6-003-U041E",
@@ -7098,6 +7379,7 @@
     "word": "ВКО",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:14:02.290354+00:00"
   },
   {
@@ -7123,7 +7405,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-002-U041F",
@@ -7148,7 +7431,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-003-U0422",
@@ -7173,7 +7457,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-004-U0418",
@@ -7198,7 +7483,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-005-U041A",
@@ -7223,7 +7509,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-006-U0410",
@@ -7248,7 +7535,8 @@
     ],
     "word": "ОПТИКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-007-U0417",
@@ -7273,7 +7561,8 @@
     ],
     "word": "ЗРЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-008-U0420",
@@ -7298,7 +7587,8 @@
     ],
     "word": "ЗРЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-009-U0415",
@@ -7323,7 +7613,8 @@
     ],
     "word": "ЗРЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-010-U041D",
@@ -7348,7 +7639,8 @@
     ],
     "word": "ЗРЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-011-U0418",
@@ -7374,6 +7666,7 @@
     "word": "ЗРЕНИЕ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:04:26.234048+00:00"
   },
   {
@@ -7399,7 +7692,8 @@
     ],
     "word": "ЗРЕНИЕ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "46df6308-013-U0411",
@@ -7425,6 +7719,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:51:53.308454+00:00"
   },
   {
@@ -7451,6 +7746,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:00:24.103514+00:00"
   },
   {
@@ -7477,6 +7773,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:41:43.447715+00:00"
   },
   {
@@ -7503,6 +7800,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:17:55.842406+00:00"
   },
   {
@@ -7529,6 +7827,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:09:01.736049+00:00"
   },
   {
@@ -7555,6 +7854,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T21:05:45.498333+00:00"
   },
   {
@@ -7581,6 +7881,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:43:52.886301+00:00"
   },
   {
@@ -7607,6 +7908,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:12:47.491835+00:00"
   },
   {
@@ -7633,6 +7935,7 @@
     "word": "БЕСПЛАТНО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:16:10.427586+00:00"
   },
   {
@@ -7658,7 +7961,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-002-U0420",
@@ -7683,7 +7987,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-003-U0423",
@@ -7709,6 +8014,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:46:00.051634+00:00"
   },
   {
@@ -7734,7 +8040,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-005-U0415",
@@ -7759,7 +8066,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-006-U0419",
@@ -7784,7 +8092,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-007-U041D",
@@ -7809,7 +8118,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-008-U0410",
@@ -7835,6 +8145,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:36:42.094423+00:00"
   },
   {
@@ -7861,6 +8172,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:50:35.961703+00:00"
   },
   {
@@ -7886,7 +8198,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-011-U0420",
@@ -7911,7 +8224,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-012-U0423",
@@ -7936,7 +8250,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-013-U0416",
@@ -7961,7 +8276,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-014-U0415",
@@ -7986,7 +8302,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-015-U0419",
@@ -8012,6 +8329,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:57.238330+00:00"
   },
   {
@@ -8038,6 +8356,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:12:31.172287+00:00"
   },
   {
@@ -8064,6 +8383,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:48:49.429910+00:00"
   },
   {
@@ -8089,7 +8409,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-019-U041E",
@@ -8114,7 +8435,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-020-U0420",
@@ -8139,7 +8461,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-021-U0423",
@@ -8165,6 +8488,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:46:13.793389+00:00"
   },
   {
@@ -8190,7 +8514,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-023-U0415",
@@ -8216,6 +8541,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:59:12.016158+00:00"
   },
   {
@@ -8242,6 +8568,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:47.045200+00:00"
   },
   {
@@ -8268,6 +8595,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:12:18.655449+00:00"
   },
   {
@@ -8293,7 +8621,8 @@
     ],
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "69982893-027-U042F",
@@ -8319,6 +8648,7 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:50:50.415775+00:00"
   },
   {
@@ -8345,6 +8675,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:45:08.923913+00:00"
   },
   {
@@ -8371,6 +8702,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:46:58.292569+00:00"
   },
   {
@@ -8397,6 +8729,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:09:45.487957+00:00"
   },
   {
@@ -8423,6 +8756,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:50:34.975779+00:00"
   },
   {
@@ -8449,6 +8783,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:15.731195+00:00"
   },
   {
@@ -8475,6 +8810,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:16:57.221667+00:00"
   },
   {
@@ -8500,7 +8836,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-008-U0413",
@@ -8526,6 +8863,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:21.717340+00:00"
   },
   {
@@ -8552,6 +8890,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:50:50.826297+00:00"
   },
   {
@@ -8578,6 +8917,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:02:48.425531+00:00"
   },
   {
@@ -8604,6 +8944,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:45:19.243532+00:00"
   },
   {
@@ -8630,6 +8971,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:47:09.533058+00:00"
   },
   {
@@ -8656,6 +8998,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:10:05.664616+00:00"
   },
   {
@@ -8681,7 +9024,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-015-U0413",
@@ -8706,7 +9050,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-016-U041E",
@@ -8732,6 +9077,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:17:08.667823+00:00"
   },
   {
@@ -8757,7 +9103,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-018-U0413",
@@ -8783,6 +9130,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:29.715916+00:00"
   },
   {
@@ -8809,6 +9157,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:51:00.348964+00:00"
   },
   {
@@ -8835,6 +9184,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:02:31.954953+00:00"
   },
   {
@@ -8861,6 +9211,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:44:40.947379+00:00"
   },
   {
@@ -8886,7 +9237,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-023-U041B",
@@ -8912,6 +9264,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:09:10.925491+00:00"
   },
   {
@@ -8938,6 +9291,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:51:17.034553+00:00"
   },
   {
@@ -8964,6 +9318,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:53:56.751764+00:00"
   },
   {
@@ -8990,6 +9345,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:17:16.922932+00:00"
   },
   {
@@ -9016,6 +9372,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:39:42.967223+00:00"
   },
   {
@@ -9042,6 +9399,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:06.676753+00:00"
   },
   {
@@ -9068,6 +9426,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:50:04.367301+00:00"
   },
   {
@@ -9094,6 +9453,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:02:06.485802+00:00"
   },
   {
@@ -9120,6 +9480,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:45:33.893112+00:00"
   },
   {
@@ -9145,7 +9506,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-033-U041B",
@@ -9171,6 +9533,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:10:15.991211+00:00"
   },
   {
@@ -9196,7 +9559,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-035-U0413",
@@ -9221,7 +9585,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-036-U041E",
@@ -9247,6 +9612,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:17:31.592368+00:00"
   },
   {
@@ -9273,6 +9639,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:40:10.083036+00:00"
   },
   {
@@ -9299,6 +9666,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:36.017706+00:00"
   },
   {
@@ -9325,6 +9693,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": true,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:51:09.933850+00:00"
   },
   {
@@ -9351,6 +9720,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:02:59.468133+00:00"
   },
   {
@@ -9377,6 +9747,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:44:55.872579+00:00"
   },
   {
@@ -9403,6 +9774,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:46:43.040894+00:00"
   },
   {
@@ -9429,6 +9801,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:09:25.800371+00:00"
   },
   {
@@ -9455,6 +9828,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:49:48.245988+00:00"
   },
   {
@@ -9480,7 +9854,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-046-U041E",
@@ -9505,7 +9880,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-047-U0420",
@@ -9530,7 +9906,8 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "cc67f731-048-U0413",
@@ -9538,15 +9915,15 @@
     "character": "Г",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/cc67f731-048-U0413.png",
+    "file": "edited/cc67f731-048-U0413-ae7c0f37a726.png",
     "source_id": "cc67f731-1898-45a9-9b42-d66a8454a516",
     "source_title": "Горгаз арт",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283907149_IMG_9684.jpeg",
     "source_file": "sources/cc67f731-1898-45a9-9b42-d66a8454a516.jpg",
     "box": [
-      636,
-      668,
-      649,
+      633,
+      672,
+      647,
       695
     ],
     "source_size": [
@@ -9555,7 +9932,9 @@
     ],
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null,
+    "edited_at": "2026-11-11T10:30:36.692764+00:00"
   },
   {
     "id": "cc67f731-049-U0410",
@@ -9581,6 +9960,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:50:14.854143+00:00"
   },
   {
@@ -9607,6 +9987,7 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:02:18.500683+00:00"
   },
   {
@@ -9632,7 +10013,8 @@
     ],
     "word": "GRP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-002-U0052",
@@ -9657,7 +10039,8 @@
     ],
     "word": "GRP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-003-U0050",
@@ -9682,7 +10065,8 @@
     ],
     "word": "GRP",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-004-U0053",
@@ -9707,7 +10091,8 @@
     ],
     "word": "SWEET",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-005-U0057",
@@ -9732,7 +10117,8 @@
     ],
     "word": "SWEET",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-006-U0045",
@@ -9757,7 +10143,8 @@
     ],
     "word": "SWEET",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-007-U0045",
@@ -9782,7 +10169,8 @@
     ],
     "word": "SWEET",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-008-U0054",
@@ -9807,7 +10195,8 @@
     ],
     "word": "SWEET",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-009-U0043",
@@ -9832,7 +10221,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-010-U004F",
@@ -9857,7 +10247,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-011-U004E",
@@ -9882,7 +10273,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-012-U0043",
@@ -9907,7 +10299,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-013-U0045",
@@ -9932,7 +10325,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-014-U0050",
@@ -9957,7 +10351,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-015-U0054",
@@ -9982,7 +10377,8 @@
     ],
     "word": "CONCEPT",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-016-U0053",
@@ -10007,7 +10403,8 @@
     ],
     "word": "STORE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-017-U0054",
@@ -10032,7 +10429,8 @@
     ],
     "word": "STORE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-018-U004F",
@@ -10057,7 +10455,8 @@
     ],
     "word": "STORE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-019-U0052",
@@ -10082,7 +10481,8 @@
     ],
     "word": "STORE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "b2c95fd8-020-U0045",
@@ -10107,7 +10507,8 @@
     ],
     "word": "STORE",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-001-U0422",
@@ -10132,7 +10533,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-002-U041E",
@@ -10157,7 +10559,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-003-U0412",
@@ -10182,7 +10585,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-004-U0410",
@@ -10207,7 +10611,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-005-U0420",
@@ -10232,7 +10637,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-006-U042B",
@@ -10257,7 +10663,8 @@
     ],
     "word": "ТОВАРЫ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-007-U0414",
@@ -10282,7 +10689,8 @@
     ],
     "word": "ДЛЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-008-U041B",
@@ -10308,6 +10716,7 @@
     "word": "ДЛЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:08:39.112947+00:00"
   },
   {
@@ -10334,6 +10743,7 @@
     "word": "ДЛЯ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:51:05.057422+00:00"
   },
   {
@@ -10359,7 +10769,8 @@
     ],
     "word": "ВСЕМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-011-U0421",
@@ -10384,7 +10795,8 @@
     ],
     "word": "ВСЕМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-012-U0415",
@@ -10409,7 +10821,8 @@
     ],
     "word": "ВСЕМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-013-U041C",
@@ -10434,7 +10847,8 @@
     ],
     "word": "ВСЕМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-014-U0421",
@@ -10459,7 +10873,8 @@
     ],
     "word": "СЕМЬИ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-015-U0415",
@@ -10484,7 +10899,8 @@
     ],
     "word": "СЕМЬИ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-016-U041C",
@@ -10509,7 +10925,8 @@
     ],
     "word": "СЕМЬИ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-017-U042C",
@@ -10534,7 +10951,8 @@
     ],
     "word": "СЕМЬИ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "65054677-018-U0418",
@@ -10559,7 +10977,8 @@
     ],
     "word": "СЕМЬИ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-001-U0421",
@@ -10584,7 +11003,8 @@
     ],
     "word": "САЛОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-002-U0410",
@@ -10609,7 +11029,8 @@
     ],
     "word": "САЛОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-003-U041B",
@@ -10634,7 +11055,8 @@
     ],
     "word": "САЛОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-004-U041E",
@@ -10659,7 +11081,8 @@
     ],
     "word": "САЛОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-005-U041D",
@@ -10684,7 +11107,8 @@
     ],
     "word": "САЛОН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-006-U041C",
@@ -10709,7 +11133,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-007-U0410",
@@ -10734,7 +11159,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-008-U0413",
@@ -10759,7 +11185,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-009-U0410",
@@ -10784,7 +11211,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-010-U0417",
@@ -10809,7 +11237,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-011-U0418",
@@ -10835,6 +11264,7 @@
     "word": "МАГАЗИН",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:03:16.333284+00:00"
   },
   {
@@ -10860,7 +11290,8 @@
     ],
     "word": "МАГАЗИН",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-013-U0418",
@@ -10885,7 +11316,8 @@
     ],
     "word": "ИНТИМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-014-U041D",
@@ -10910,7 +11342,8 @@
     ],
     "word": "ИНТИМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-015-U0422",
@@ -10936,6 +11369,7 @@
     "word": "ИНТИМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:41:58.414537+00:00"
   },
   {
@@ -10961,7 +11395,8 @@
     ],
     "word": "ИНТИМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "7e8318d5-017-U041C",
@@ -10986,7 +11421,8 @@
     ],
     "word": "ИНТИМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-001-U041D",
@@ -11011,7 +11447,8 @@
     ],
     "word": "НАШДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-002-U0410",
@@ -11036,7 +11473,8 @@
     ],
     "word": "НАШДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-003-U0428",
@@ -11062,6 +11500,7 @@
     "word": "НАШДОМ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:48:28.820344+00:00"
   },
   {
@@ -11087,7 +11526,8 @@
     ],
     "word": "НАШДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-005-U041E",
@@ -11112,7 +11552,8 @@
     ],
     "word": "НАШДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-006-U041C",
@@ -11137,7 +11578,8 @@
     ],
     "word": "НАШДОМ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-007-U041E",
@@ -11162,7 +11604,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-008-U0411",
@@ -11187,7 +11630,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-009-U0420",
@@ -11212,7 +11656,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-010-U0410",
@@ -11237,7 +11682,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-011-U0417",
@@ -11262,7 +11708,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-012-U0426",
@@ -11288,6 +11735,7 @@
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:47:43.950447+00:00"
   },
   {
@@ -11313,7 +11761,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-014-U0412",
@@ -11321,7 +11770,7 @@
     "character": "В",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/92c799ca-014-U0412.png",
+    "file": "edited/92c799ca-014-U0412-957974e1c518.png",
     "source_id": "92c799ca-3368-4ab6-92f8-34ffec2de652",
     "source_title": "Образцовый дом",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790640133_8p260o_IMG_0339.jpg",
@@ -11330,7 +11779,7 @@
       373,
       568,
       395,
-      613
+      616
     ],
     "source_size": [
       1000,
@@ -11338,7 +11787,9 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null,
+    "edited_at": "2026-11-11T10:29:55.826218+00:00"
   },
   {
     "id": "92c799ca-015-U041E",
@@ -11363,7 +11814,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-016-U0413",
@@ -11371,7 +11823,7 @@
     "character": "Г",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/92c799ca-016-U0413.png",
+    "file": "edited/92c799ca-016-U0413-aaa954d8124e.png",
     "source_id": "92c799ca-3368-4ab6-92f8-34ffec2de652",
     "source_title": "Образцовый дом",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1793790640133_8p260o_IMG_0339.jpg",
@@ -11379,8 +11831,8 @@
     "box": [
       412,
       564,
-      432,
-      609
+      434,
+      612
     ],
     "source_size": [
       1000,
@@ -11388,7 +11840,9 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null,
+    "edited_at": "2026-11-11T10:30:15.746391+00:00"
   },
   {
     "id": "92c799ca-017-U041E",
@@ -11413,7 +11867,8 @@
     ],
     "word": "ОБРАЗЦОВОГО",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-018-U0421",
@@ -11438,7 +11893,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-019-U041E",
@@ -11463,7 +11919,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-020-U0414",
@@ -11488,7 +11945,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-021-U0415",
@@ -11513,7 +11971,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-022-U0420",
@@ -11538,7 +11997,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-023-U0416",
@@ -11563,7 +12023,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-024-U0410",
@@ -11588,7 +12049,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-025-U041D",
@@ -11613,7 +12075,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-026-U0418",
@@ -11638,7 +12101,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "92c799ca-027-U042F",
@@ -11663,7 +12127,8 @@
     ],
     "word": "СОДЕРЖАНИЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-001-U0422",
@@ -11688,7 +12153,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-002-U0415",
@@ -11713,7 +12179,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-003-U0425",
@@ -11739,6 +12206,7 @@
     "word": "ТЕХНОЛАБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:47:33.549914+00:00"
   },
   {
@@ -11765,6 +12233,7 @@
     "word": "ТЕХНОЛАБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:12:10.585182+00:00"
   },
   {
@@ -11790,7 +12259,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-006-U041B",
@@ -11815,7 +12285,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-007-U0410",
@@ -11840,7 +12311,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "1a54ed51-008-U0411",
@@ -11865,7 +12337,8 @@
     ],
     "word": "ТЕХНОЛАБ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-001-U0422",
@@ -11890,7 +12363,8 @@
     ],
     "word": "ТВОЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-002-U0412",
@@ -11915,7 +12389,8 @@
     ],
     "word": "ТВОЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-003-U041E",
@@ -11940,7 +12415,8 @@
     ],
     "word": "ТВОЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-004-U042F",
@@ -11965,7 +12441,8 @@
     ],
     "word": "ТВОЯ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-005-U041F",
@@ -11990,7 +12467,8 @@
     ],
     "word": "ПОЛКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-006-U041E",
@@ -12015,7 +12493,8 @@
     ],
     "word": "ПОЛКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-007-U041B",
@@ -12040,7 +12519,8 @@
     ],
     "word": "ПОЛКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-008-U041A",
@@ -12065,7 +12545,8 @@
     ],
     "word": "ПОЛКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "22950eb8-009-U0410",
@@ -12090,7 +12571,8 @@
     ],
     "word": "ПОЛКА",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-001-U0421",
@@ -12115,7 +12597,8 @@
     ],
     "word": "СОЮЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-002-U041E",
@@ -12140,7 +12623,8 @@
     ],
     "word": "СОЮЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-003-U042E",
@@ -12165,7 +12649,8 @@
     ],
     "word": "СОЮЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-004-U0417",
@@ -12190,7 +12675,8 @@
     ],
     "word": "СОЮЗ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-005-U041B",
@@ -12215,7 +12701,8 @@
     ],
     "word": "ЛАУНЖ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-006-U0410",
@@ -12241,6 +12728,7 @@
     "word": "ЛАУНЖ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:49:22.054385+00:00"
   },
   {
@@ -12266,7 +12754,8 @@
     ],
     "word": "ЛАУНЖ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-008-U041D",
@@ -12291,7 +12780,8 @@
     ],
     "word": "ЛАУНЖ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-009-U0416",
@@ -12316,7 +12806,8 @@
     ],
     "word": "ЛАУНЖ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-010-U0411",
@@ -12341,7 +12832,8 @@
     ],
     "word": "БАР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-011-U0410",
@@ -12366,7 +12858,8 @@
     ],
     "word": "БАР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "67ff84da-012-U0420",
@@ -12391,7 +12884,8 @@
     ],
     "word": "БАР",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "ec7794a2-001-U0412",
@@ -12417,6 +12911,7 @@
     "word": "ВИННЫЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:53:28.379914+00:00"
   },
   {
@@ -12443,6 +12938,7 @@
     "word": "ВИННЫЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:05:14.083895+00:00"
   },
   {
@@ -12469,6 +12965,7 @@
     "word": "ВИННЫЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:13:27.890266+00:00"
   },
   {
@@ -12495,6 +12992,7 @@
     "word": "ВИННЫЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:13:17.664770+00:00"
   },
   {
@@ -12521,6 +13019,7 @@
     "word": "ВИННЫЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:49:03.144473+00:00"
   },
   {
@@ -12546,7 +13045,8 @@
     ],
     "word": "ВИННЫЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "ec7794a2-007-U041F",
@@ -12572,6 +13072,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:18:07.556190+00:00"
   },
   {
@@ -12598,6 +13099,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:17:44.387484+00:00"
   },
   {
@@ -12624,6 +13126,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:54:59.737896+00:00"
   },
   {
@@ -12650,6 +13153,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-11T08:40:30.578158+00:00"
   },
   {
@@ -12676,6 +13180,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:01:03.350951+00:00"
   },
   {
@@ -12702,6 +13207,7 @@
     "word": "ПОГРЕБ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T19:52:13.620008+00:00"
   },
   {
@@ -12727,7 +13233,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-002-U0423",
@@ -12752,7 +13259,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-003-U041B",
@@ -12778,6 +13286,7 @@
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
     "hidden": false,
+    "clear_override": null,
     "edited_at": "2026-11-10T20:10:31.042636+00:00"
   },
   {
@@ -12803,7 +13312,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-005-U0421",
@@ -12828,7 +13338,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-006-U041A",
@@ -12853,7 +13364,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-007-U0418",
@@ -12878,7 +13390,8 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   },
   {
     "id": "90b513ab-008-U0419",
@@ -12903,6 +13416,7 @@
     ],
     "word": "ТУЛЬСКИЙ",
     "review": "visual",
-    "hidden": false
+    "hidden": false,
+    "clear_override": null
   }
 ]
