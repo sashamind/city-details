@@ -1238,15 +1238,15 @@
     "character": "Н",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/9f63834e-007-U041D.png",
+    "file": "edited/9f63834e-007-U041D-4e1f992977b5.png",
     "source_id": "9f63834e-42b1-4525-944e-630ae3d22da7",
     "source_title": "Люк",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283389299_IMG_9681.jpeg",
     "source_file": "sources/9f63834e-42b1-4525-944e-630ae3d22da7.jpg",
     "box": [
-      568,
+      570,
       245,
-      608,
+      598,
       281
     ],
     "source_size": [
@@ -1256,7 +1256,8 @@
     "word": "ТЕЛЕФОН",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:15:26.726228+00:00"
   },
   {
     "id": "6f292f9a-001-U041F",
@@ -1969,7 +1970,7 @@
     "character": "K",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/8490ae57-011-U004B.png",
+    "file": "edited/8490ae57-011-U004B-ec8c0a8cba80.png",
     "source_id": "8490ae57-e81a-431f-8cec-b0d1dc07bba2",
     "source_title": "лого Surf",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771496223284_IMG_9708.jpeg",
@@ -1977,7 +1978,7 @@
     "box": [
       1267,
       1494,
-      1348,
+      1353,
       1633
     ],
     "source_size": [
@@ -1987,7 +1988,8 @@
     "word": "KISS",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:01.225815+00:00"
   },
   {
     "id": "8490ae57-012-U0049",
@@ -1995,7 +1997,7 @@
     "character": "I",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/8490ae57-012-U0049.png",
+    "file": "edited/8490ae57-012-U0049-50fda3889a67.png",
     "source_id": "8490ae57-e81a-431f-8cec-b0d1dc07bba2",
     "source_title": "лого Surf",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771496223284_IMG_9708.jpeg",
@@ -2003,7 +2005,7 @@
     "box": [
       1348,
       1494,
-      1385,
+      1391,
       1633
     ],
     "source_size": [
@@ -2013,7 +2015,8 @@
     "word": "KISS",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:19:01.086230+00:00"
   },
   {
     "id": "8490ae57-013-U0053",
@@ -2232,15 +2235,15 @@
     "character": "М",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/103fefe6-007-U041C.png",
+    "file": "edited/103fefe6-007-U041C-009c96454df0.png",
     "source_id": "103fefe6-8dc0-45f5-a9c7-61f87a777a45",
     "source_title": "Лого Нуар Дом",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786554056443_dwqz8c_IMG_0931.jpg",
     "source_file": "sources/103fefe6-8dc0-45f5-a9c7-61f87a777a45.jpg",
     "box": [
-      647,
+      668,
       433,
-      769,
+      773,
       596
     ],
     "source_size": [
@@ -2250,7 +2253,8 @@
     "word": "НУАРДОМ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:14:49.662006+00:00"
   },
   {
     "id": "5b8edb70-001-U041C",
@@ -6152,16 +6156,16 @@
     "character": "I",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-015-U0049.png",
+    "file": "edited/64d11826-015-U0049-ac78973b3bc4.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      232,
-      400,
-      240,
-      439
+      249,
+      406,
+      256,
+      437
     ],
     "source_size": [
       1000,
@@ -6170,7 +6174,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:19:31.233211+00:00"
   },
   {
     "id": "64d11826-016-U0053",
@@ -6178,15 +6183,15 @@
     "character": "S",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-016-U0053.png",
+    "file": "edited/64d11826-016-U0053-2d3e7ba81e43.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      240,
+      234,
       400,
-      259,
+      251,
       439
     ],
     "source_size": [
@@ -6196,7 +6201,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:21:52.626732+00:00"
   },
   {
     "id": "64d11826-017-U0049",
@@ -6204,16 +6210,16 @@
     "character": "I",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-017-U0049.png",
+    "file": "edited/64d11826-017-U0049-7d213d3be647.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      259,
-      400,
-      268,
-      439
+      249,
+      407,
+      258,
+      437
     ],
     "source_size": [
       1000,
@@ -6222,7 +6228,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:19:48.570516+00:00"
   },
   {
     "id": "64d11826-018-U0054",
@@ -6230,13 +6237,13 @@
     "character": "T",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-018-U0054.png",
+    "file": "edited/64d11826-018-U0054-af184a67f496.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      268,
+      255,
       400,
       281,
       439
@@ -6248,7 +6255,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:22:26.106000+00:00"
   },
   {
     "id": "64d11826-019-U0054",
@@ -6282,13 +6290,13 @@
     "character": "U",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-020-U0055.png",
+    "file": "edited/64d11826-020-U0055-c1d6da7b46f6.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      304,
+      301,
       400,
       325,
       439
@@ -6300,7 +6308,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:22:45.319502+00:00"
   },
   {
     "id": "64d11826-021-U004C",
@@ -6308,7 +6317,7 @@
     "character": "L",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-021-U004C.png",
+    "file": "edited/64d11826-021-U004C-58df691b90b0.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
@@ -6316,7 +6325,7 @@
     "box": [
       325,
       400,
-      344,
+      351,
       439
     ],
     "source_size": [
@@ -6326,7 +6335,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:12.095485+00:00"
   },
   {
     "id": "64d11826-022-U0041",
@@ -6334,13 +6344,13 @@
     "character": "A",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-022-U0041.png",
+    "file": "edited/64d11826-022-U0041-1268ff1f6917.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      344,
+      347,
       400,
       376,
       439
@@ -6352,7 +6362,8 @@
     "word": "VISITTULA",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:17:41.515588+00:00"
   },
   {
     "id": "64d11826-023-U0043",
@@ -6360,15 +6371,15 @@
     "character": "C",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-023-U0043.png",
+    "file": "edited/64d11826-023-U0043-c5e5e60567e3.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      380,
+      381,
       400,
-      401,
+      397,
       435
     ],
     "source_size": [
@@ -6378,7 +6389,8 @@
     "word": "COM",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:18:01.947298+00:00"
   },
   {
     "id": "64d11826-024-U004F",
@@ -6386,15 +6398,15 @@
     "character": "O",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-024-U004F.png",
+    "file": "edited/64d11826-024-U004F-4e6a37df7ef9.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      401,
+      394,
       400,
-      420,
+      419,
       435
     ],
     "source_size": [
@@ -6404,7 +6416,8 @@
     "word": "COM",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:21:05.575393+00:00"
   },
   {
     "id": "64d11826-025-U004D",
@@ -6412,15 +6425,15 @@
     "character": "M",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/64d11826-025-U004D.png",
+    "file": "edited/64d11826-025-U004D-263df86bebf1.png",
     "source_id": "64d11826-0057-4724-9f75-73e5417ef90e",
     "source_title": "Арт про Тулу и Левшу",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1786874429609_2qp4cc_IMG_1141.jpg",
     "source_file": "sources/64d11826-0057-4724-9f75-73e5417ef90e.jpg",
     "box": [
-      420,
+      417,
       400,
-      448,
+      445,
       435
     ],
     "source_size": [
@@ -6430,7 +6443,8 @@
     "word": "COM",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:21.009809+00:00"
   },
   {
     "id": "c8d7ee59-001-U0423",
@@ -6654,7 +6668,7 @@
     "character": "E",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-001-U0045.png",
+    "file": "edited/3ed09074-001-U0045-8e60f98f36e7.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
@@ -6662,7 +6676,7 @@
     "box": [
       195,
       656,
-      231,
+      235,
       709
     ],
     "source_size": [
@@ -6672,7 +6686,8 @@
     "word": "ERROR",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:18:29.009613+00:00"
   },
   {
     "id": "3ed09074-002-U0052",
@@ -6784,7 +6799,7 @@
     "character": "N",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-006-U004E.png",
+    "file": "edited/3ed09074-006-U004E-43409ff42b86.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
@@ -6792,7 +6807,7 @@
     "box": [
       413,
       657,
-      452,
+      456,
       713
     ],
     "source_size": [
@@ -6802,7 +6817,8 @@
     "word": "NO",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:30.850456+00:00"
   },
   {
     "id": "3ed09074-007-U004F",
@@ -6888,15 +6904,15 @@
     "character": "N",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-010-U004E.png",
+    "file": "edited/3ed09074-010-U004E-816b2b7c49fb.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
     "source_file": "sources/3ed09074-da56-4cb3-91f4-276bbf08163b.jpg",
     "box": [
-      587,
+      581,
       660,
-      627,
+      619,
       716
     ],
     "source_size": [
@@ -6906,7 +6922,8 @@
     "word": "CONTENT",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:39.766755+00:00"
   },
   {
     "id": "3ed09074-011-U0054",
@@ -6914,15 +6931,15 @@
     "character": "T",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-011-U0054.png",
+    "file": "edited/3ed09074-011-U0054-cd78c804c84c.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
     "source_file": "sources/3ed09074-da56-4cb3-91f4-276bbf08163b.jpg",
     "box": [
-      627,
+      618,
       660,
-      661,
+      651,
       716
     ],
     "source_size": [
@@ -6932,7 +6949,8 @@
     "word": "CONTENT",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:22:03.358537+00:00"
   },
   {
     "id": "3ed09074-012-U0045",
@@ -6940,15 +6958,15 @@
     "character": "E",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-012-U0045.png",
+    "file": "edited/3ed09074-012-U0045-03fef8739092.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
     "source_file": "sources/3ed09074-da56-4cb3-91f4-276bbf08163b.jpg",
     "box": [
-      661,
+      649,
       660,
-      696,
+      684,
       716
     ],
     "source_size": [
@@ -6958,7 +6976,8 @@
     "word": "CONTENT",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:18:20.248034+00:00"
   },
   {
     "id": "3ed09074-013-U004E",
@@ -6966,16 +6985,16 @@
     "character": "N",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-013-U004E.png",
+    "file": "edited/3ed09074-013-U004E-8bee71cb0c64.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
     "source_file": "sources/3ed09074-da56-4cb3-91f4-276bbf08163b.jpg",
     "box": [
-      696,
-      660,
-      732,
-      716
+      682,
+      659,
+      718,
+      715
     ],
     "source_size": [
       960,
@@ -6984,7 +7003,8 @@
     "word": "CONTENT",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:20:49.845503+00:00"
   },
   {
     "id": "3ed09074-014-U0054",
@@ -6992,15 +7012,15 @@
     "character": "T",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/3ed09074-014-U0054.png",
+    "file": "edited/3ed09074-014-U0054-45ac4829998a.png",
     "source_id": "3ed09074-da56-4cb3-91f4-276bbf08163b",
     "source_title": "Ошибка",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283188297_IMG_9680.jpeg",
     "source_file": "sources/3ed09074-da56-4cb3-91f4-276bbf08163b.jpg",
     "box": [
-      732,
+      717,
       660,
-      759,
+      753,
       716
     ],
     "source_size": [
@@ -7010,7 +7030,8 @@
     "word": "CONTENT",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:22:14.113123+00:00"
   },
   {
     "id": "dc465b75-001-U041E",
@@ -7622,15 +7643,15 @@
     "character": "Н",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/46df6308-010-U041D.png",
+    "file": "edited/46df6308-010-U041D-b53d124bec8b.png",
     "source_id": "46df6308-0aa2-4689-968f-b7842fdacbd1",
     "source_title": "Арт про Тулу и пряничный кремль",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1787173472172_mxo3vv_IMG_8042.jpg",
     "source_file": "sources/46df6308-0aa2-4689-968f-b7842fdacbd1.jpg",
     "box": [
-      207,
+      201,
       627,
-      235,
+      232,
       668
     ],
     "source_size": [
@@ -7640,7 +7661,8 @@
     "word": "ЗРЕНИЕ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:15:13.018641+00:00"
   },
   {
     "id": "46df6308-011-U0418",
@@ -7970,16 +7992,16 @@
     "character": "Р",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/69982893-002-U0420.png",
+    "file": "edited/69982893-002-U0420-75b7b6683fea.png",
     "source_id": "69982893-0efd-4168-9f25-68bf17c6784c",
     "source_title": "Оружейная 11",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1781255706896_4evrzt_IMG_0372.jpg",
     "source_file": "sources/69982893-0efd-4168-9f25-68bf17c6784c.jpg",
     "box": [
-      352,
-      597,
-      387,
-      659
+      348,
+      615,
+      386,
+      662
     ],
     "source_size": [
       1200,
@@ -7988,7 +8010,8 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:15:59.422535+00:00"
   },
   {
     "id": "69982893-003-U0423",
@@ -8604,15 +8627,15 @@
     "character": "А",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/69982893-026-U0410.png",
+    "file": "edited/69982893-026-U0410-24fef3eefdcd.png",
     "source_id": "69982893-0efd-4168-9f25-68bf17c6784c",
     "source_title": "Оружейная 11",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1781255706896_4evrzt_IMG_0372.jpg",
     "source_file": "sources/69982893-0efd-4168-9f25-68bf17c6784c.jpg",
     "box": [
-      514,
+      511,
       872,
-      531,
+      528,
       918
     ],
     "source_size": [
@@ -8622,7 +8645,8 @@
     "word": "ОРУЖЕЙНАЯ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:13:45.074011+00:00"
   },
   {
     "id": "69982893-027-U042F",
@@ -8819,16 +8843,16 @@
     "character": "Р",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/cc67f731-007-U0420.png",
+    "file": "edited/cc67f731-007-U0420-74deb77c6728.png",
     "source_id": "cc67f731-1898-45a9-9b42-d66a8454a516",
     "source_title": "Горгаз арт",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283907149_IMG_9684.jpeg",
     "source_file": "sources/cc67f731-1898-45a9-9b42-d66a8454a516.jpg",
     "box": [
+      286,
+      378,
       304,
-      372,
-      320,
-      398
+      396
     ],
     "source_size": [
       960,
@@ -8837,7 +8861,8 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:16:22.488387+00:00"
   },
   {
     "id": "cc67f731-008-U0413",
@@ -9086,15 +9111,15 @@
     "character": "Р",
     "case": "upper",
     "alphabet": "cyrillic",
-    "file": "variants/cc67f731-017-U0420.png",
+    "file": "edited/cc67f731-017-U0420-be704404374d.png",
     "source_id": "cc67f731-1898-45a9-9b42-d66a8454a516",
     "source_title": "Горгаз арт",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771283907149_IMG_9684.jpeg",
     "source_file": "sources/cc67f731-1898-45a9-9b42-d66a8454a516.jpg",
     "box": [
-      486,
-      367,
-      503,
+      482,
+      371,
+      501,
       393
     ],
     "source_size": [
@@ -9104,7 +9129,8 @@
     "word": "ТУЛАГОРГАЗ",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:16:37.429824+00:00"
   },
   {
     "id": "cc67f731-018-U0413",
@@ -9996,15 +10022,15 @@
     "character": "G",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/b2c95fd8-001-U0047.png",
+    "file": "edited/b2c95fd8-001-U0047-c2bac4c5dd04.png",
     "source_id": "b2c95fd8-5b71-4680-966f-215bca5d511f",
     "source_title": "Grp лого",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771335097847_IMG_9694.jpeg",
     "source_file": "sources/b2c95fd8-5b71-4680-966f-215bca5d511f.jpg",
     "box": [
       368,
-      394,
-      487,
+      386,
+      489,
       569
     ],
     "source_size": [
@@ -10014,7 +10040,8 @@
     "word": "GRP",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:18:43.904658+00:00"
   },
   {
     "id": "b2c95fd8-002-U0052",
@@ -10048,15 +10075,15 @@
     "character": "P",
     "case": "upper",
     "alphabet": "latin",
-    "file": "variants/b2c95fd8-003-U0050.png",
+    "file": "edited/b2c95fd8-003-U0050-df02f4c33972.png",
     "source_id": "b2c95fd8-5b71-4680-966f-215bca5d511f",
     "source_title": "Grp лого",
     "source_url": "https://yzvigrtnwmkwkpmqmdzh.supabase.co/storage/v1/object/public/photos/1771335097847_IMG_9694.jpeg",
     "source_file": "sources/b2c95fd8-5b71-4680-966f-215bca5d511f.jpg",
     "box": [
-      550,
+      551,
       398,
-      658,
+      657,
       564
     ],
     "source_size": [
@@ -10066,7 +10093,8 @@
     "word": "GRP",
     "review": "visual",
     "hidden": false,
-    "clear_override": null
+    "clear_override": null,
+    "edited_at": "2026-11-12T14:21:20.033057+00:00"
   },
   {
     "id": "b2c95fd8-004-U0053",

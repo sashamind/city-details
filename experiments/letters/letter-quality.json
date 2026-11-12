@@ -389,11 +389,11 @@
       "reason": "small_crop"
     },
     "9f63834e-007-U041D": {
-      "file": "variants/9f63834e-007-U041D.png",
+      "file": "edited/9f63834e-007-U041D-4e1f992977b5.png",
       "clear": false,
       "automatic_clear": false,
       "height": 36,
-      "focus": 0.2625,
+      "focus": 0.256,
       "reason": "small_crop"
     },
     "6f292f9a-001-U041F": {
@@ -613,19 +613,19 @@
       "reason": "clear"
     },
     "8490ae57-011-U004B": {
-      "file": "variants/8490ae57-011-U004B.png",
+      "file": "edited/8490ae57-011-U004B-ec8c0a8cba80.png",
       "clear": true,
       "automatic_clear": true,
       "height": 139,
-      "focus": 0.2655,
+      "focus": 0.2682,
       "reason": "clear"
     },
     "8490ae57-012-U0049": {
-      "file": "variants/8490ae57-012-U0049.png",
+      "file": "edited/8490ae57-012-U0049-50fda3889a67.png",
       "clear": true,
       "automatic_clear": true,
       "height": 139,
-      "focus": 0.2666,
+      "focus": 0.3025,
       "reason": "clear"
     },
     "8490ae57-013-U0053": {
@@ -693,11 +693,11 @@
       "reason": "clear"
     },
     "103fefe6-007-U041C": {
-      "file": "variants/103fefe6-007-U041C.png",
+      "file": "edited/103fefe6-007-U041C-009c96454df0.png",
       "clear": true,
       "automatic_clear": true,
       "height": 163,
-      "focus": 0.3716,
+      "focus": 0.3437,
       "reason": "clear"
     },
     "5b8edb70-001-U041C": {
@@ -1877,35 +1877,35 @@
       "reason": "small_crop"
     },
     "64d11826-015-U0049": {
-      "file": "variants/64d11826-015-U0049.png",
+      "file": "edited/64d11826-015-U0049-ac78973b3bc4.png",
       "clear": false,
       "automatic_clear": false,
-      "height": 39,
-      "focus": 0.1695,
+      "height": 31,
+      "focus": 0.1612,
       "reason": "small_crop"
     },
     "64d11826-016-U0053": {
-      "file": "variants/64d11826-016-U0053.png",
+      "file": "edited/64d11826-016-U0053-2d3e7ba81e43.png",
       "clear": false,
       "automatic_clear": false,
       "height": 39,
-      "focus": 0.1805,
+      "focus": 0.1717,
       "reason": "small_crop"
     },
     "64d11826-017-U0049": {
-      "file": "variants/64d11826-017-U0049.png",
+      "file": "edited/64d11826-017-U0049-7d213d3be647.png",
       "clear": false,
       "automatic_clear": false,
-      "height": 39,
-      "focus": 0.1449,
+      "height": 30,
+      "focus": 0.1579,
       "reason": "small_crop"
     },
     "64d11826-018-U0054": {
-      "file": "variants/64d11826-018-U0054.png",
+      "file": "edited/64d11826-018-U0054-af184a67f496.png",
       "clear": false,
       "automatic_clear": false,
       "height": 39,
-      "focus": 0.132,
+      "focus": 0.1512,
       "reason": "small_crop"
     },
     "64d11826-019-U0054": {
@@ -1917,51 +1917,51 @@
       "reason": "small_crop"
     },
     "64d11826-020-U0055": {
-      "file": "variants/64d11826-020-U0055.png",
+      "file": "edited/64d11826-020-U0055-c1d6da7b46f6.png",
       "clear": false,
       "automatic_clear": false,
       "height": 39,
-      "focus": 0.1604,
+      "focus": 0.166,
       "reason": "small_crop"
     },
     "64d11826-021-U004C": {
-      "file": "variants/64d11826-021-U004C.png",
+      "file": "edited/64d11826-021-U004C-58df691b90b0.png",
       "clear": false,
       "automatic_clear": false,
       "height": 39,
-      "focus": 0.1351,
+      "focus": 0.1416,
       "reason": "small_crop"
     },
     "64d11826-022-U0041": {
-      "file": "variants/64d11826-022-U0041.png",
+      "file": "edited/64d11826-022-U0041-1268ff1f6917.png",
       "clear": false,
       "automatic_clear": false,
       "height": 39,
-      "focus": 0.1626,
+      "focus": 0.165,
       "reason": "small_crop"
     },
     "64d11826-023-U0043": {
-      "file": "variants/64d11826-023-U0043.png",
+      "file": "edited/64d11826-023-U0043-c5e5e60567e3.png",
       "clear": false,
       "automatic_clear": false,
       "height": 35,
-      "focus": 0.1599,
+      "focus": 0.1712,
       "reason": "small_crop"
     },
     "64d11826-024-U004F": {
-      "file": "variants/64d11826-024-U004F.png",
+      "file": "edited/64d11826-024-U004F-4e6a37df7ef9.png",
       "clear": false,
       "automatic_clear": false,
       "height": 35,
-      "focus": 0.1661,
+      "focus": 0.1558,
       "reason": "small_crop"
     },
     "64d11826-025-U004D": {
-      "file": "variants/64d11826-025-U004D.png",
+      "file": "edited/64d11826-025-U004D-263df86bebf1.png",
       "clear": false,
       "automatic_clear": false,
       "height": 35,
-      "focus": 0.1283,
+      "focus": 0.1404,
       "reason": "small_crop"
     },
     "c8d7ee59-001-U0423": {
@@ -2029,11 +2029,11 @@
       "reason": "visually_soft"
     },
     "3ed09074-001-U0045": {
-      "file": "variants/3ed09074-001-U0045.png",
+      "file": "edited/3ed09074-001-U0045-8e60f98f36e7.png",
       "clear": false,
       "automatic_clear": false,
       "height": 53,
-      "focus": 0.0693,
+      "focus": 0.0706,
       "reason": "small_crop"
     },
     "3ed09074-002-U0052": {
@@ -2069,11 +2069,11 @@
       "reason": "small_crop"
     },
     "3ed09074-006-U004E": {
-      "file": "variants/3ed09074-006-U004E.png",
+      "file": "edited/3ed09074-006-U004E-43409ff42b86.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.0642,
+      "focus": 0.0626,
       "reason": "small_crop"
     },
     "3ed09074-007-U004F": {
@@ -2101,43 +2101,43 @@
       "reason": "small_crop"
     },
     "3ed09074-010-U004E": {
-      "file": "variants/3ed09074-010-U004E.png",
+      "file": "edited/3ed09074-010-U004E-816b2b7c49fb.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.062,
+      "focus": 0.0667,
       "reason": "small_crop"
     },
     "3ed09074-011-U0054": {
-      "file": "variants/3ed09074-011-U0054.png",
+      "file": "edited/3ed09074-011-U0054-cd78c804c84c.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.0623,
+      "focus": 0.0636,
       "reason": "small_crop"
     },
     "3ed09074-012-U0045": {
-      "file": "variants/3ed09074-012-U0045.png",
+      "file": "edited/3ed09074-012-U0045-03fef8739092.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.0699,
+      "focus": 0.0706,
       "reason": "small_crop"
     },
     "3ed09074-013-U004E": {
-      "file": "variants/3ed09074-013-U004E.png",
+      "file": "edited/3ed09074-013-U004E-8bee71cb0c64.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.0595,
+      "focus": 0.0621,
       "reason": "small_crop"
     },
     "3ed09074-014-U0054": {
-      "file": "variants/3ed09074-014-U0054.png",
+      "file": "edited/3ed09074-014-U0054-45ac4829998a.png",
       "clear": false,
       "automatic_clear": false,
       "height": 56,
-      "focus": 0.0397,
+      "focus": 0.0498,
       "reason": "small_crop"
     },
     "dc465b75-001-U041E": {
@@ -2325,11 +2325,11 @@
       "reason": "small_crop"
     },
     "46df6308-010-U041D": {
-      "file": "variants/46df6308-010-U041D.png",
+      "file": "edited/46df6308-010-U041D-b53d124bec8b.png",
       "clear": false,
       "automatic_clear": false,
       "height": 41,
-      "focus": 0.1982,
+      "focus": 0.1885,
       "reason": "small_crop"
     },
     "46df6308-011-U0418": {
@@ -2429,12 +2429,12 @@
       "reason": "clear"
     },
     "69982893-002-U0420": {
-      "file": "variants/69982893-002-U0420.png",
-      "clear": true,
-      "automatic_clear": true,
-      "height": 62,
-      "focus": 0.2217,
-      "reason": "clear"
+      "file": "edited/69982893-002-U0420-75b7b6683fea.png",
+      "clear": false,
+      "automatic_clear": false,
+      "height": 47,
+      "focus": 0.154,
+      "reason": "small_crop"
     },
     "69982893-003-U0423": {
       "file": "edited/69982893-003-U0423-0f58284dfb3f.png",
@@ -2621,11 +2621,11 @@
       "reason": "small_crop"
     },
     "69982893-026-U0410": {
-      "file": "variants/69982893-026-U0410.png",
+      "file": "edited/69982893-026-U0410-24fef3eefdcd.png",
       "clear": false,
       "automatic_clear": false,
       "height": 46,
-      "focus": 0.3256,
+      "focus": 0.3154,
       "reason": "small_crop"
     },
     "69982893-027-U042F": {
@@ -2685,11 +2685,11 @@
       "reason": "small_crop"
     },
     "cc67f731-007-U0420": {
-      "file": "variants/cc67f731-007-U0420.png",
+      "file": "edited/cc67f731-007-U0420-74deb77c6728.png",
       "clear": false,
       "automatic_clear": false,
-      "height": 26,
-      "focus": 0.0817,
+      "height": 18,
+      "focus": 0.0553,
       "reason": "small_crop"
     },
     "cc67f731-008-U0413": {
@@ -2765,11 +2765,11 @@
       "reason": "small_crop"
     },
     "cc67f731-017-U0420": {
-      "file": "variants/cc67f731-017-U0420.png",
+      "file": "edited/cc67f731-017-U0420-be704404374d.png",
       "clear": false,
       "automatic_clear": false,
-      "height": 26,
-      "focus": 0.0819,
+      "height": 22,
+      "focus": 0.0659,
       "reason": "small_crop"
     },
     "cc67f731-018-U0413": {
@@ -3037,11 +3037,11 @@
       "reason": "small_crop"
     },
     "b2c95fd8-001-U0047": {
-      "file": "variants/b2c95fd8-001-U0047.png",
+      "file": "edited/b2c95fd8-001-U0047-c2bac4c5dd04.png",
       "clear": true,
       "automatic_clear": true,
-      "height": 175,
-      "focus": 0.4483,
+      "height": 183,
+      "focus": 0.4507,
       "reason": "clear"
     },
     "b2c95fd8-002-U0052": {
@@ -3053,11 +3053,11 @@
       "reason": "clear"
     },
     "b2c95fd8-003-U0050": {
-      "file": "variants/b2c95fd8-003-U0050.png",
+      "file": "edited/b2c95fd8-003-U0050-df02f4c33972.png",
       "clear": true,
       "automatic_clear": true,
       "height": 166,
-      "focus": 0.4857,
+      "focus": 0.4884,
       "reason": "clear"
     },
     "b2c95fd8-004-U0053": {
