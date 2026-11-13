@@ -309,6 +309,9 @@ body {
 .filter-btn:last-child { border-right: none; }
 .filter-btn:hover { color: #000; }
 .filter-btn.active { background: #000; color: #fff; }
+.filter-all { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.filter-total { font-size: 8px; line-height: 1; opacity: 0.55; letter-spacing: 0; }
+.filter-total[hidden] { display: none; }
 
 .dot-marker {
   display: flex;

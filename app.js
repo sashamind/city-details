@@ -507,6 +507,13 @@ function getPendingCount() {
 var badgeRequestToken = 0;
 
 function updateBadge() {
+  var total = document.getElementById('details-total');
+  if (total) {
+    var publishedCount = details.filter(d => d.status === 'approved').length;
+    total.textContent = publishedCount;
+    total.hidden = false;
+    total.setAttribute('aria-label', 'Опубликованных деталей: ' + publishedCount);
+  }
   var badge = document.getElementById('pending-badge');
   if (!badge) return;
 
